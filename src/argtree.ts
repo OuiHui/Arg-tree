@@ -155,8 +155,6 @@ export function autoLayoutTree(tree: TreeState): Record<string, Point> {
   return newPositions
 }
 
-export const STORAGE_KEY = 'argtree-state'
-
 export const createId = () =>
   globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`
 
@@ -255,52 +253,7 @@ export const seedWorkspace = (): WorkspaceState => {
   }
 }
 
-export const readInitialState = (): WorkspaceState => {
-  if (typeof window === 'undefined') {
-    return seedWorkspace()
-  }
 
-  const rawState = window.localStorage.getItem(STORAGE_KEY)
-
-  if (!rawState) {
-    return seedWorkspace()
-  }
-
-  try {
-    const parsed = JSON.parse(rawState) as Partial<WorkspaceState & TreeState>
-
-    if (parsed.trees && parsed.selectedTreeId) {
-      const treeIds = Object.keys(parsed.trees)
-
-      if (treeIds.length > 0 && parsed.trees[parsed.selectedTreeId]) {
-        return parsed as WorkspaceState
-      }
-    }
-
-    if (parsed.nodes && parsed.positions && parsed.rootId && parsed.selectedNodeId && parsed.definitions) {
-      const treeId = createId()
-
-      return {
-        selectedTreeId: treeId,
-        trees: {
-          [treeId]: {
-            id: treeId,
-            title: 'Imported tree',
-            nodes: parsed.nodes,
-            positions: parsed.positions,
-            rootId: parsed.rootId,
-            definitions: parsed.definitions,
-            selectedNodeId: parsed.selectedNodeId,
-          },
-        },
-      }
-    }
-
-    return seedWorkspace()
-  } catch {
-    return seedWorkspace()
-  }
-}
 
 export const palette: Record<Stance | 'claim', string> = {
   claim: '#7ea7ff',

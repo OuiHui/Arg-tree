@@ -3,8 +3,6 @@ import './App.css'
 import {
   createEmptyTree,
   createId,
-  STORAGE_KEY,
-  readInitialState,
   seedWorkspace,
   seedTree,
   computeEdgePath,
@@ -14,11 +12,19 @@ import {
   type WorkspaceState,
   palette,
 } from './argtree'
+import {
+  fetchWorkspaceApi,
+  createTreeApi,
+  updateTreeApi,
+  deleteTreeApi,
+  updateSelectedTreeIdApi,
+} from './api'
 import { TopControls } from './components/TopControls'
 import { WorkspaceStage } from './components/WorkspaceStage'
 
 function App() {
-  const [workspace, setWorkspace] = useState<WorkspaceState>(readInitialState)
+  const [workspace, setWorkspace] = useState<WorkspaceState>(seedWorkspace)
+  const [isLoading, setIsLoading] = useState(true)
   const [newDefinitionTerm, setNewDefinitionTerm] = useState('')
   const [newDefinitionDescription, setNewDefinitionDescription] = useState('')
   const [newTreeTitle, setNewTreeTitle] = useState('Untitled tree')
@@ -50,12 +56,51 @@ function App() {
     | null
   >(null)
 
+  // Fetch initial workspace state from MongoDB server
   useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(workspace))
-  }, [workspace])
+    let isMounted = true
+
+    fetchWorkspaceApi()
+      .then((fetchedWorkspace) => {
+        if (isMounted) {
+          setWorkspace(fetchedWorkspace)
+          setIsLoading(false)
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load workspace from MongoDB:', err)
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   const treeList = useMemo(() => Object.values(workspace.trees), [workspace.trees])
   const selectedTree = workspace.trees[workspace.selectedTreeId] ?? treeList[0] ?? seedTree('Starter tree')
+
+  // Debounced auto-save for current selected tree changes to MongoDB
+  const isFirstRender = useRef(true)
+  useEffect(() => {
+    if (isLoading) return
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+
+    if (!selectedTree) return
+
+    const timer = setTimeout(() => {
+      updateTreeApi(selectedTree).catch((err) => {
+        console.error(`Failed to sync tree ${selectedTree.id} to MongoDB:`, err)
+      })
+    }, 400)
+
+    return () => clearTimeout(timer)
+  }, [selectedTree, isLoading])
 
   const updateSelectedTree = (updater: (tree: TreeState) => TreeState) => {
     setWorkspace((current) => {
@@ -75,6 +120,13 @@ function App() {
           [activeTree.id]: nextTree,
         },
       }
+    })
+  }
+
+  const handleSelectTreeId = (treeId: string) => {
+    setWorkspace((current) => ({ ...current, selectedTreeId: treeId }))
+    updateSelectedTreeIdApi(treeId).catch((err) => {
+      console.error('Failed to update active tree ID in MongoDB:', err)
     })
   }
 
@@ -221,6 +273,11 @@ function App() {
         [tree.id]: tree,
       },
     }))
+
+    createTreeApi(tree).catch((err) => {
+      console.error('Failed to create tree in MongoDB:', err)
+    })
+
     setNewTreeTitle('Untitled tree')
     setNewTreeClaim('')
     setNewDefinitionTerm('')
@@ -230,7 +287,17 @@ function App() {
   }
 
   const resetWorkspace = () => {
-    setWorkspace(seedWorkspace())
+    const freshTree = seedTree('Starter tree')
+    setWorkspace({
+      selectedTreeId: freshTree.id,
+      trees: {
+        [freshTree.id]: freshTree,
+      },
+    })
+    createTreeApi(freshTree).catch((err) => {
+      console.error('Failed to seed reset tree in MongoDB:', err)
+    })
+
     setNewDefinitionTerm('')
     setNewDefinitionDescription('')
     setNewTreeTitle('Untitled tree')
@@ -373,28 +440,13 @@ function App() {
   }
 
   const deleteTree = (treeIdToDelete: string) => {
-    setWorkspace((current) => {
-      const treeKeys = Object.keys(current.trees)
-      if (treeKeys.length <= 1) {
-        const freshTree = seedTree('Starter tree')
-        return {
-          selectedTreeId: freshTree.id,
-          trees: {
-            [freshTree.id]: freshTree,
-          },
-        }
-      }
-
-      const nextTrees = { ...current.trees }
-      delete nextTrees[treeIdToDelete]
-      const remainingIds = Object.keys(nextTrees)
-      const nextSelectedId = current.selectedTreeId === treeIdToDelete ? remainingIds[0] : current.selectedTreeId
-
-      return {
-        selectedTreeId: nextSelectedId,
-        trees: nextTrees,
-      }
-    })
+    deleteTreeApi(treeIdToDelete)
+      .then((updatedWorkspace) => {
+        setWorkspace(updatedWorkspace)
+      })
+      .catch((err) => {
+        console.error(`Failed to delete tree ${treeIdToDelete} from MongoDB:`, err)
+      })
   }
 
   useEffect(() => {
@@ -456,12 +508,21 @@ function App() {
     return [...childEdges, ...connectionEdges]
   })
 
+  if (isLoading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-spinner" />
+        <p>Connecting to MongoDB database...</p>
+      </div>
+    )
+  }
+
   return (
     <main className="app-shell">
       <TopControls
         treeList={treeList}
         selectedTreeId={workspace.selectedTreeId}
-        onSelectTreeId={(treeId) => setWorkspace((current) => ({ ...current, selectedTreeId: treeId }))}
+        onSelectTreeId={handleSelectTreeId}
         newTreeTitle={newTreeTitle}
         onNewTreeTitleChange={setNewTreeTitle}
         newTreeClaim={newTreeClaim}
