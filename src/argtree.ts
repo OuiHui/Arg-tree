@@ -34,6 +34,125 @@ export type EdgePath = {
   d: string
   color: string
   dashed: boolean
+  markerId?: string
+}
+
+export type Point = { x: number; y: number }
+
+export function computeEdgePath(
+  origin: Point,
+  target: Point,
+  boxWidth = 280,
+  boxHeight = 140,
+  isConnection = false
+): string {
+  const dx = target.x - origin.x
+  const dy = target.y - origin.y
+
+  if (dx === 0 && dy === 0) {
+    return `M ${origin.x} ${origin.y} L ${target.x} ${target.y}`
+  }
+
+  const halfW = boxWidth / 2
+  const halfH = boxHeight / 2
+
+  let startX: number
+  let startY: number
+  let endX: number
+  let endY: number
+
+  if (dy > 40) {
+    startX = origin.x
+    startY = origin.y + halfH
+    endX = target.x
+    endY = target.y - halfH - 6
+  } else if (dy < -40) {
+    startX = origin.x
+    startY = origin.y - halfH
+    endX = target.x
+    endY = target.y + halfH + 6
+  } else if (dx >= 0) {
+    startX = origin.x + halfW
+    startY = origin.y
+    endX = target.x - halfW - 6
+    endY = target.y
+  } else {
+    startX = origin.x - halfW
+    startY = origin.y
+    endX = target.x + halfW + 6
+    endY = target.y
+  }
+
+  if (isConnection) {
+    const deltaX = endX - startX
+    const controlX = startX + deltaX * 0.4
+    const controlY1 = startY - 60
+    const controlY2 = endY - 30
+    return `M ${startX} ${startY} C ${controlX} ${controlY1}, ${endX - deltaX * 0.15} ${controlY2}, ${endX} ${endY}`
+  }
+
+  const deltaY = endY - startY
+  const controlY1 = startY + deltaY * 0.45
+  const controlY2 = endY - deltaY * 0.45
+
+  return `M ${startX} ${startY} C ${startX} ${controlY1}, ${endX} ${controlY2}, ${endX} ${endY}`
+}
+
+export function autoLayoutTree(tree: TreeState): Record<string, Point> {
+  const newPositions: Record<string, Point> = {}
+  const rootId = tree.rootId
+  if (!rootId || !tree.nodes[rootId]) return tree.positions
+
+  const levels: Record<number, string[]> = {}
+  const visited = new Set<string>()
+
+  const queue: Array<{ id: string; level: number }> = [{ id: rootId, level: 0 }]
+  visited.add(rootId)
+
+  while (queue.length > 0) {
+    const item = queue.shift()!
+    if (!levels[item.level]) {
+      levels[item.level] = []
+    }
+    levels[item.level].push(item.id)
+
+    const node = tree.nodes[item.id]
+    if (node) {
+      for (const childId of node.childIds) {
+        if (!visited.has(childId)) {
+          visited.add(childId)
+          queue.push({ id: childId, level: item.level + 1 })
+        }
+      }
+    }
+  }
+
+  const maxLevel = Math.max(...Object.keys(levels).map(Number), 0)
+  for (const nodeId of Object.keys(tree.nodes)) {
+    if (!visited.has(nodeId)) {
+      const level = maxLevel + 1
+      if (!levels[level]) levels[level] = []
+      levels[level].push(nodeId)
+    }
+  }
+
+  const LEVEL_HEIGHT = 220
+  const NODE_SPACING = 320
+
+  for (const [levelStr, nodeIds] of Object.entries(levels)) {
+    const level = Number(levelStr)
+    const count = nodeIds.length
+    const startX = -((count - 1) * NODE_SPACING) / 2
+
+    nodeIds.forEach((id, index) => {
+      newPositions[id] = {
+        x: startX + index * NODE_SPACING,
+        y: level * LEVEL_HEIGHT,
+      }
+    })
+  }
+
+  return newPositions
 }
 
 export const STORAGE_KEY = 'argtree-state'
@@ -55,29 +174,29 @@ export const seedTree = (title: string): TreeState => {
     selectedNodeId: rootId,
     positions: {
       [rootId]: { x: 0, y: 0 },
-      [rebuttalId]: { x: 240, y: 140 },
-      [evidenceId]: { x: 240, y: -110 },
-      [definitionId]: { x: 480, y: -110 },
+      [evidenceId]: { x: -240, y: 220 },
+      [rebuttalId]: { x: 240, y: 220 },
+      [definitionId]: { x: -240, y: 440 },
     },
     nodes: {
       [rootId]: {
         id: rootId,
         text: 'School should start one hour later to improve student attention and wellbeing.',
         stance: 'claim',
-        childIds: [rebuttalId, evidenceId],
+        childIds: [evidenceId, rebuttalId],
+        connectionIds: [],
+      },
+      [evidenceId]: {
+        id: evidenceId,
+        text: 'Adolescents often have sleep cycles that make earlier mornings especially costly.',
+        stance: 'support',
+        childIds: [definitionId],
         connectionIds: [],
       },
       [rebuttalId]: {
         id: rebuttalId,
         text: 'Later starts can conflict with after-school jobs, sports, and caregiving duties.',
         stance: 'attack',
-        childIds: [],
-        connectionIds: [definitionId],
-      },
-      [evidenceId]: {
-        id: evidenceId,
-        text: 'Adolescents often have sleep cycles that make earlier mornings especially costly.',
-        stance: 'support',
         childIds: [],
         connectionIds: [definitionId],
       },
@@ -184,9 +303,9 @@ export const readInitialState = (): WorkspaceState => {
 }
 
 export const palette: Record<Stance | 'claim', string> = {
-  claim: 'var(--claim)',
-  support: 'var(--support)',
-  attack: 'var(--attack)',
+  claim: '#7ea7ff',
+  support: '#58d39b',
+  attack: '#ff7a73',
 }
 
 export const formatNodeLabel = (text: string) => {

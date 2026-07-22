@@ -7,11 +7,13 @@ type WorkspaceStageProps = {
   onEditNode: (nodeId: string) => void
   onStopEditingNode: () => void
   onUpdateNodeText: (nodeId: string, text: string) => void
+  onDeleteNode: (nodeId: string) => void
   newDefinitionTerm: string
   onNewDefinitionTermChange: (value: string) => void
   newDefinitionDescription: string
   onNewDefinitionDescriptionChange: (value: string) => void
   onAddDefinition: () => void
+  onDeleteDefinition: (definitionId: string) => void
   onSelectNode: (nodeId: string) => void
   onAddBranchFromNode: (parentNodeId: string, stance: Stance) => void
   onCanvasPointerDown: (event: ReactPointerEvent<HTMLElement>, nodeId?: string) => void
@@ -24,6 +26,7 @@ type WorkspaceStageProps = {
   zoom: number
   onZoomChange: (updater: (current: number) => number) => void
   onResetView: () => void
+  onAutoLayout: () => void
   pan: { x: number; y: number }
   edgePaths: EdgePath[]
 }
@@ -34,11 +37,13 @@ export function WorkspaceStage({
   onEditNode,
   onStopEditingNode,
   onUpdateNodeText,
+  onDeleteNode,
   newDefinitionTerm,
   onNewDefinitionTermChange,
   newDefinitionDescription,
   onNewDefinitionDescriptionChange,
   onAddDefinition,
+  onDeleteDefinition,
   onSelectNode,
   onAddBranchFromNode,
   onCanvasPointerDown,
@@ -51,6 +56,7 @@ export function WorkspaceStage({
   zoom,
   onZoomChange,
   onResetView,
+  onAutoLayout,
   pan,
   edgePaths,
 }: WorkspaceStageProps) {
@@ -64,6 +70,9 @@ export function WorkspaceStage({
           </div>
 
           <div className="zoom-group">
+            <button type="button" className="secondary" onClick={onAutoLayout} title="Auto-arrange tree layout">
+              Auto-arrange tree
+            </button>
             <button type="button" className="secondary zoom-button" onClick={() => onZoomChange((current) => Math.min(1.8, Math.max(0.45, current - 0.1)))}>
               -
             </button>
@@ -91,18 +100,51 @@ export function WorkspaceStage({
               transform: `translate(-50%, -50%) translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
             }}
           >
-            <svg className="tree-links" viewBox="-2400 -1800 4800 3600" aria-hidden="true">
+            <svg className="tree-links" viewBox="-3000 -3000 6000 6000" aria-hidden="true">
               <defs>
                 <marker
-                  id="argtree-arrow"
+                  id="argtree-arrow-claim"
                   markerWidth="12"
                   markerHeight="12"
                   refX="10"
                   refY="6"
                   orient="auto"
-                  markerUnits="strokeWidth"
+                  markerUnits="userSpaceOnUse"
                 >
-                  <path d="M 0 0 L 12 6 L 0 12 z" fill="currentColor" />
+                  <path d="M 0 1 L 11 6 L 0 11 L 3 6 z" fill="#7ea7ff" stroke="#07101d" strokeWidth="0.5" />
+                </marker>
+                <marker
+                  id="argtree-arrow-support"
+                  markerWidth="12"
+                  markerHeight="12"
+                  refX="10"
+                  refY="6"
+                  orient="auto"
+                  markerUnits="userSpaceOnUse"
+                >
+                  <path d="M 0 1 L 11 6 L 0 11 L 3 6 z" fill="#58d39b" stroke="#07101d" strokeWidth="0.5" />
+                </marker>
+                <marker
+                  id="argtree-arrow-attack"
+                  markerWidth="12"
+                  markerHeight="12"
+                  refX="10"
+                  refY="6"
+                  orient="auto"
+                  markerUnits="userSpaceOnUse"
+                >
+                  <path d="M 0 1 L 11 6 L 0 11 L 3 6 z" fill="#ff7a73" stroke="#07101d" strokeWidth="0.5" />
+                </marker>
+                <marker
+                  id="argtree-arrow-connection"
+                  markerWidth="12"
+                  markerHeight="12"
+                  refX="10"
+                  refY="6"
+                  orient="auto"
+                  markerUnits="userSpaceOnUse"
+                >
+                  <path d="M 0 1 L 11 6 L 0 11 L 3 6 z" fill="#a7b0c0" stroke="#07101d" strokeWidth="0.5" />
                 </marker>
               </defs>
               {edgePaths.map((edge) => (
@@ -110,13 +152,12 @@ export function WorkspaceStage({
                   key={edge.id}
                   d={edge.d}
                   stroke={edge.color}
-                  strokeWidth="3.25"
+                  strokeWidth="3.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   fill="none"
                   strokeDasharray={edge.dashed ? '10 10' : undefined}
-                  markerEnd={edge.dashed ? undefined : 'url(#argtree-arrow)'}
-                  vectorEffect="non-scaling-stroke"
+                  markerEnd={edge.markerId ? `url(#${edge.markerId})` : undefined}
                 />
               ))}
             </svg>
@@ -139,31 +180,57 @@ export function WorkspaceStage({
                   } as CSSProperties}
                   onPointerDown={(event) => {
                     event.stopPropagation()
+                    if (!isEditing) {
+                      event.preventDefault()
+                    }
                     onCanvasPointerDown(event, node.id)
                   }}
+                  onDragStart={(event) => event.preventDefault()}
                   onClick={() => onSelectNode(node.id)}
                   role="button"
                   tabIndex={0}
                 >
                   <div className="node-header">
                     <span className="node-badge">{isRoot ? 'Claim' : node.stance}</span>
-                    <button
-                      type="button"
-                      className="node-edit-button"
-                      onPointerDown={(event) => {
-                        event.stopPropagation()
-                      }}
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        if (isEditing) {
-                          onStopEditingNode()
-                          return
-                        }
-                        onEditNode(node.id)
-                      }}
-                    >
-                      {isEditing ? 'Done' : 'Edit'}
-                    </button>
+                    <div className="node-header-controls">
+                      <button
+                        type="button"
+                        className="node-edit-button"
+                        onPointerDown={(event) => {
+                          event.stopPropagation()
+                        }}
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          if (isEditing) {
+                            onStopEditingNode()
+                            return
+                          }
+                          onEditNode(node.id)
+                        }}
+                      >
+                        {isEditing ? 'Done' : 'Edit'}
+                      </button>
+                      {!isRoot && (
+                        <button
+                          type="button"
+                          className="node-delete-button"
+                          title="Delete argument"
+                          aria-label="Delete argument"
+                          onPointerDown={(event) => {
+                            event.stopPropagation()
+                          }}
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            onDeleteNode(node.id)
+                          }}
+                        >
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                          </svg>
+                        </button>
+                      )}
+                    </div>
                   </div>
                   {isEditing ? (
                     <textarea
@@ -256,7 +323,21 @@ export function WorkspaceStage({
           <div className="definition-list">
             {selectedTree.definitions.map((definition) => (
               <article key={definition.id} className="definition-card">
-                <h3>{definition.term}</h3>
+                <div className="definition-card-header">
+                  <h3>{definition.term}</h3>
+                  <button
+                    type="button"
+                    className="definition-delete-button"
+                    title="Delete definition"
+                    aria-label="Delete definition"
+                    onClick={() => onDeleteDefinition(definition.id)}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </div>
                 <p>{definition.description}</p>
               </article>
             ))}

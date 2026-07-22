@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent } from 'react'
 import './App.css'
 import {
   createEmptyTree,
@@ -7,6 +7,8 @@ import {
   readInitialState,
   seedWorkspace,
   seedTree,
+  computeEdgePath,
+  autoLayoutTree,
   type Stance,
   type TreeState,
   type WorkspaceState,
@@ -117,7 +119,8 @@ function App() {
 
       const parentPosition = currentTree.positions[parent.id] ?? { x: 0, y: 0 }
       const branchCount = parent.childIds.length
-      const direction = stance === 'attack' ? 1 : -1
+      const sideOffset = stance === 'support' ? -180 : 180
+      const spreadX = sideOffset + (branchCount > 0 ? (stance === 'support' ? -120 * branchCount : 120 * branchCount) : 0)
 
       return {
         ...currentTree,
@@ -125,8 +128,8 @@ function App() {
         positions: {
           ...currentTree.positions,
           [id]: {
-            x: parentPosition.x + 250,
-            y: parentPosition.y + direction * (120 + branchCount * 56),
+            x: parentPosition.x + spreadX,
+            y: parentPosition.y + 220,
           },
         },
         nodes: {
@@ -147,6 +150,13 @@ function App() {
     })
 
     setEditingNodeId(id)
+  }
+
+  const handleAutoLayout = () => {
+    updateSelectedTree((currentTree) => ({
+      ...currentTree,
+      positions: autoLayoutTree(currentTree),
+    }))
   }
 
   const updateNodePosition = (nodeId: string, x: number, y: number) => {
@@ -295,22 +305,135 @@ function App() {
     dragStateRef.current = null
   }
 
+  const deleteNode = useCallback(
+    (nodeIdToDelete: string) => {
+      if (nodeIdToDelete === selectedTree.rootId) {
+        return
+      }
+
+      updateSelectedTree((currentTree) => {
+        const getDescendants = (id: string): string[] => {
+          const n = currentTree.nodes[id]
+          if (!n) return []
+          let list = [...n.childIds]
+          for (const childId of n.childIds) {
+            list = [...list, ...getDescendants(childId)]
+          }
+          return list
+        }
+
+        const idsToRemove = new Set([nodeIdToDelete, ...getDescendants(nodeIdToDelete)])
+
+        const nextNodes = { ...currentTree.nodes }
+        const nextPositions = { ...currentTree.positions }
+
+        for (const id of idsToRemove) {
+          delete nextNodes[id]
+          delete nextPositions[id]
+        }
+
+        for (const key of Object.keys(nextNodes)) {
+          const n = nextNodes[key]
+          const updatedChildren = n.childIds.filter((cid) => !idsToRemove.has(cid))
+          const updatedConnections = n.connectionIds.filter((cid) => !idsToRemove.has(cid))
+
+          if (updatedChildren.length !== n.childIds.length || updatedConnections.length !== n.connectionIds.length) {
+            nextNodes[key] = {
+              ...n,
+              childIds: updatedChildren,
+              connectionIds: updatedConnections,
+            }
+          }
+        }
+
+        const nextSelectedId = idsToRemove.has(currentTree.selectedNodeId)
+          ? currentTree.rootId
+          : currentTree.selectedNodeId
+
+        return {
+          ...currentTree,
+          nodes: nextNodes,
+          positions: nextPositions,
+          selectedNodeId: nextSelectedId,
+        }
+      })
+
+      if (editingNodeId === nodeIdToDelete) {
+        setEditingNodeId(null)
+      }
+    },
+    [selectedTree.rootId, editingNodeId],
+  )
+
+  const deleteDefinition = (definitionId: string) => {
+    updateSelectedTree((currentTree) => ({
+      ...currentTree,
+      definitions: currentTree.definitions.filter((def) => def.id !== definitionId),
+    }))
+  }
+
+  const deleteTree = (treeIdToDelete: string) => {
+    setWorkspace((current) => {
+      const treeKeys = Object.keys(current.trees)
+      if (treeKeys.length <= 1) {
+        const freshTree = seedTree('Starter tree')
+        return {
+          selectedTreeId: freshTree.id,
+          trees: {
+            [freshTree.id]: freshTree,
+          },
+        }
+      }
+
+      const nextTrees = { ...current.trees }
+      delete nextTrees[treeIdToDelete]
+      const remainingIds = Object.keys(nextTrees)
+      const nextSelectedId = current.selectedTreeId === treeIdToDelete ? remainingIds[0] : current.selectedTreeId
+
+      return {
+        selectedTreeId: nextSelectedId,
+        trees: nextTrees,
+      }
+    })
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Delete' || event.key === 'Backspace') {
+        const activeElement = document.activeElement
+        const isInputActive =
+          activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement
+
+        if (!isInputActive && selectedTree.selectedNodeId && selectedTree.selectedNodeId !== selectedTree.rootId) {
+          event.preventDefault()
+          deleteNode(selectedTree.selectedNodeId)
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [deleteNode, selectedTree.selectedNodeId, selectedTree.rootId])
+
   const edgePaths = Object.values(selectedTree.nodes).flatMap((node) => {
     const origin = selectedTree.positions[node.id]
     if (!origin) return []
 
     const childEdges = node.childIds.flatMap((childId) => {
       const target = selectedTree.positions[childId]
-      if (!target) return []
+      const childNode = selectedTree.nodes[childId]
+      if (!target || !childNode) return []
 
-      const controlX = origin.x + (target.x - origin.x) * 0.36
+      const stance = childNode.stance
+      const markerId = `argtree-arrow-${stance}`
 
       return [
         {
           id: `${node.id}-${childId}`,
-          d: `M ${origin.x} ${origin.y} C ${controlX} ${origin.y}, ${target.x - (target.x - origin.x) * 0.18} ${target.y}, ${target.x} ${target.y}`,
-          color: palette[selectedTree.nodes[childId].stance],
+          d: computeEdgePath(origin, target, 280, 150, false),
+          color: palette[stance],
           dashed: false,
+          markerId,
         },
       ]
     })
@@ -319,14 +442,13 @@ function App() {
       const target = selectedTree.positions[connectionId]
       if (!target) return []
 
-      const controlX = origin.x + (target.x - origin.x) * 0.4
-
       return [
         {
           id: `${node.id}-c-${connectionId}`,
-          d: `M ${origin.x} ${origin.y} C ${controlX} ${origin.y - 90}, ${target.x - (target.x - origin.x) * 0.15} ${target.y - 40}, ${target.x} ${target.y}`,
+          d: computeEdgePath(origin, target, 280, 150, true),
           color: 'rgba(92, 100, 117, 0.7)',
           dashed: true,
+          markerId: 'argtree-arrow-connection',
         },
       ]
     })
@@ -346,6 +468,7 @@ function App() {
         onNewTreeClaimChange={setNewTreeClaim}
         onCreateTree={createTree}
         onResetWorkspace={resetWorkspace}
+        onDeleteTree={deleteTree}
       />
 
       <WorkspaceStage
@@ -354,11 +477,13 @@ function App() {
         onEditNode={handleEditNode}
         onStopEditingNode={() => setEditingNodeId(null)}
         onUpdateNodeText={updateNodeText}
+        onDeleteNode={deleteNode}
         newDefinitionTerm={newDefinitionTerm}
         onNewDefinitionTermChange={setNewDefinitionTerm}
         newDefinitionDescription={newDefinitionDescription}
         onNewDefinitionDescriptionChange={setNewDefinitionDescription}
         onAddDefinition={addDefinition}
+        onDeleteDefinition={deleteDefinition}
         onSelectNode={handleSelectNode}
         onAddBranchFromNode={addBranchFromNode}
         onCanvasPointerDown={handlePointerDown}
@@ -374,6 +499,7 @@ function App() {
           setZoom(1)
           setPan({ x: 0, y: 0 })
         }}
+        onAutoLayout={handleAutoLayout}
         pan={pan}
         edgePaths={edgePaths}
       />

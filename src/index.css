@@ -56,7 +56,7 @@ button {
 }
 
 img,
-svg {
+svg:not(.tree-links) {
   display: block;
   max-width: 100%;
 }

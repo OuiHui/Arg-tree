@@ -10,6 +10,7 @@ type TopControlsProps = {
   onNewTreeClaimChange: (value: string) => void
   onCreateTree: () => void
   onResetWorkspace: () => void
+  onDeleteTree: (treeId: string) => void
 }
 
 export function TopControls({
@@ -22,6 +23,7 @@ export function TopControls({
   onNewTreeClaimChange,
   onCreateTree,
   onResetWorkspace,
+  onDeleteTree,
 }: TopControlsProps) {
   return (
     <section className="topbar-create">
@@ -60,6 +62,14 @@ export function TopControls({
         </label>
 
         <div className="toolbar-group">
+          <button
+            type="button"
+            className="secondary danger-text"
+            onClick={() => onDeleteTree(selectedTreeId)}
+            title="Delete active tree"
+          >
+            Delete tree
+          </button>
           <button type="button" className="secondary" onClick={onResetWorkspace}>
             Reset sample
           </button>
