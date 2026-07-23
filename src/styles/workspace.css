@@ -477,3 +477,90 @@
     min-width: 220px;
   }
 }
+
+.toolbar-drag-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 8px;
+}
+
+.drag-hint {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.toolbar-drag-button {
+  cursor: grab;
+}
+
+.toolbar-drag-button:active {
+  cursor: grabbing;
+}
+
+.canvas-node.drop-target-support {
+  border-color: #58d39b !important;
+  box-shadow: 0 0 0 3px rgba(88, 211, 155, 0.45), 0 16px 36px rgba(88, 211, 155, 0.25) !important;
+  transform: translate(-50%, -50%) translate(var(--node-x, 0px), var(--node-y, 0px)) scale(1.03) !important;
+}
+
+.canvas-node.drop-target-attack {
+  border-color: #ff7a73 !important;
+  box-shadow: 0 0 0 3px rgba(255, 122, 115, 0.45), 0 16px 36px rgba(255, 122, 115, 0.25) !important;
+  transform: translate(-50%, -50%) translate(var(--node-x, 0px), var(--node-y, 0px)) scale(1.03) !important;
+}
+
+.drag-preview-badge {
+  position: absolute;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+}
+
+.drag-preview-badge.stance-support {
+  background: linear-gradient(135deg, #85d6ab, #58b98a);
+  color: #07101d;
+}
+
+.drag-preview-badge.stance-attack {
+  background: linear-gradient(135deg, #f29a8a, #dd6f63);
+  color: #07101d;
+}
+
+.edge-delete-badge {
+  position: absolute;
+  z-index: 5;
+  pointer-events: auto;
+}
+
+.edge-delete-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  background: #151d2f;
+  color: #f87171;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  transition: all 120ms ease;
+}
+
+.edge-delete-button:hover {
+  background: #ef4444;
+  color: #ffffff;
+  transform: scale(1.12);
+}
+

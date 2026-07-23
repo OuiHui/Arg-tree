@@ -1,5 +1,5 @@
 import { type CSSProperties, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent, type RefObject } from 'react'
-import { type EdgePath, type Stance, type TreeState, palette } from '../argtree'
+import { computeDragEdgePath, type BranchDragState, type EdgePath, type Stance, type TreeState, palette } from '../argtree'
 
 type WorkspaceStageProps = {
   selectedTree: TreeState
@@ -29,6 +29,12 @@ type WorkspaceStageProps = {
   onAutoLayout: () => void
   pan: { x: number; y: number }
   edgePaths: EdgePath[]
+  activeBranchDrag: BranchDragState | null
+  onBranchDragStart: (event: ReactPointerEvent<HTMLElement>, stance: Stance, sourceNodeId?: string) => void
+  wasDraggingRef: RefObject<boolean>
+  selectedEdgeId: string | null
+  onSelectEdge: (edgeId: string | null) => void
+  onDeleteEdge: (edgeId: string) => void
 }
 
 export function WorkspaceStage({
@@ -59,6 +65,12 @@ export function WorkspaceStage({
   onAutoLayout,
   pan,
   edgePaths,
+  activeBranchDrag,
+  onBranchDragStart,
+  wasDraggingRef,
+  selectedEdgeId,
+  onSelectEdge,
+  onDeleteEdge,
 }: WorkspaceStageProps) {
   return (
     <section className="workspace-stage">
@@ -70,6 +82,32 @@ export function WorkspaceStage({
           </div>
 
           <div className="zoom-group">
+            <div className="toolbar-drag-group">
+              <span className="drag-hint">Drag branch:</span>
+              <button
+                type="button"
+                className="node-branch-button support toolbar-drag-button"
+                onPointerDown={(event) => {
+                  event.stopPropagation()
+                  onBranchDragStart(event, 'support')
+                }}
+                title="Drag and drop onto a node to add a Support branch"
+              >
+                Support +
+              </button>
+              <button
+                type="button"
+                className="node-branch-button attack toolbar-drag-button"
+                onPointerDown={(event) => {
+                  event.stopPropagation()
+                  onBranchDragStart(event, 'attack')
+                }}
+                title="Drag and drop onto a node to add an Attack branch"
+              >
+                Attack +
+              </button>
+            </div>
+
             <button type="button" className="secondary" onClick={onAutoLayout} title="Auto-arrange tree layout">
               Auto-arrange tree
             </button>
@@ -89,7 +127,10 @@ export function WorkspaceStage({
           ref={canvasRef}
           className="tree-canvas"
           onWheel={onCanvasWheel}
-          onPointerDown={(event) => onCanvasPointerDown(event)}
+          onPointerDown={(event) => {
+            onSelectEdge(null)
+            onCanvasPointerDown(event)
+          }}
           onPointerMove={onCanvasPointerMove}
           onPointerUp={onCanvasPointerUp}
           onPointerLeave={onCanvasPointerUp}
@@ -147,31 +188,102 @@ export function WorkspaceStage({
                   <path d="M 0 1 L 11 6 L 0 11 L 3 6 z" fill="#a7b0c0" stroke="#07101d" strokeWidth="0.5" />
                 </marker>
               </defs>
-              {edgePaths.map((edge) => (
+              {edgePaths.map((edge) => {
+                const isSelectedEdge = edge.id === selectedEdgeId
+                return (
+                  <g key={edge.id}>
+                    {/* Wide transparent hit path for edge clicking */}
+                    <path
+                      d={edge.d}
+                      stroke="transparent"
+                      strokeWidth="20"
+                      fill="none"
+                      style={{ cursor: 'pointer', pointerEvents: 'stroke' }}
+                      onPointerDown={(event) => {
+                        event.stopPropagation()
+                        onSelectEdge(edge.id)
+                      }}
+                    />
+                    {isSelectedEdge && (
+                      <path
+                        d={edge.d}
+                        stroke="#ffffff"
+                        strokeWidth="7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        fill="none"
+                        opacity={0.8}
+                      />
+                    )}
+                    <path
+                      d={edge.d}
+                      stroke={isSelectedEdge ? '#ffffff' : edge.color}
+                      strokeWidth={isSelectedEdge ? '4.5' : '3.5'}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill="none"
+                      strokeDasharray={edge.dashed ? '10 10' : undefined}
+                      markerEnd={edge.markerId ? `url(#${edge.markerId})` : undefined}
+                    />
+                  </g>
+                )
+              })}
+              {activeBranchDrag && (
                 <path
-                  key={edge.id}
-                  d={edge.d}
-                  stroke={edge.color}
+                  d={computeDragEdgePath(activeBranchDrag.startPoint, activeBranchDrag.currentPoint)}
+                  stroke={palette[activeBranchDrag.stance]}
                   strokeWidth="3.5"
+                  strokeDasharray="6 6"
                   strokeLinecap="round"
-                  strokeLinejoin="round"
                   fill="none"
-                  strokeDasharray={edge.dashed ? '10 10' : undefined}
-                  markerEnd={edge.markerId ? `url(#${edge.markerId})` : undefined}
+                  markerEnd={`url(#argtree-arrow-${activeBranchDrag.stance})`}
                 />
-              ))}
+              )}
             </svg>
+
+            {edgePaths
+              .filter((edge) => edge.id === selectedEdgeId)
+              .map((edge) => (
+                <div
+                  key={`edge-del-${edge.id}`}
+                  className="edge-delete-badge"
+                  style={{
+                    left: '50%',
+                    top: '50%',
+                    transform: `translate(-50%, -50%) translate(${edge.midPoint.x}px, ${edge.midPoint.y}px)`,
+                  } as CSSProperties}
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    onDeleteEdge(edge.id)
+                  }}
+                  title="Delete connection"
+                >
+                  <button type="button" className="edge-delete-button" aria-label="Delete connection">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+              ))}
 
             {Object.values(selectedTree.nodes).map((node) => {
               const position = selectedTree.positions[node.id] ?? { x: 0, y: 0 }
               const isRoot = node.id === selectedTree.rootId
               const isSelected = node.id === selectedTree.selectedNodeId
               const isEditing = editingNodeId === node.id
+              const isDropTarget = activeBranchDrag?.dropTargetId === node.id
+
+              let nodeClass = isSelected ? 'canvas-node selected' : 'canvas-node'
+              if (isDropTarget && activeBranchDrag) {
+                nodeClass += ` drop-target drop-target-${activeBranchDrag.stance}`
+              }
 
               return (
                 <div
                   key={node.id}
-                  className={isSelected ? 'canvas-node selected' : 'canvas-node'}
+                  className={nodeClass}
                   style={{
                     left: '50%',
                     top: '50%',
@@ -226,7 +338,7 @@ export function WorkspaceStage({
                         >
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                             <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2h4a2 2 0 0 1 2 2v2"></path>
                           </svg>
                         </button>
                       )}
@@ -249,9 +361,13 @@ export function WorkspaceStage({
                     <button
                       type="button"
                       className="node-branch-button support"
-                      onPointerDown={(event) => event.stopPropagation()}
+                      onPointerDown={(event) => {
+                        event.stopPropagation()
+                        onBranchDragStart(event, 'support', node.id)
+                      }}
                       onClick={(event) => {
                         event.stopPropagation()
+                        if (wasDraggingRef.current) return
                         onAddBranchFromNode(node.id, 'support')
                       }}
                     >
@@ -260,9 +376,13 @@ export function WorkspaceStage({
                     <button
                       type="button"
                       className="node-branch-button attack"
-                      onPointerDown={(event) => event.stopPropagation()}
+                      onPointerDown={(event) => {
+                        event.stopPropagation()
+                        onBranchDragStart(event, 'attack', node.id)
+                      }}
                       onClick={(event) => {
                         event.stopPropagation()
+                        if (wasDraggingRef.current) return
                         onAddBranchFromNode(node.id, 'attack')
                       }}
                     >
@@ -275,6 +395,20 @@ export function WorkspaceStage({
                 </div>
               )
             })}
+
+            {activeBranchDrag && (
+              <div
+                className={`drag-preview-badge stance-${activeBranchDrag.stance}`}
+                style={{
+                  left: '50%',
+                  top: '50%',
+                  '--node-accent': palette[activeBranchDrag.stance],
+                  transform: `translate(-50%, -50%) translate(${activeBranchDrag.currentPoint.x}px, ${activeBranchDrag.currentPoint.y}px)`,
+                } as CSSProperties}
+              >
+                + {activeBranchDrag.stance === 'support' ? 'Support' : 'Attack'}
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -334,7 +468,7 @@ export function WorkspaceStage({
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2v2"></path>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2h4a2 2 0 0 1 2 2v2"></path>
                     </svg>
                   </button>
                 </div>

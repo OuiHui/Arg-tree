@@ -10,6 +10,8 @@ import {
   type Stance,
   type TreeState,
   type WorkspaceState,
+  type BranchDragState,
+  type EdgePath,
   palette,
 } from './argtree'
 import {
@@ -34,6 +36,8 @@ function App() {
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
 
+  const [activeBranchDrag, setActiveBranchDrag] = useState<BranchDragState | null>(null)
+  const wasDraggingRef = useRef(false)
   const canvasRef = useRef<HTMLDivElement | null>(null)
   const dragStateRef = useRef<
     | {
@@ -52,6 +56,15 @@ function App() {
         startY: number
         originX: number
         originY: number
+      }
+    | {
+        kind: 'branch-drag'
+        stance: Stance
+        pointerId: number
+        startX: number
+        startY: number
+        sourceNodeId?: string
+        isDragging: boolean
       }
     | null
   >(null)
@@ -132,13 +145,6 @@ function App() {
 
   const handleZoomChange = (updater: (current: number) => number) => {
     setZoom((current) => clampZoom(updater(current)))
-  }
-
-  const handleSelectNode = (nodeId: string) => {
-    updateSelectedTree((currentTree) => ({
-      ...currentTree,
-      selectedNodeId: nodeId,
-    }))
   }
 
   const handleEditNode = (nodeId: string) => {
@@ -307,6 +313,26 @@ function App() {
     setPan({ x: 0, y: 0 })
   }
 
+  const handleBranchDragStart = (
+    event: ReactPointerEvent<HTMLElement>,
+    stance: Stance,
+    sourceNodeId?: string,
+  ) => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    canvas.setPointerCapture(event.pointerId)
+    dragStateRef.current = {
+      kind: 'branch-drag',
+      stance,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      sourceNodeId,
+      isDragging: false,
+    }
+  }
+
   const handlePointerDown = (event: ReactPointerEvent<HTMLElement>, nodeId?: string) => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -358,6 +384,54 @@ function App() {
       return
     }
 
+    if (dragState.kind === 'branch-drag') {
+      const dx = event.clientX - dragState.startX
+      const dy = event.clientY - dragState.startY
+      if (!dragState.isDragging && Math.hypot(dx, dy) > 6) {
+        dragState.isDragging = true
+      }
+
+      if (dragState.isDragging) {
+        const canvas = canvasRef.current
+        if (!canvas) return
+
+        const rect = canvas.getBoundingClientRect()
+        const centerX = rect.left + rect.width / 2
+        const centerY = rect.top + rect.height / 2
+
+        const currentCanvasX = (event.clientX - centerX - pan.x) / zoom
+        const currentCanvasY = (event.clientY - centerY - pan.y) / zoom
+
+        const startCanvasX = (dragState.startX - centerX - pan.x) / zoom
+        const startCanvasY = (dragState.startY - centerY - pan.y) / zoom
+
+        const startPoint =
+          dragState.sourceNodeId && selectedTree.positions[dragState.sourceNodeId]
+            ? selectedTree.positions[dragState.sourceNodeId]
+            : { x: startCanvasX, y: startCanvasY }
+
+        let dropTargetId: string | null = null
+        for (const [nodeId, pos] of Object.entries(selectedTree.positions)) {
+          if (
+            Math.abs(currentCanvasX - pos.x) <= 150 &&
+            Math.abs(currentCanvasY - pos.y) <= 80
+          ) {
+            dropTargetId = nodeId
+            break
+          }
+        }
+
+        setActiveBranchDrag({
+          stance: dragState.stance,
+          sourceNodeId: dragState.sourceNodeId,
+          startPoint,
+          currentPoint: { x: currentCanvasX, y: currentCanvasY },
+          dropTargetId,
+        })
+      }
+      return
+    }
+
     setPan({
       x: dragState.originX + (event.clientX - dragState.startX),
       y: dragState.originY + (event.clientY - dragState.startY),
@@ -369,40 +443,45 @@ function App() {
     if (canvas && canvas.hasPointerCapture(event.pointerId)) {
       canvas.releasePointerCapture(event.pointerId)
     }
+
+    const dragState = dragStateRef.current
+    if (dragState && dragState.kind === 'branch-drag' && dragState.isDragging) {
+      wasDraggingRef.current = true
+      setTimeout(() => {
+        wasDraggingRef.current = false
+      }, 100)
+
+      if (activeBranchDrag?.dropTargetId) {
+        addBranchFromNode(activeBranchDrag.dropTargetId, dragState.stance)
+      }
+    }
+
     dragStateRef.current = null
+    setActiveBranchDrag(null)
   }
 
-  const deleteNode = useCallback(
-    (nodeIdToDelete: string) => {
-      if (nodeIdToDelete === selectedTree.rootId) {
-        return
-      }
+  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null)
 
+  const handleSelectNode = (nodeId: string) => {
+    setSelectedEdgeId(null)
+    updateSelectedTree((currentTree) => ({
+      ...currentTree,
+      selectedNodeId: nodeId,
+    }))
+  }
+
+  const deleteEdge = useCallback(
+    (edgeIdToDelete: string) => {
       updateSelectedTree((currentTree) => {
-        const getDescendants = (id: string): string[] => {
-          const n = currentTree.nodes[id]
-          if (!n) return []
-          let list = [...n.childIds]
-          for (const childId of n.childIds) {
-            list = [...list, ...getDescendants(childId)]
-          }
-          return list
-        }
-
-        const idsToRemove = new Set([nodeIdToDelete, ...getDescendants(nodeIdToDelete)])
-
         const nextNodes = { ...currentTree.nodes }
-        const nextPositions = { ...currentTree.positions }
-
-        for (const id of idsToRemove) {
-          delete nextNodes[id]
-          delete nextPositions[id]
-        }
 
         for (const key of Object.keys(nextNodes)) {
           const n = nextNodes[key]
-          const updatedChildren = n.childIds.filter((cid) => !idsToRemove.has(cid))
-          const updatedConnections = n.connectionIds.filter((cid) => !idsToRemove.has(cid))
+          const childEdgeId = (cid: string) => `${key}-${cid}`
+          const connEdgeId = (cid: string) => `${key}-c-${cid}`
+
+          const updatedChildren = n.childIds.filter((cid) => childEdgeId(cid) !== edgeIdToDelete)
+          const updatedConnections = n.connectionIds.filter((cid) => connEdgeId(cid) !== edgeIdToDelete)
 
           if (updatedChildren.length !== n.childIds.length || updatedConnections.length !== n.connectionIds.length) {
             nextNodes[key] = {
@@ -413,9 +492,59 @@ function App() {
           }
         }
 
-        const nextSelectedId = idsToRemove.has(currentTree.selectedNodeId)
-          ? currentTree.rootId
-          : currentTree.selectedNodeId
+        return {
+          ...currentTree,
+          nodes: nextNodes,
+        }
+      })
+
+      if (selectedEdgeId === edgeIdToDelete) {
+        setSelectedEdgeId(null)
+      }
+    },
+    [selectedEdgeId],
+  )
+
+  const deleteNode = useCallback(
+    (nodeIdToDelete: string) => {
+      if (nodeIdToDelete === selectedTree.rootId) {
+        return
+      }
+
+      updateSelectedTree((currentTree) => {
+        const targetNode = currentTree.nodes[nodeIdToDelete]
+        if (!targetNode) return currentTree
+
+        const nextNodes = { ...currentTree.nodes }
+        const nextPositions = { ...currentTree.positions }
+
+        delete nextNodes[nodeIdToDelete]
+        delete nextPositions[nodeIdToDelete]
+
+        let parentId: string | null = null
+
+        for (const key of Object.keys(nextNodes)) {
+          const n = nextNodes[key]
+          let updatedChildren = n.childIds
+          if (n.childIds.includes(nodeIdToDelete)) {
+            parentId = key
+            updatedChildren = n.childIds.filter((cid) => cid !== nodeIdToDelete)
+          }
+          const updatedConnections = n.connectionIds.filter((cid) => cid !== nodeIdToDelete)
+
+          if (updatedChildren !== n.childIds || updatedConnections.length !== n.connectionIds.length) {
+            nextNodes[key] = {
+              ...n,
+              childIds: updatedChildren,
+              connectionIds: updatedConnections,
+            }
+          }
+        }
+
+        const nextSelectedId =
+          currentTree.selectedNodeId === nodeIdToDelete
+            ? parentId ?? currentTree.rootId
+            : currentTree.selectedNodeId
 
         return {
           ...currentTree,
@@ -456,7 +585,12 @@ function App() {
         const isInputActive =
           activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement
 
-        if (!isInputActive && selectedTree.selectedNodeId && selectedTree.selectedNodeId !== selectedTree.rootId) {
+        if (isInputActive) return
+
+        if (selectedEdgeId) {
+          event.preventDefault()
+          deleteEdge(selectedEdgeId)
+        } else if (selectedTree.selectedNodeId && selectedTree.selectedNodeId !== selectedTree.rootId) {
           event.preventDefault()
           deleteNode(selectedTree.selectedNodeId)
         }
@@ -465,9 +599,9 @@ function App() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [deleteNode, selectedTree.selectedNodeId, selectedTree.rootId])
+  }, [deleteEdge, deleteNode, selectedEdgeId, selectedTree.selectedNodeId, selectedTree.rootId])
 
-  const edgePaths = Object.values(selectedTree.nodes).flatMap((node) => {
+  const edgePaths: EdgePath[] = Object.values(selectedTree.nodes).flatMap((node) => {
     const origin = selectedTree.positions[node.id]
     if (!origin) return []
 
@@ -478,14 +612,22 @@ function App() {
 
       const stance = childNode.stance
       const markerId = `argtree-arrow-${stance}`
+      const edgeId = `${node.id}-${childId}`
 
       return [
         {
-          id: `${node.id}-${childId}`,
+          id: edgeId,
+          sourceId: node.id,
+          targetId: childId,
+          type: 'child' as const,
           d: computeEdgePath(origin, target, 280, 150, false),
           color: palette[stance],
           dashed: false,
           markerId,
+          midPoint: {
+            x: (origin.x + target.x) / 2,
+            y: (origin.y + target.y) / 2,
+          },
         },
       ]
     })
@@ -494,13 +636,22 @@ function App() {
       const target = selectedTree.positions[connectionId]
       if (!target) return []
 
+      const edgeId = `${node.id}-c-${connectionId}`
+
       return [
         {
-          id: `${node.id}-c-${connectionId}`,
+          id: edgeId,
+          sourceId: node.id,
+          targetId: connectionId,
+          type: 'connection' as const,
           d: computeEdgePath(origin, target, 280, 150, true),
           color: 'rgba(92, 100, 117, 0.7)',
           dashed: true,
           markerId: 'argtree-arrow-connection',
+          midPoint: {
+            x: (origin.x + target.x) / 2,
+            y: (origin.y + target.y) / 2,
+          },
         },
       ]
     })
@@ -563,6 +714,12 @@ function App() {
         onAutoLayout={handleAutoLayout}
         pan={pan}
         edgePaths={edgePaths}
+        activeBranchDrag={activeBranchDrag}
+        onBranchDragStart={handleBranchDragStart}
+        wasDraggingRef={wasDraggingRef}
+        selectedEdgeId={selectedEdgeId}
+        onSelectEdge={setSelectedEdgeId}
+        onDeleteEdge={deleteEdge}
       />
     </main>
   )

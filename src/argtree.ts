@@ -31,13 +31,38 @@ export type WorkspaceState = {
 
 export type EdgePath = {
   id: string
+  sourceId: string
+  targetId: string
+  type: 'child' | 'connection'
   d: string
   color: string
   dashed: boolean
   markerId?: string
+  midPoint: Point
 }
 
 export type Point = { x: number; y: number }
+
+export type BranchDragState = {
+  stance: Stance
+  sourceNodeId?: string
+  startPoint: Point
+  currentPoint: Point
+  dropTargetId: string | null
+}
+
+export function computeDragEdgePath(origin: Point, target: Point): string {
+  const startX = origin.x
+  const startY = origin.y + 70
+  const endX = target.x
+  const endY = target.y
+
+  const deltaY = endY - startY
+  const controlY1 = startY + deltaY * 0.45
+  const controlY2 = endY - deltaY * 0.45
+
+  return `M ${startX} ${startY} C ${startX} ${controlY1}, ${endX} ${controlY2}, ${endX} ${endY}`
+}
 
 export function computeEdgePath(
   origin: Point,
