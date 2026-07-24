@@ -1,19 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
 import {
   createEmptyTree,
   createId,
   seedWorkspace,
   seedTree,
-  computeEdgePath,
   autoLayoutTree,
   type Stance,
   type TreeState,
   type WorkspaceState,
-  type BranchDragState,
-  type EdgePath,
-  palette,
 } from './argtree'
+import { ReactFlowProvider } from '@xyflow/react'
 import {
   fetchWorkspaceApi,
   createTreeApi,
@@ -33,41 +30,7 @@ function App() {
   const [newTreeClaim, setNewTreeClaim] = useState('')
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null)
   const [definitionsCollapsed, setDefinitionsCollapsed] = useState(false)
-  const [zoom, setZoom] = useState(1)
-  const [pan, setPan] = useState({ x: 0, y: 0 })
-
-  const [activeBranchDrag, setActiveBranchDrag] = useState<BranchDragState | null>(null)
-  const wasDraggingRef = useRef(false)
-  const canvasRef = useRef<HTMLDivElement | null>(null)
-  const dragStateRef = useRef<
-    | {
-        kind: 'node'
-        nodeId: string
-        pointerId: number
-        startX: number
-        startY: number
-        originX: number
-        originY: number
-      }
-    | {
-        kind: 'pan'
-        pointerId: number
-        startX: number
-        startY: number
-        originX: number
-        originY: number
-      }
-    | {
-        kind: 'branch-drag'
-        stance: Stance
-        pointerId: number
-        startX: number
-        startY: number
-        sourceNodeId?: string
-        isDragging: boolean
-      }
-    | null
-  >(null)
+  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null)
 
   // Fetch initial workspace state from MongoDB server
   useEffect(() => {
@@ -143,9 +106,6 @@ function App() {
     })
   }
 
-  const handleZoomChange = (updater: (current: number) => number) => {
-    setZoom((current) => clampZoom(updater(current)))
-  }
 
   const handleEditNode = (nodeId: string) => {
     handleSelectNode(nodeId)
@@ -178,7 +138,8 @@ function App() {
       const parentPosition = currentTree.positions[parent.id] ?? { x: 0, y: 0 }
       const branchCount = parent.childIds.length
       const sideOffset = stance === 'support' ? -180 : 180
-      const spreadX = sideOffset + (branchCount > 0 ? (stance === 'support' ? -120 * branchCount : 120 * branchCount) : 0)
+      const spreadX =
+        sideOffset + (branchCount > 0 ? (stance === 'support' ? -120 * branchCount : 120 * branchCount) : 0)
 
       return {
         ...currentTree,
@@ -210,6 +171,34 @@ function App() {
     setEditingNodeId(id)
   }
 
+  const addConnection = (sourceNodeId: string, targetNodeId: string) => {
+    if (sourceNodeId === targetNodeId) return
+
+    updateSelectedTree((currentTree) => {
+      const sourceNode = currentTree.nodes[sourceNodeId]
+      const targetNode = currentTree.nodes[targetNodeId]
+      if (!sourceNode || !targetNode) return currentTree
+
+      if (
+        sourceNode.childIds.includes(targetNodeId) ||
+        sourceNode.connectionIds.includes(targetNodeId)
+      ) {
+        return currentTree
+      }
+
+      return {
+        ...currentTree,
+        nodes: {
+          ...currentTree.nodes,
+          [sourceNodeId]: {
+            ...sourceNode,
+            connectionIds: [...sourceNode.connectionIds, targetNodeId],
+          },
+        },
+      }
+    })
+  }
+
   const handleAutoLayout = () => {
     updateSelectedTree((currentTree) => ({
       ...currentTree,
@@ -227,28 +216,6 @@ function App() {
     }))
   }
 
-  const clampZoom = (value: number) => Math.min(1.8, Math.max(0.45, value))
-
-  const zoomAtPoint = (nextZoom: number, clientX: number, clientY: number) => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const rect = canvas.getBoundingClientRect()
-    const pointX = clientX - rect.left
-    const pointY = clientY - rect.top
-
-    setPan((currentPan) => ({
-      x: pointX - ((pointX - currentPan.x) * nextZoom) / zoom,
-      y: pointY - ((pointY - currentPan.y) * nextZoom) / zoom,
-    }))
-    setZoom(nextZoom)
-  }
-
-  const handleWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
-    event.preventDefault()
-    const nextZoom = clampZoom(zoom + (event.deltaY > 0 ? -0.08 : 0.08))
-    zoomAtPoint(nextZoom, event.clientX, event.clientY)
-  }
 
   const addDefinition = () => {
     const term = newDefinitionTerm.trim()
@@ -288,8 +255,6 @@ function App() {
     setNewTreeClaim('')
     setNewDefinitionTerm('')
     setNewDefinitionDescription('')
-    setZoom(1)
-    setPan({ x: 0, y: 0 })
   }
 
   const resetWorkspace = () => {
@@ -309,158 +274,8 @@ function App() {
     setNewTreeTitle('Untitled tree')
     setNewTreeClaim('')
     setEditingNodeId(null)
-    setZoom(1)
-    setPan({ x: 0, y: 0 })
   }
 
-  const handleBranchDragStart = (
-    event: ReactPointerEvent<HTMLElement>,
-    stance: Stance,
-    sourceNodeId?: string,
-  ) => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    canvas.setPointerCapture(event.pointerId)
-    dragStateRef.current = {
-      kind: 'branch-drag',
-      stance,
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      sourceNodeId,
-      isDragging: false,
-    }
-  }
-
-  const handlePointerDown = (event: ReactPointerEvent<HTMLElement>, nodeId?: string) => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    canvas.setPointerCapture(event.pointerId)
-
-    if (nodeId) {
-      const nodePosition = selectedTree.positions[nodeId] ?? { x: 0, y: 0 }
-      dragStateRef.current = {
-        kind: 'node',
-        nodeId,
-        pointerId: event.pointerId,
-        startX: event.clientX,
-        startY: event.clientY,
-        originX: nodePosition.x,
-        originY: nodePosition.y,
-      }
-
-      updateSelectedTree((currentTree) => ({
-        ...currentTree,
-        selectedNodeId: nodeId,
-      }))
-
-      return
-    }
-
-    dragStateRef.current = {
-      kind: 'pan',
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      originX: pan.x,
-      originY: pan.y,
-    }
-  }
-
-  const handlePointerMove = (event: ReactPointerEvent<HTMLElement>) => {
-    const dragState = dragStateRef.current
-    if (!dragState || dragState.pointerId !== event.pointerId) {
-      return
-    }
-
-    if (dragState.kind === 'node') {
-      updateNodePosition(
-        dragState.nodeId,
-        dragState.originX + (event.clientX - dragState.startX) / zoom,
-        dragState.originY + (event.clientY - dragState.startY) / zoom,
-      )
-      return
-    }
-
-    if (dragState.kind === 'branch-drag') {
-      const dx = event.clientX - dragState.startX
-      const dy = event.clientY - dragState.startY
-      if (!dragState.isDragging && Math.hypot(dx, dy) > 6) {
-        dragState.isDragging = true
-      }
-
-      if (dragState.isDragging) {
-        const canvas = canvasRef.current
-        if (!canvas) return
-
-        const rect = canvas.getBoundingClientRect()
-        const centerX = rect.left + rect.width / 2
-        const centerY = rect.top + rect.height / 2
-
-        const currentCanvasX = (event.clientX - centerX - pan.x) / zoom
-        const currentCanvasY = (event.clientY - centerY - pan.y) / zoom
-
-        const startCanvasX = (dragState.startX - centerX - pan.x) / zoom
-        const startCanvasY = (dragState.startY - centerY - pan.y) / zoom
-
-        const startPoint =
-          dragState.sourceNodeId && selectedTree.positions[dragState.sourceNodeId]
-            ? selectedTree.positions[dragState.sourceNodeId]
-            : { x: startCanvasX, y: startCanvasY }
-
-        let dropTargetId: string | null = null
-        for (const [nodeId, pos] of Object.entries(selectedTree.positions)) {
-          if (
-            Math.abs(currentCanvasX - pos.x) <= 150 &&
-            Math.abs(currentCanvasY - pos.y) <= 80
-          ) {
-            dropTargetId = nodeId
-            break
-          }
-        }
-
-        setActiveBranchDrag({
-          stance: dragState.stance,
-          sourceNodeId: dragState.sourceNodeId,
-          startPoint,
-          currentPoint: { x: currentCanvasX, y: currentCanvasY },
-          dropTargetId,
-        })
-      }
-      return
-    }
-
-    setPan({
-      x: dragState.originX + (event.clientX - dragState.startX),
-      y: dragState.originY + (event.clientY - dragState.startY),
-    })
-  }
-
-  const handlePointerUp = (event: ReactPointerEvent<HTMLElement>) => {
-    const canvas = canvasRef.current
-    if (canvas && canvas.hasPointerCapture(event.pointerId)) {
-      canvas.releasePointerCapture(event.pointerId)
-    }
-
-    const dragState = dragStateRef.current
-    if (dragState && dragState.kind === 'branch-drag' && dragState.isDragging) {
-      wasDraggingRef.current = true
-      setTimeout(() => {
-        wasDraggingRef.current = false
-      }, 100)
-
-      if (activeBranchDrag?.dropTargetId) {
-        addBranchFromNode(activeBranchDrag.dropTargetId, dragState.stance)
-      }
-    }
-
-    dragStateRef.current = null
-    setActiveBranchDrag(null)
-  }
-
-  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null)
 
   const handleSelectNode = (nodeId: string) => {
     setSelectedEdgeId(null)
@@ -601,63 +416,6 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [deleteEdge, deleteNode, selectedEdgeId, selectedTree.selectedNodeId, selectedTree.rootId])
 
-  const edgePaths: EdgePath[] = Object.values(selectedTree.nodes).flatMap((node) => {
-    const origin = selectedTree.positions[node.id]
-    if (!origin) return []
-
-    const childEdges = node.childIds.flatMap((childId) => {
-      const target = selectedTree.positions[childId]
-      const childNode = selectedTree.nodes[childId]
-      if (!target || !childNode) return []
-
-      const stance = childNode.stance
-      const markerId = `argtree-arrow-${stance}`
-      const edgeId = `${node.id}-${childId}`
-
-      return [
-        {
-          id: edgeId,
-          sourceId: node.id,
-          targetId: childId,
-          type: 'child' as const,
-          d: computeEdgePath(origin, target, 280, 150, false),
-          color: palette[stance],
-          dashed: false,
-          markerId,
-          midPoint: {
-            x: (origin.x + target.x) / 2,
-            y: (origin.y + target.y) / 2,
-          },
-        },
-      ]
-    })
-
-    const connectionEdges = node.connectionIds.flatMap((connectionId) => {
-      const target = selectedTree.positions[connectionId]
-      if (!target) return []
-
-      const edgeId = `${node.id}-c-${connectionId}`
-
-      return [
-        {
-          id: edgeId,
-          sourceId: node.id,
-          targetId: connectionId,
-          type: 'connection' as const,
-          d: computeEdgePath(origin, target, 280, 150, true),
-          color: 'rgba(92, 100, 117, 0.7)',
-          dashed: true,
-          markerId: 'argtree-arrow-connection',
-          midPoint: {
-            x: (origin.x + target.x) / 2,
-            y: (origin.y + target.y) / 2,
-          },
-        },
-      ]
-    })
-
-    return [...childEdges, ...connectionEdges]
-  })
 
   if (isLoading) {
     return (
@@ -669,7 +427,8 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
+    <ReactFlowProvider>
+      <main className="app-shell">
       <TopControls
         treeList={treeList}
         selectedTreeId={workspace.selectedTreeId}
@@ -698,30 +457,17 @@ function App() {
         onDeleteDefinition={deleteDefinition}
         onSelectNode={handleSelectNode}
         onAddBranchFromNode={addBranchFromNode}
-        onCanvasPointerDown={handlePointerDown}
-        onCanvasPointerMove={handlePointerMove}
-        onCanvasPointerUp={handlePointerUp}
-        onCanvasWheel={handleWheel}
-        canvasRef={canvasRef}
+        onAddConnection={addConnection}
         definitionsCollapsed={definitionsCollapsed}
         onToggleDefinitionsCollapsed={() => setDefinitionsCollapsed((current) => !current)}
-        zoom={zoom}
-        onZoomChange={handleZoomChange}
-        onResetView={() => {
-          setZoom(1)
-          setPan({ x: 0, y: 0 })
-        }}
         onAutoLayout={handleAutoLayout}
-        pan={pan}
-        edgePaths={edgePaths}
-        activeBranchDrag={activeBranchDrag}
-        onBranchDragStart={handleBranchDragStart}
-        wasDraggingRef={wasDraggingRef}
+        onUpdateNodePosition={updateNodePosition}
         selectedEdgeId={selectedEdgeId}
         onSelectEdge={setSelectedEdgeId}
         onDeleteEdge={deleteEdge}
       />
-    </main>
+      </main>
+    </ReactFlowProvider>
   )
 }
 

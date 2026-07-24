@@ -1,5 +1,18 @@
-import { type CSSProperties, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent, type RefObject } from 'react'
-import { computeDragEdgePath, type BranchDragState, type EdgePath, type Stance, type TreeState, palette } from '../argtree'
+import { useCallback, useEffect } from 'react'
+import {
+  ReactFlow,
+  Background,
+  Controls,
+  type Node,
+  type Edge,
+  type Connection,
+  MarkerType,
+  type NodeTypes,
+  useNodesState,
+  useEdgesState,
+} from '@xyflow/react'
+import { type Stance, type TreeState, palette } from '../argtree'
+import { ArgumentNode } from './ArgumentNode'
 
 type WorkspaceStageProps = {
   selectedTree: TreeState
@@ -16,25 +29,85 @@ type WorkspaceStageProps = {
   onDeleteDefinition: (definitionId: string) => void
   onSelectNode: (nodeId: string) => void
   onAddBranchFromNode: (parentNodeId: string, stance: Stance) => void
-  onCanvasPointerDown: (event: ReactPointerEvent<HTMLElement>, nodeId?: string) => void
-  onCanvasPointerMove: (event: ReactPointerEvent<HTMLElement>) => void
-  onCanvasPointerUp: (event: ReactPointerEvent<HTMLElement>) => void
-  onCanvasWheel: (event: ReactWheelEvent<HTMLDivElement>) => void
-  canvasRef: RefObject<HTMLDivElement | null>
+  onAddConnection: (sourceNodeId: string, targetNodeId: string) => void
   definitionsCollapsed: boolean
   onToggleDefinitionsCollapsed: () => void
-  zoom: number
-  onZoomChange: (updater: (current: number) => number) => void
-  onResetView: () => void
   onAutoLayout: () => void
-  pan: { x: number; y: number }
-  edgePaths: EdgePath[]
-  activeBranchDrag: BranchDragState | null
-  onBranchDragStart: (event: ReactPointerEvent<HTMLElement>, stance: Stance, sourceNodeId?: string) => void
-  wasDraggingRef: RefObject<boolean>
+  onUpdateNodePosition: (nodeId: string, x: number, y: number) => void
   selectedEdgeId: string | null
   onSelectEdge: (edgeId: string | null) => void
   onDeleteEdge: (edgeId: string) => void
+}
+
+const nodeTypes: NodeTypes = {
+  argumentNode: ArgumentNode as any,
+}
+
+function buildNodes(
+  selectedTree: TreeState,
+  editingNodeId: string | null,
+  onSelectNode: (id: string) => void,
+  onEditNode: (id: string) => void,
+  onStopEditingNode: () => void,
+  onUpdateNodeText: (id: string, text: string) => void,
+  onDeleteNode: (id: string) => void,
+  onAddBranchFromNode: (parentId: string, stance: Stance) => void,
+): Node[] {
+  return Object.values(selectedTree.nodes).map((node) => ({
+    id: node.id,
+    type: 'argumentNode',
+    position: selectedTree.positions[node.id] || { x: 0, y: 0 },
+    data: {
+      node,
+      isRoot: node.id === selectedTree.rootId,
+      isSelected: node.id === selectedTree.selectedNodeId,
+      isEditing: editingNodeId === node.id,
+      onSelectNode,
+      onEditNode,
+      onStopEditingNode,
+      onUpdateNodeText,
+      onDeleteNode,
+      onAddBranchFromNode,
+    },
+  }))
+}
+
+function buildEdges(selectedTree: TreeState, selectedEdgeId: string | null): Edge[] {
+  const edges: Edge[] = []
+  Object.values(selectedTree.nodes).forEach((parentNode) => {
+    parentNode.childIds.forEach((childId) => {
+      const childNode = selectedTree.nodes[childId]
+      const stance = childNode ? childNode.stance : 'support'
+      const color = palette[stance as Stance] ?? palette.support
+      const isSelected = selectedEdgeId === `edge-${parentNode.id}-${childId}`
+
+      edges.push({
+        id: `edge-${parentNode.id}-${childId}`,
+        source: parentNode.id,
+        target: childId,
+        type: 'default',
+        style: { stroke: isSelected ? '#ffffff' : color, strokeWidth: isSelected ? 4.5 : 3.5 },
+        markerEnd: { type: MarkerType.ArrowClosed, color: isSelected ? '#ffffff' : color, width: 16, height: 16 },
+      })
+    })
+
+    parentNode.connectionIds.forEach((connId) => {
+      const isSelected = selectedEdgeId === `conn-${parentNode.id}-${connId}`
+      edges.push({
+        id: `conn-${parentNode.id}-${connId}`,
+        source: parentNode.id,
+        target: connId,
+        type: 'default',
+        style: {
+          stroke: isSelected ? '#ffffff' : '#a7b0c0',
+          strokeWidth: isSelected ? 4 : 2.5,
+          strokeDasharray: '6 6',
+        },
+        markerEnd: { type: MarkerType.ArrowClosed, color: isSelected ? '#ffffff' : '#a7b0c0', width: 14, height: 14 },
+      })
+    })
+  })
+  return edges
 }
 
 export function WorkspaceStage({
@@ -52,26 +125,85 @@ export function WorkspaceStage({
   onDeleteDefinition,
   onSelectNode,
   onAddBranchFromNode,
-  onCanvasPointerDown,
-  onCanvasPointerMove,
-  onCanvasPointerUp,
-  onCanvasWheel,
-  canvasRef,
+  onAddConnection,
   definitionsCollapsed,
   onToggleDefinitionsCollapsed,
-  zoom,
-  onZoomChange,
-  onResetView,
   onAutoLayout,
-  pan,
-  edgePaths,
-  activeBranchDrag,
-  onBranchDragStart,
-  wasDraggingRef,
+  onUpdateNodePosition,
   selectedEdgeId,
   onSelectEdge,
   onDeleteEdge,
 }: WorkspaceStageProps) {
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
+  const [edges, setEdges] = useEdgesState<Edge>([])
+
+  // Sync nodes from external state — but only update positions/data, not during active drag
+  useEffect(() => {
+    setNodes(
+      buildNodes(
+        selectedTree,
+        editingNodeId,
+        onSelectNode,
+        onEditNode,
+        onStopEditingNode,
+        onUpdateNodeText,
+        onDeleteNode,
+        onAddBranchFromNode,
+      ),
+    )
+  }, [
+    selectedTree,
+    editingNodeId,
+    onSelectNode,
+    onEditNode,
+    onStopEditingNode,
+    onUpdateNodeText,
+    onDeleteNode,
+    onAddBranchFromNode,
+    setNodes,
+  ])
+
+  // Sync edges from external state
+  useEffect(() => {
+    setEdges(buildEdges(selectedTree, selectedEdgeId))
+  }, [selectedTree, selectedEdgeId, setEdges])
+
+  // Only persist position back to state when drag ends, not every frame
+  const handleNodeDragStop = useCallback(
+    (_: unknown, node: Node) => {
+      onUpdateNodePosition(node.id, node.position.x, node.position.y)
+    },
+    [onUpdateNodePosition],
+  )
+
+  const handleConnect = useCallback(
+    (params: Connection) => {
+      if (!params.source || !params.target || params.source === params.target) return
+      const isFromButton = params.sourceHandle?.startsWith('support') || params.sourceHandle?.startsWith('attack')
+      if (isFromButton) {
+        const stance: Stance = params.sourceHandle?.startsWith('attack') ? 'attack' : 'support'
+        onAddBranchFromNode(params.source, stance)
+      } else {
+        onAddConnection(params.source, params.target)
+      }
+    },
+    [onAddBranchFromNode, onAddConnection],
+  )
+
+  const handleEdgeClick = useCallback(
+    (_: React.MouseEvent, edge: Edge) => {
+      onSelectEdge(edge.id)
+    },
+    [onSelectEdge],
+  )
+
+  const handleEdgeDoubleClick = useCallback(
+    (_: React.MouseEvent, edge: Edge) => {
+      onDeleteEdge(edge.id)
+    },
+    [onDeleteEdge],
+  )
+
   return (
     <section className="workspace-stage">
       <section className="tree-panel">
@@ -83,26 +215,26 @@ export function WorkspaceStage({
 
           <div className="zoom-group">
             <div className="toolbar-drag-group">
-              <span className="drag-hint">Drag branch:</span>
+              <span className="drag-hint">Add branch:</span>
               <button
                 type="button"
                 className="node-branch-button support toolbar-drag-button"
-                onPointerDown={(event) => {
-                  event.stopPropagation()
-                  onBranchDragStart(event, 'support')
+                onClick={() => {
+                  const targetId = selectedTree.selectedNodeId || selectedTree.rootId
+                  if (targetId) onAddBranchFromNode(targetId, 'support')
                 }}
-                title="Drag and drop onto a node to add a Support branch"
+                title="Click to add a Support branch to selected node"
               >
                 Support +
               </button>
               <button
                 type="button"
                 className="node-branch-button attack toolbar-drag-button"
-                onPointerDown={(event) => {
-                  event.stopPropagation()
-                  onBranchDragStart(event, 'attack')
+                onClick={() => {
+                  const targetId = selectedTree.selectedNodeId || selectedTree.rootId
+                  if (targetId) onAddBranchFromNode(targetId, 'attack')
                 }}
-                title="Drag and drop onto a node to add an Attack branch"
+                title="Click to add an Attack branch to selected node"
               >
                 Attack +
               </button>
@@ -111,305 +243,26 @@ export function WorkspaceStage({
             <button type="button" className="secondary" onClick={onAutoLayout} title="Auto-arrange tree layout">
               Auto-arrange tree
             </button>
-            <button type="button" className="secondary zoom-button" onClick={() => onZoomChange((current) => Math.min(1.8, Math.max(0.45, current - 0.1)))}>
-              -
-            </button>
-            <button type="button" className="secondary zoom-button" onClick={() => onZoomChange((current) => Math.min(1.8, Math.max(0.45, current + 0.1)))}>
-              +
-            </button>
-            <button type="button" className="secondary" onClick={onResetView}>
-              Reset view
-            </button>
           </div>
         </div>
 
-        <div
-          ref={canvasRef}
-          className="tree-canvas"
-          onWheel={onCanvasWheel}
-          onPointerDown={(event) => {
-            onSelectEdge(null)
-            onCanvasPointerDown(event)
-          }}
-          onPointerMove={onCanvasPointerMove}
-          onPointerUp={onCanvasPointerUp}
-          onPointerLeave={onCanvasPointerUp}
-        >
-          <div
-            className="tree-canvas-stage"
-            style={{
-              transform: `translate(-50%, -50%) translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-            }}
+        <div className="tree-canvas">
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onNodeDragStop={handleNodeDragStop}
+            onConnect={handleConnect}
+            onEdgeClick={handleEdgeClick}
+            onEdgeDoubleClick={handleEdgeDoubleClick}
+            onPaneClick={() => onSelectEdge(null)}
+            fitView
+            colorMode="dark"
           >
-            <svg className="tree-links" viewBox="-3000 -3000 6000 6000" aria-hidden="true">
-              <defs>
-                <marker
-                  id="argtree-arrow-claim"
-                  markerWidth="12"
-                  markerHeight="12"
-                  refX="10"
-                  refY="6"
-                  orient="auto"
-                  markerUnits="userSpaceOnUse"
-                >
-                  <path d="M 0 1 L 11 6 L 0 11 L 3 6 z" fill="#7ea7ff" stroke="#07101d" strokeWidth="0.5" />
-                </marker>
-                <marker
-                  id="argtree-arrow-support"
-                  markerWidth="12"
-                  markerHeight="12"
-                  refX="10"
-                  refY="6"
-                  orient="auto"
-                  markerUnits="userSpaceOnUse"
-                >
-                  <path d="M 0 1 L 11 6 L 0 11 L 3 6 z" fill="#58d39b" stroke="#07101d" strokeWidth="0.5" />
-                </marker>
-                <marker
-                  id="argtree-arrow-attack"
-                  markerWidth="12"
-                  markerHeight="12"
-                  refX="10"
-                  refY="6"
-                  orient="auto"
-                  markerUnits="userSpaceOnUse"
-                >
-                  <path d="M 0 1 L 11 6 L 0 11 L 3 6 z" fill="#ff7a73" stroke="#07101d" strokeWidth="0.5" />
-                </marker>
-                <marker
-                  id="argtree-arrow-connection"
-                  markerWidth="12"
-                  markerHeight="12"
-                  refX="10"
-                  refY="6"
-                  orient="auto"
-                  markerUnits="userSpaceOnUse"
-                >
-                  <path d="M 0 1 L 11 6 L 0 11 L 3 6 z" fill="#a7b0c0" stroke="#07101d" strokeWidth="0.5" />
-                </marker>
-              </defs>
-              {edgePaths.map((edge) => {
-                const isSelectedEdge = edge.id === selectedEdgeId
-                return (
-                  <g key={edge.id}>
-                    {/* Wide transparent hit path for edge clicking */}
-                    <path
-                      d={edge.d}
-                      stroke="transparent"
-                      strokeWidth="20"
-                      fill="none"
-                      style={{ cursor: 'pointer', pointerEvents: 'stroke' }}
-                      onPointerDown={(event) => {
-                        event.stopPropagation()
-                        onSelectEdge(edge.id)
-                      }}
-                    />
-                    {isSelectedEdge && (
-                      <path
-                        d={edge.d}
-                        stroke="#ffffff"
-                        strokeWidth="7"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        fill="none"
-                        opacity={0.8}
-                      />
-                    )}
-                    <path
-                      d={edge.d}
-                      stroke={isSelectedEdge ? '#ffffff' : edge.color}
-                      strokeWidth={isSelectedEdge ? '4.5' : '3.5'}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      fill="none"
-                      strokeDasharray={edge.dashed ? '10 10' : undefined}
-                      markerEnd={edge.markerId ? `url(#${edge.markerId})` : undefined}
-                    />
-                  </g>
-                )
-              })}
-              {activeBranchDrag && (
-                <path
-                  d={computeDragEdgePath(activeBranchDrag.startPoint, activeBranchDrag.currentPoint)}
-                  stroke={palette[activeBranchDrag.stance]}
-                  strokeWidth="3.5"
-                  strokeDasharray="6 6"
-                  strokeLinecap="round"
-                  fill="none"
-                  markerEnd={`url(#argtree-arrow-${activeBranchDrag.stance})`}
-                />
-              )}
-            </svg>
-
-            {edgePaths
-              .filter((edge) => edge.id === selectedEdgeId)
-              .map((edge) => (
-                <div
-                  key={`edge-del-${edge.id}`}
-                  className="edge-delete-badge"
-                  style={{
-                    left: '50%',
-                    top: '50%',
-                    transform: `translate(-50%, -50%) translate(${edge.midPoint.x}px, ${edge.midPoint.y}px)`,
-                  } as CSSProperties}
-                  onPointerDown={(event) => event.stopPropagation()}
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    onDeleteEdge(edge.id)
-                  }}
-                  title="Delete connection"
-                >
-                  <button type="button" className="edge-delete-button" aria-label="Delete connection">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                </div>
-              ))}
-
-            {Object.values(selectedTree.nodes).map((node) => {
-              const position = selectedTree.positions[node.id] ?? { x: 0, y: 0 }
-              const isRoot = node.id === selectedTree.rootId
-              const isSelected = node.id === selectedTree.selectedNodeId
-              const isEditing = editingNodeId === node.id
-              const isDropTarget = activeBranchDrag?.dropTargetId === node.id
-
-              let nodeClass = isSelected ? 'canvas-node selected' : 'canvas-node'
-              if (isDropTarget && activeBranchDrag) {
-                nodeClass += ` drop-target drop-target-${activeBranchDrag.stance}`
-              }
-
-              return (
-                <div
-                  key={node.id}
-                  className={nodeClass}
-                  style={{
-                    left: '50%',
-                    top: '50%',
-                    '--node-accent': palette[node.stance],
-                    transform: `translate(-50%, -50%) translate(${position.x}px, ${position.y}px)`,
-                  } as CSSProperties}
-                  onPointerDown={(event) => {
-                    event.stopPropagation()
-                    if (!isEditing) {
-                      event.preventDefault()
-                    }
-                    onCanvasPointerDown(event, node.id)
-                  }}
-                  onDragStart={(event) => event.preventDefault()}
-                  onClick={() => onSelectNode(node.id)}
-                  role="button"
-                  tabIndex={0}
-                >
-                  <div className="node-header">
-                    <span className="node-badge">{isRoot ? 'Claim' : node.stance}</span>
-                    <div className="node-header-controls">
-                      <button
-                        type="button"
-                        className="node-edit-button"
-                        onPointerDown={(event) => {
-                          event.stopPropagation()
-                        }}
-                        onClick={(event) => {
-                          event.stopPropagation()
-                          if (isEditing) {
-                            onStopEditingNode()
-                            return
-                          }
-                          onEditNode(node.id)
-                        }}
-                      >
-                        {isEditing ? 'Done' : 'Edit'}
-                      </button>
-                      {!isRoot && (
-                        <button
-                          type="button"
-                          className="node-delete-button"
-                          title="Delete argument"
-                          aria-label="Delete argument"
-                          onPointerDown={(event) => {
-                            event.stopPropagation()
-                          }}
-                          onClick={(event) => {
-                            event.stopPropagation()
-                            onDeleteNode(node.id)
-                          }}
-                        >
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2h4a2 2 0 0 1 2 2v2"></path>
-                          </svg>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                  {isEditing ? (
-                    <textarea
-                      className="node-text-editor"
-                      value={node.text}
-                      onChange={(event) => onUpdateNodeText(node.id, event.target.value)}
-                      onClick={(event) => event.stopPropagation()}
-                      onPointerDown={(event) => event.stopPropagation()}
-                      autoFocus
-                      rows={4}
-                    />
-                  ) : (
-                    <p>{node.text}</p>
-                  )}
-                  <div className="node-actions">
-                    <button
-                      type="button"
-                      className="node-branch-button support"
-                      onPointerDown={(event) => {
-                        event.stopPropagation()
-                        onBranchDragStart(event, 'support', node.id)
-                      }}
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        if (wasDraggingRef.current) return
-                        onAddBranchFromNode(node.id, 'support')
-                      }}
-                    >
-                      Support +
-                    </button>
-                    <button
-                      type="button"
-                      className="node-branch-button attack"
-                      onPointerDown={(event) => {
-                        event.stopPropagation()
-                        onBranchDragStart(event, 'attack', node.id)
-                      }}
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        if (wasDraggingRef.current) return
-                        onAddBranchFromNode(node.id, 'attack')
-                      }}
-                    >
-                      Attack +
-                    </button>
-                  </div>
-                  {node.connectionIds.length > 0 && (
-                    <span className="node-footnote">{node.connectionIds.length} cross-link(s)</span>
-                  )}
-                </div>
-              )
-            })}
-
-            {activeBranchDrag && (
-              <div
-                className={`drag-preview-badge stance-${activeBranchDrag.stance}`}
-                style={{
-                  left: '50%',
-                  top: '50%',
-                  '--node-accent': palette[activeBranchDrag.stance],
-                  transform: `translate(-50%, -50%) translate(${activeBranchDrag.currentPoint.x}px, ${activeBranchDrag.currentPoint.y}px)`,
-                } as CSSProperties}
-              >
-                + {activeBranchDrag.stance === 'support' ? 'Support' : 'Attack'}
-              </div>
-            )}
-          </div>
+            <Background color="#ffffff" gap={32} size={1} style={{ opacity: 0.08 }} />
+            <Controls style={{ borderRadius: 12, background: 'rgba(12, 17, 29, 0.9)', border: '1px solid rgba(255, 255, 255, 0.15)' }} />
+          </ReactFlow>
         </div>
       </section>
 

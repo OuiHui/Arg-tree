@@ -1,3 +1,5 @@
+@import '@xyflow/react/dist/style.css';
+
 .topbar-create {
   display: flex;
   flex-wrap: wrap;
@@ -61,6 +63,13 @@
   padding: 18px;
   display: flex;
   flex-direction: column;
+}
+
+.tree-canvas {
+  flex: 1;
+  min-height: 0;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .tree-toolbar {
@@ -186,6 +195,9 @@
   position: absolute;
   left: 50%;
   top: 50%;
+  width: 0;
+  height: 0;
+  overflow: visible;
   inset: auto;
   transform-origin: 0 0;
   z-index: 1;
@@ -211,10 +223,7 @@
 }
 
 .canvas-node {
-  position: absolute;
-  width: min(330px, 30vw);
-  min-width: 240px;
-  max-width: 330px;
+  width: 300px;
   padding: 18px 18px 16px;
   border-radius: 22px;
   border: 1px solid color-mix(in srgb, var(--node-accent, var(--claim)) 28%, var(--panel-border));
@@ -224,7 +233,6 @@
   text-align: left;
   display: grid;
   gap: 10px;
-  transform-origin: center;
   user-select: none;
   -webkit-user-select: none;
 }
