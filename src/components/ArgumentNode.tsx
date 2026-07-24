@@ -48,13 +48,11 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
       <Handle
         type="target"
         position={Position.Top}
-        id="target-top"
         style={{
           background: stanceColor,
           width: 12,
           height: 12,
           border: '2px solid #07101d',
-          top: -6,
         }}
       />
 
@@ -111,57 +109,29 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
       )}
 
       <div className="node-actions" onPointerDown={(e) => e.stopPropagation()}>
-        <div style={{ position: 'relative', flex: 1 }}>
-          <button
-            type="button"
-            className="node-branch-button support"
-            style={{ width: '100%' }}
-            onClick={(e) => {
-              e.stopPropagation()
-              onAddBranchFromNode(node.id, 'support')
-            }}
-          >
-            Support +
-          </button>
-          <Handle
-            type="source"
-            position={Position.Bottom}
-            id={`support-${node.id}`}
-            style={{
-              background: palette.support,
-              width: 10,
-              height: 10,
-              bottom: -5,
-              left: '25%',
-            }}
-          />
-        </div>
+        <button
+          type="button"
+          className="node-branch-button support"
+          style={{ flex: 1 }}
+          onClick={(e) => {
+            e.stopPropagation()
+            onAddBranchFromNode(node.id, 'support')
+          }}
+        >
+          Support +
+        </button>
 
-        <div style={{ position: 'relative', flex: 1 }}>
-          <button
-            type="button"
-            className="node-branch-button attack"
-            style={{ width: '100%' }}
-            onClick={(e) => {
-              e.stopPropagation()
-              onAddBranchFromNode(node.id, 'attack')
-            }}
-          >
-            Attack +
-          </button>
-          <Handle
-            type="source"
-            position={Position.Bottom}
-            id={`attack-${node.id}`}
-            style={{
-              background: palette.attack,
-              width: 10,
-              height: 10,
-              bottom: -5,
-              left: '75%',
-            }}
-          />
-        </div>
+        <button
+          type="button"
+          className="node-branch-button attack"
+          style={{ flex: 1 }}
+          onClick={(e) => {
+            e.stopPropagation()
+            onAddBranchFromNode(node.id, 'attack')
+          }}
+        >
+          Attack +
+        </button>
       </div>
 
       {node.connectionIds.length > 0 && (
@@ -172,13 +142,11 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
       <Handle
         type="source"
         position={Position.Bottom}
-        id="source-bottom"
         style={{
           background: stanceColor,
           width: 12,
           height: 12,
           border: '2px solid #07101d',
-          bottom: -6,
         }}
       />
     </div>

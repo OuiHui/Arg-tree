@@ -215,8 +215,8 @@ export function autoLayoutTree(tree: TreeState): Record<string, Point> {
     }
   }
 
-  const LEVEL_HEIGHT = 220
-  const NODE_SPACING = 320
+  const LEVEL_HEIGHT = 320
+  const NODE_SPACING = 360
 
   for (const [levelStr, nodeIds] of Object.entries(levels)) {
     const level = Number(levelStr)
@@ -251,9 +251,9 @@ export const seedTree = (title: string): TreeState => {
     selectedNodeId: rootId,
     positions: {
       [rootId]: { x: 0, y: 0 },
-      [evidenceId]: { x: -240, y: 220 },
-      [rebuttalId]: { x: 240, y: 220 },
-      [definitionId]: { x: -240, y: 440 },
+      [evidenceId]: { x: -260, y: 320 },
+      [rebuttalId]: { x: 260, y: 320 },
+      [definitionId]: { x: -260, y: 640 },
     },
     nodes: {
       [rootId]: {

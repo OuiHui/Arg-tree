@@ -1,15 +1,19 @@
-import { useCallback, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import {
   ReactFlow,
   Background,
   Controls,
+  BaseEdge,
+  getSmoothStepPath,
+  applyNodeChanges,
   type Node,
   type Edge,
   type Connection,
   MarkerType,
   type NodeTypes,
-  useNodesState,
-  useEdgesState,
+  type EdgeProps,
+  type EdgeTypes,
+  type NodeChange,
 } from '@xyflow/react'
 import { type Stance, type TreeState, palette } from '../argtree'
 import { ArgumentNode } from './ArgumentNode'
@@ -43,6 +47,26 @@ const nodeTypes: NodeTypes = {
   argumentNode: ArgumentNode as any,
 }
 
+function CustomArgumentEdge(props: EdgeProps) {
+  const [edgePath] = getSmoothStepPath(props)
+  return (
+    <BaseEdge
+      id={props.id}
+      path={edgePath}
+      style={{
+        ...props.style,
+        fill: 'none',
+        strokeWidth: 4,
+      }}
+      markerEnd={props.markerEnd}
+    />
+  )
+}
+
+const edgeTypes: EdgeTypes = {
+  smoothstep: CustomArgumentEdge,
+}
+
 function buildNodes(
   selectedTree: TreeState,
   editingNodeId: string | null,
@@ -57,6 +81,8 @@ function buildNodes(
     id: node.id,
     type: 'argumentNode',
     position: selectedTree.positions[node.id] || { x: 0, y: 0 },
+    initialWidth: 300,
+    initialHeight: 180,
     data: {
       node,
       isRoot: node.id === selectedTree.rootId,
@@ -79,31 +105,34 @@ function buildEdges(selectedTree: TreeState, selectedEdgeId: string | null): Edg
       const childNode = selectedTree.nodes[childId]
       const stance = childNode ? childNode.stance : 'support'
       const color = palette[stance as Stance] ?? palette.support
-      const isSelected = selectedEdgeId === `edge-${parentNode.id}-${childId}`
+      const edgeId = `edge-${parentNode.id}-${childId}`
+      const isSelected = selectedEdgeId === edgeId
 
       edges.push({
-        id: `edge-${parentNode.id}-${childId}`,
+        id: edgeId,
         source: parentNode.id,
         target: childId,
-        type: 'default',
-        style: { stroke: isSelected ? '#ffffff' : color, strokeWidth: isSelected ? 4.5 : 3.5 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: isSelected ? '#ffffff' : color, width: 16, height: 16 },
+        type: 'smoothstep',
+        style: { stroke: isSelected ? '#ffffff' : color, strokeWidth: 4 },
+        markerEnd: { type: MarkerType.ArrowClosed, color: isSelected ? '#ffffff' : color, width: 14, height: 14 },
       })
     })
 
     parentNode.connectionIds.forEach((connId) => {
-      const isSelected = selectedEdgeId === `conn-${parentNode.id}-${connId}`
+      const edgeId = `conn-${parentNode.id}-${connId}`
+      const isSelected = selectedEdgeId === edgeId
       edges.push({
-        id: `conn-${parentNode.id}-${connId}`,
+        id: edgeId,
         source: parentNode.id,
         target: connId,
-        type: 'default',
+        type: 'smoothstep',
+        animated: true,
         style: {
           stroke: isSelected ? '#ffffff' : '#a7b0c0',
-          strokeWidth: isSelected ? 4 : 2.5,
+          strokeWidth: 3,
           strokeDasharray: '6 6',
         },
-        markerEnd: { type: MarkerType.ArrowClosed, color: isSelected ? '#ffffff' : '#a7b0c0', width: 14, height: 14 },
+        markerEnd: { type: MarkerType.ArrowClosed, color: isSelected ? '#ffffff' : '#a7b0c0', width: 12, height: 12 },
       })
     })
   })
@@ -134,23 +163,47 @@ export function WorkspaceStage({
   onSelectEdge,
   onDeleteEdge,
 }: WorkspaceStageProps) {
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
-  const [edges, setEdges] = useEdgesState<Edge>([])
+  const [nodes, setNodes] = useState<Node[]>(() =>
+    buildNodes(
+      selectedTree,
+      editingNodeId,
+      onSelectNode,
+      onEditNode,
+      onStopEditingNode,
+      onUpdateNodeText,
+      onDeleteNode,
+      onAddBranchFromNode,
+    ),
+  )
 
-  // Sync nodes from external state — but only update positions/data, not during active drag
   useEffect(() => {
-    setNodes(
-      buildNodes(
-        selectedTree,
-        editingNodeId,
-        onSelectNode,
-        onEditNode,
-        onStopEditingNode,
-        onUpdateNodeText,
-        onDeleteNode,
-        onAddBranchFromNode,
-      ),
+    const updatedNodes = buildNodes(
+      selectedTree,
+      editingNodeId,
+      onSelectNode,
+      onEditNode,
+      onStopEditingNode,
+      onUpdateNodeText,
+      onDeleteNode,
+      onAddBranchFromNode,
     )
+
+    setNodes((prevNodes) => {
+      const prevMap = new Map(prevNodes.map((n) => [n.id, n]))
+      return updatedNodes.map((n) => {
+        const prev = prevMap.get(n.id)
+        if (prev) {
+          return {
+            ...prev,
+            ...n,
+            position: n.position,
+            data: n.data,
+            measured: prev.measured ?? n.measured,
+          }
+        }
+        return n
+      })
+    })
   }, [
     selectedTree,
     editingNodeId,
@@ -160,15 +213,17 @@ export function WorkspaceStage({
     onUpdateNodeText,
     onDeleteNode,
     onAddBranchFromNode,
-    setNodes,
   ])
 
-  // Sync edges from external state
-  useEffect(() => {
-    setEdges(buildEdges(selectedTree, selectedEdgeId))
-  }, [selectedTree, selectedEdgeId, setEdges])
+  const handleNodesChange = useCallback((changes: NodeChange[]) => {
+    setNodes((nds) => applyNodeChanges(changes, nds))
+  }, [])
 
-  // Only persist position back to state when drag ends, not every frame
+  const edges = useMemo(
+    () => buildEdges(selectedTree, selectedEdgeId),
+    [selectedTree, selectedEdgeId],
+  )
+
   const handleNodeDragStop = useCallback(
     (_: unknown, node: Node) => {
       onUpdateNodePosition(node.id, node.position.x, node.position.y)
@@ -179,15 +234,9 @@ export function WorkspaceStage({
   const handleConnect = useCallback(
     (params: Connection) => {
       if (!params.source || !params.target || params.source === params.target) return
-      const isFromButton = params.sourceHandle?.startsWith('support') || params.sourceHandle?.startsWith('attack')
-      if (isFromButton) {
-        const stance: Stance = params.sourceHandle?.startsWith('attack') ? 'attack' : 'support'
-        onAddBranchFromNode(params.source, stance)
-      } else {
-        onAddConnection(params.source, params.target)
-      }
+      onAddConnection(params.source, params.target)
     },
-    [onAddBranchFromNode, onAddConnection],
+    [onAddConnection],
   )
 
   const handleEdgeClick = useCallback(
@@ -251,7 +300,8 @@ export function WorkspaceStage({
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
-            onNodesChange={onNodesChange}
+            edgeTypes={edgeTypes}
+            onNodesChange={handleNodesChange}
             onNodeDragStop={handleNodeDragStop}
             onConnect={handleConnect}
             onEdgeClick={handleEdgeClick}

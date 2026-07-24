@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import '@xyflow/react/dist/style.css'
 import './App.css'
 import {
   createEmptyTree,
@@ -39,7 +40,23 @@ function App() {
     fetchWorkspaceApi()
       .then((fetchedWorkspace) => {
         if (isMounted) {
-          setWorkspace(fetchedWorkspace)
+          const updatedTrees = { ...fetchedWorkspace.trees }
+          Object.keys(updatedTrees).forEach((id) => {
+            const tree = updatedTrees[id]
+            const positions = tree.positions || {}
+            const hasCrampedNodes = Object.values(positions).some((p) => p.y > 0 && p.y < 280)
+            if (hasCrampedNodes) {
+              updatedTrees[id] = {
+                ...tree,
+                positions: autoLayoutTree(tree),
+              }
+            }
+          })
+
+          setWorkspace({
+            ...fetchedWorkspace,
+            trees: updatedTrees,
+          })
           setIsLoading(false)
         }
       })
@@ -148,7 +165,7 @@ function App() {
           ...currentTree.positions,
           [id]: {
             x: parentPosition.x + spreadX,
-            y: parentPosition.y + 220,
+            y: parentPosition.y + 320,
           },
         },
         nodes: {
@@ -198,6 +215,7 @@ function App() {
       }
     })
   }
+
 
   const handleAutoLayout = () => {
     updateSelectedTree((currentTree) => ({
@@ -292,8 +310,8 @@ function App() {
 
         for (const key of Object.keys(nextNodes)) {
           const n = nextNodes[key]
-          const childEdgeId = (cid: string) => `${key}-${cid}`
-          const connEdgeId = (cid: string) => `${key}-c-${cid}`
+          const childEdgeId = (cid: string) => `edge-${key}-${cid}`
+          const connEdgeId = (cid: string) => `conn-${key}-${cid}`
 
           const updatedChildren = n.childIds.filter((cid) => childEdgeId(cid) !== edgeIdToDelete)
           const updatedConnections = n.connectionIds.filter((cid) => connEdgeId(cid) !== edgeIdToDelete)

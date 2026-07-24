@@ -56,7 +56,7 @@ button {
 }
 
 img,
-svg:not(.tree-links) {
+svg:not(.tree-links):not([class*="react-flow"]) {
   display: block;
   max-width: 100%;
 }

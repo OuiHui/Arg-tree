@@ -19,9 +19,9 @@ export function generateSeedTree(title = 'Starter tree') {
     selectedNodeId: rootId,
     positions: {
       [rootId]: { x: 0, y: 0 },
-      [evidenceId]: { x: -240, y: 220 },
-      [rebuttalId]: { x: 240, y: 220 },
-      [definitionId]: { x: -240, y: 440 },
+      [evidenceId]: { x: -260, y: 320 },
+      [rebuttalId]: { x: 260, y: 320 },
+      [definitionId]: { x: -260, y: 640 },
     },
     nodes: {
       [rootId]: {
