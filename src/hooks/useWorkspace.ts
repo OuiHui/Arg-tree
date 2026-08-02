@@ -27,7 +27,9 @@ import {
   deleteNodeFromTree,
   addDefinitionToTree,
   deleteDefinitionFromTree,
+  pasteNodeInTree,
 } from '../utils/treeOperations'
+
 
 export function useWorkspace() {
   const [workspace, setWorkspace] = useState<WorkspaceState>(seedWorkspace)
@@ -416,7 +418,26 @@ export function useWorkspace() {
   const canUndo = getCanUndo(selectedTree.id)
   const canRedo = getCanRedo(selectedTree.id)
 
-  // Global keydown handler for Delete/Backspace and Undo/Redo shortcuts
+  const nodeClipboardRef = useRef<{ text: string; stance: Stance | 'claim' } | null>(null)
+
+  const handleCopyNode = useCallback(() => {
+    if (!selectedTree.selectedNodeId) return
+    const node = selectedTree.nodes[selectedTree.selectedNodeId]
+    if (node) {
+      nodeClipboardRef.current = { text: node.text, stance: node.stance }
+    }
+  }, [selectedTree])
+
+  const handlePasteNode = useCallback(() => {
+    if (!nodeClipboardRef.current) return
+    recordState(selectedTree.id, selectedTree, 'pasteNode')
+    updateSelectedTree((currentTree) => {
+      const { tree } = pasteNodeInTree(currentTree, nodeClipboardRef.current!)
+      return tree
+    })
+  }, [recordState, selectedTree, updateSelectedTree])
+
+  // Global keydown handler for Delete/Backspace, Copy/Paste, and Undo/Redo shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const activeElement = document.activeElement
@@ -428,7 +449,23 @@ export function useWorkspace() {
       const isCmdOrCtrl = event.metaKey || event.ctrlKey
 
       if (isCmdOrCtrl) {
-        if (event.key.toLowerCase() === 'z') {
+        const key = event.key.toLowerCase()
+
+        if (key === 'c') {
+          if (isInputActive) return
+          event.preventDefault()
+          handleCopyNode()
+          return
+        }
+
+        if (key === 'v') {
+          if (isInputActive) return
+          event.preventDefault()
+          handlePasteNode()
+          return
+        }
+
+        if (key === 'z') {
           if (isInputActive) return
           event.preventDefault()
           if (event.shiftKey) {
@@ -438,7 +475,8 @@ export function useWorkspace() {
           }
           return
         }
-        if (event.key.toLowerCase() === 'y' && !event.shiftKey) {
+
+        if (key === 'y' && !event.shiftKey) {
           if (isInputActive) return
           event.preventDefault()
           handleRedo()
@@ -461,7 +499,8 @@ export function useWorkspace() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [deleteEdge, deleteNode, handleRedo, handleUndo, selectedEdgeId, selectedTree.selectedNodeId, selectedTree.rootId])
+  }, [deleteEdge, deleteNode, handleCopyNode, handlePasteNode, handleRedo, handleUndo, selectedEdgeId, selectedTree.selectedNodeId, selectedTree.rootId])
+
 
   return {
     workspace,

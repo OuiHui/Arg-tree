@@ -241,3 +241,41 @@ export function deleteDefinitionFromTree(currentTree: TreeState, definitionId: s
     definitions: currentTree.definitions.filter((def) => def.id !== definitionId),
   }
 }
+
+export function pasteNodeInTree(
+  currentTree: TreeState,
+  copiedData: { text: string; stance: Stance | 'claim' }
+): { tree: TreeState; newNodeId: string } {
+  const id = createId()
+  const basePos =
+    currentTree.positions[currentTree.selectedNodeId] ??
+    currentTree.positions[currentTree.rootId] ??
+    { x: 0, y: 0 }
+
+  const stance: Stance = copiedData.stance === 'claim' ? 'support' : copiedData.stance
+
+  const updatedTree: TreeState = {
+    ...currentTree,
+    selectedNodeId: id,
+    positions: {
+      ...currentTree.positions,
+      [id]: {
+        x: basePos.x + 40,
+        y: basePos.y + 40,
+      },
+    },
+    nodes: {
+      ...currentTree.nodes,
+      [id]: {
+        id,
+        text: copiedData.text,
+        stance,
+        childIds: [],
+        connectionIds: [],
+      },
+    },
+  }
+
+  return { tree: updatedTree, newNodeId: id }
+}
+

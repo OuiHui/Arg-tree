@@ -33,7 +33,9 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
     onAddBranchFromNode,
   } = data
 
-  const stanceColor = palette[node.stance as Stance] ?? palette.support
+  const stanceColor = isOrphan
+    ? '#94a3b8'
+    : (palette[node.stance as Stance] ?? palette.support)
 
   return (
     <div
@@ -54,18 +56,15 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
 
       <div className="node-card-header">
         <div className="node-card-badges">
-          <span className={`badge badge-${isRoot ? 'claim' : node.stance}`}>
+          <span
+            className={`badge ${
+              isRoot ? 'badge-claim' : isOrphan ? 'badge-orphan' : `badge-${node.stance}`
+            }`}
+          >
             {isRoot ? 'Central Claim' : node.stance}
           </span>
-          {isOrphan && (
-            <span
-              className="badge badge-orphan"
-              title="Unattached node. Drag to/from Support or Attack handles to link."
-            >
-              Orphaned
-            </span>
-          )}
         </div>
+
 
         <div className="node-card-controls">
           <button

@@ -83,7 +83,7 @@
 
 .node-card.is-orphan {
   border-style: dashed;
-  border-color: rgba(245, 158, 11, 0.6);
+  border-color: rgba(148, 163, 184, 0.5);
 }
 
 .node-card-header {
