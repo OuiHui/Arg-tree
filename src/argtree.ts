@@ -1,57 +1,8 @@
-export type Stance = 'support' | 'attack'
+import type { Point, Stance, TreeState, WorkspaceState, ArgumentNode } from './types/argtree'
+import { autoLayoutTree } from './utils/autoLayout'
 
-export type ArgumentNode = {
-  id: string
-  text: string
-  stance: Stance | 'claim'
-  childIds: string[]
-  connectionIds: string[]
-}
-
-export type DefinitionEntry = {
-  id: string
-  term: string
-  description: string
-}
-
-export type TreeState = {
-  id: string
-  title: string
-  nodes: Record<string, ArgumentNode>
-  positions: Record<string, { x: number; y: number }>
-  rootId: string
-  definitions: DefinitionEntry[]
-  selectedNodeId: string
-}
-
-export type WorkspaceState = {
-  trees: Record<string, TreeState>
-  selectedTreeId: string
-}
-
-export type EdgePath = {
-  id: string
-  sourceId: string
-  targetId: string
-  type: 'child' | 'connection'
-  d: string
-  color: string
-  dashed: boolean
-  markerId?: string
-  midPoint: Point
-}
-
-export type Point = { x: number; y: number }
-
-export type BranchDragState = {
-  stance: Stance
-  sourceNodeId?: string
-  startPoint: Point | null
-  currentPoint: Point
-  dropTargetId: string | null
-  snapOrigin?: boolean
-  snapTarget?: boolean
-}
+export * from './types/argtree'
+export * from './utils/autoLayout'
 
 export function computeDragEdgePath(
   origin: Point,
@@ -175,63 +126,6 @@ export function computeEdgePath(
   const controlY2 = endY - deltaY * 0.45
 
   return `M ${startX} ${startY} C ${startX} ${controlY1}, ${endX} ${controlY2}, ${endX} ${endY}`
-}
-
-export function autoLayoutTree(tree: TreeState): Record<string, Point> {
-  const newPositions: Record<string, Point> = {}
-  const rootId = tree.rootId
-  if (!rootId || !tree.nodes[rootId]) return tree.positions
-
-  const levels: Record<number, string[]> = {}
-  const visited = new Set<string>()
-
-  const queue: Array<{ id: string; level: number }> = [{ id: rootId, level: 0 }]
-  visited.add(rootId)
-
-  while (queue.length > 0) {
-    const item = queue.shift()!
-    if (!levels[item.level]) {
-      levels[item.level] = []
-    }
-    levels[item.level].push(item.id)
-
-    const node = tree.nodes[item.id]
-    if (node) {
-      for (const childId of node.childIds) {
-        if (!visited.has(childId)) {
-          visited.add(childId)
-          queue.push({ id: childId, level: item.level + 1 })
-        }
-      }
-    }
-  }
-
-  const maxLevel = Math.max(...Object.keys(levels).map(Number), 0)
-  for (const nodeId of Object.keys(tree.nodes)) {
-    if (!visited.has(nodeId)) {
-      const level = maxLevel + 1
-      if (!levels[level]) levels[level] = []
-      levels[level].push(nodeId)
-    }
-  }
-
-  const LEVEL_HEIGHT = 320
-  const NODE_SPACING = 360
-
-  for (const [levelStr, nodeIds] of Object.entries(levels)) {
-    const level = Number(levelStr)
-    const count = nodeIds.length
-    const startX = -((count - 1) * NODE_SPACING) / 2
-
-    nodeIds.forEach((id, index) => {
-      newPositions[id] = {
-        x: startX + index * NODE_SPACING,
-        y: level * LEVEL_HEIGHT,
-      }
-    })
-  }
-
-  return newPositions
 }
 
 export const createId = () =>
@@ -374,8 +268,6 @@ export const seedWorkspace = (): WorkspaceState => {
     },
   }
 }
-
-
 
 export const palette: Record<Stance | 'claim', string> = {
   claim: '#7ea7ff',

@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import {
   createEmptyTree,
-  createId,
   seedWorkspace,
   seedTree,
   autoLayoutTree,
@@ -17,6 +16,17 @@ import {
   deleteTreeApi,
   updateSelectedTreeIdApi,
 } from '../api'
+import { useUrlTreeSync } from './useUrlTreeSync'
+import {
+  updateNodeTextInTree,
+  addBranchToTree,
+  addConnectionToTree,
+  linkChildNodeInTree,
+  deleteEdgeFromTree,
+  deleteNodeFromTree,
+  addDefinitionToTree,
+  deleteDefinitionFromTree,
+} from '../utils/treeOperations'
 
 export function useWorkspace() {
   const [workspace, setWorkspace] = useState<WorkspaceState>(seedWorkspace)
@@ -27,6 +37,7 @@ export function useWorkspace() {
   const [isNewTreeModalOpen, setIsNewTreeModalOpen] = useState(false)
   const [isTreeManagerOpen, setIsTreeManagerOpen] = useState(false)
 
+  // Fetch initial workspace & sync URL state
   useEffect(() => {
     let isMounted = true
 
@@ -46,9 +57,28 @@ export function useWorkspace() {
           }
         })
 
+        const urlParams = new URLSearchParams(window.location.search)
+        const urlTreeId = urlParams.get('treeId') || urlParams.get('tree')
+
+        let selectedTreeId = fetchedWorkspace.selectedTreeId
+        if (urlTreeId && updatedTrees[urlTreeId]) {
+          selectedTreeId = urlTreeId
+        } else if (!updatedTrees[selectedTreeId]) {
+          selectedTreeId = Object.keys(updatedTrees)[0] || selectedTreeId
+        }
+
+        if (selectedTreeId) {
+          const url = new URL(window.location.href)
+          if (url.searchParams.get('treeId') !== selectedTreeId) {
+            url.searchParams.set('treeId', selectedTreeId)
+            window.history.replaceState({}, '', url.toString())
+          }
+        }
+
         setWorkspace({
           ...fetchedWorkspace,
           trees: updatedTrees,
+          selectedTreeId,
         })
         setIsLoading(false)
       })
@@ -64,9 +94,12 @@ export function useWorkspace() {
     }
   }, [])
 
+  useUrlTreeSync(workspace, setWorkspace, isLoading)
+
   const treeList = useMemo(() => Object.values(workspace.trees), [workspace.trees])
   const selectedTree = workspace.trees[workspace.selectedTreeId] ?? treeList[0] ?? seedTree('Starter tree')
 
+  // Auto-save changes to database
   const isFirstRender = useRef(true)
   useEffect(() => {
     if (isLoading) return
@@ -120,143 +153,23 @@ export function useWorkspace() {
   }, [updateSelectedTree])
 
   const updateNodeText = useCallback((nodeId: string, text: string) => {
-    updateSelectedTree((currentTree) => ({
-      ...currentTree,
-      nodes: {
-        ...currentTree.nodes,
-        [nodeId]: {
-          ...currentTree.nodes[nodeId],
-          text,
-        },
-      },
-    }))
+    updateSelectedTree((tree) => updateNodeTextInTree(tree, nodeId, text))
   }, [updateSelectedTree])
 
   const addBranchFromNode = useCallback((parentNodeId: string, stance: Stance) => {
-    const id = createId()
-    const text = stance === 'support' ? 'New supporting point' : 'New counterargument'
-
     updateSelectedTree((currentTree) => {
-      const parent = currentTree.nodes[parentNodeId]
-      if (!parent) return currentTree
-
-      const parentPosition = currentTree.positions[parent.id] ?? { x: 0, y: 0 }
-      const branchCount = parent.childIds.length
-      const sideOffset = stance === 'support' ? -180 : 180
-      const spreadX =
-        sideOffset + (branchCount > 0 ? (stance === 'support' ? -120 * branchCount : 120 * branchCount) : 0)
-
-      return {
-        ...currentTree,
-        selectedNodeId: id,
-        positions: {
-          ...currentTree.positions,
-          [id]: {
-            x: parentPosition.x + spreadX,
-            y: parentPosition.y + 320,
-          },
-        },
-        nodes: {
-          ...currentTree.nodes,
-          [id]: {
-            id,
-            text,
-            stance,
-            childIds: [],
-            connectionIds: [],
-          },
-          [parent.id]: {
-            ...parent,
-            childIds: [...parent.childIds, id],
-          },
-        },
-      }
+      const { tree, newNodeId } = addBranchToTree(currentTree, parentNodeId, stance)
+      setEditingNodeId(newNodeId)
+      return tree
     })
-
-    setEditingNodeId(id)
   }, [updateSelectedTree])
 
   const addConnection = useCallback((sourceNodeId: string, targetNodeId: string) => {
-    if (sourceNodeId === targetNodeId) return
-
-    updateSelectedTree((currentTree) => {
-      const sourceNode = currentTree.nodes[sourceNodeId]
-      const targetNode = currentTree.nodes[targetNodeId]
-      if (!sourceNode || !targetNode) return currentTree
-
-      if (
-        sourceNode.childIds.includes(targetNodeId) ||
-        sourceNode.connectionIds.includes(targetNodeId)
-      ) {
-        return currentTree
-      }
-
-      return {
-        ...currentTree,
-        nodes: {
-          ...currentTree.nodes,
-          [sourceNodeId]: {
-            ...sourceNode,
-            connectionIds: [...sourceNode.connectionIds, targetNodeId],
-          },
-        },
-      }
-    })
+    updateSelectedTree((tree) => addConnectionToTree(tree, sourceNodeId, targetNodeId))
   }, [updateSelectedTree])
 
   const linkChildNode = useCallback((parentId: string, childId: string, stance: Stance) => {
-    if (parentId === childId) return
-
-    updateSelectedTree((currentTree) => {
-      const parentNode = currentTree.nodes[parentId]
-      const childNode = currentTree.nodes[childId]
-      if (!parentNode || !childNode) return currentTree
-
-      const isAncestor = (nodeId: string, targetId: string): boolean => {
-        const n = currentTree.nodes[nodeId]
-        if (!n) return false
-        if (n.childIds.includes(targetId)) return true
-        return n.childIds.some((cid) => isAncestor(cid, targetId))
-      }
-
-      if (isAncestor(childId, parentId)) {
-        return currentTree
-      }
-
-      const nextNodes = { ...currentTree.nodes }
-
-      Object.keys(nextNodes).forEach((key) => {
-        const n = nextNodes[key]
-        if (n.childIds.includes(childId)) {
-          nextNodes[key] = {
-            ...n,
-            childIds: n.childIds.filter((cid) => cid !== childId),
-          }
-        }
-      })
-
-      const updatedParent = nextNodes[parentId] ?? parentNode
-      const updatedChild = nextNodes[childId] ?? childNode
-
-      nextNodes[parentId] = {
-        ...updatedParent,
-        childIds: updatedParent.childIds.includes(childId)
-          ? updatedParent.childIds
-          : [...updatedParent.childIds, childId],
-        connectionIds: updatedParent.connectionIds.filter((cid) => cid !== childId),
-      }
-
-      nextNodes[childId] = {
-        ...updatedChild,
-        stance,
-        connectionIds: updatedChild.connectionIds.filter((cid) => cid !== parentId),
-      }
-
-      return {
-        ...currentTree,
-        nodes: nextNodes,
-      }
-    })
+    updateSelectedTree((tree) => linkChildNodeInTree(tree, parentId, childId, stance))
   }, [updateSelectedTree])
 
   const handleAutoLayout = useCallback(() => {
@@ -277,16 +190,7 @@ export function useWorkspace() {
   }, [updateSelectedTree])
 
   const addDefinition = useCallback((term: string, description: string) => {
-    const cleanTerm = term.trim()
-    const cleanDesc = description.trim()
-    if (!cleanTerm || !cleanDesc) return
-
-    const id = createId()
-
-    updateSelectedTree((currentTree) => ({
-      ...currentTree,
-      definitions: [...currentTree.definitions, { id, term: cleanTerm, description: cleanDesc }],
-    }))
+    updateSelectedTree((tree) => addDefinitionToTree(tree, term, description))
   }, [updateSelectedTree])
 
   const createTree = useCallback((titleInput: string, claimInput: string) => {
@@ -332,89 +236,18 @@ export function useWorkspace() {
   }, [updateSelectedTree])
 
   const deleteEdge = useCallback((edgeIdToDelete: string) => {
-    updateSelectedTree((currentTree) => {
-      const nextNodes = { ...currentTree.nodes }
-
-      for (const key of Object.keys(nextNodes)) {
-        const n = nextNodes[key]
-        const childEdgeId = (cid: string) => `edge-${key}-${cid}`
-        const connEdgeId = (cid: string) => `conn-${key}-${cid}`
-
-        const updatedChildren = n.childIds.filter((cid) => childEdgeId(cid) !== edgeIdToDelete)
-        const updatedConnections = n.connectionIds.filter((cid) => connEdgeId(cid) !== edgeIdToDelete)
-
-        if (updatedChildren.length !== n.childIds.length || updatedConnections.length !== n.connectionIds.length) {
-          nextNodes[key] = {
-            ...n,
-            childIds: updatedChildren,
-            connectionIds: updatedConnections,
-          }
-        }
-      }
-
-      return {
-        ...currentTree,
-        nodes: nextNodes,
-      }
-    })
-
+    updateSelectedTree((tree) => deleteEdgeFromTree(tree, edgeIdToDelete))
     setSelectedEdgeId((prev) => (prev === edgeIdToDelete ? null : prev))
   }, [updateSelectedTree])
 
   const deleteNode = useCallback((nodeIdToDelete: string) => {
     if (nodeIdToDelete === selectedTree.rootId) return
-
-    updateSelectedTree((currentTree) => {
-      const targetNode = currentTree.nodes[nodeIdToDelete]
-      if (!targetNode) return currentTree
-
-      const nextNodes = { ...currentTree.nodes }
-      const nextPositions = { ...currentTree.positions }
-
-      delete nextNodes[nodeIdToDelete]
-      delete nextPositions[nodeIdToDelete]
-
-      let parentId: string | null = null
-
-      for (const key of Object.keys(nextNodes)) {
-        const n = nextNodes[key]
-        let updatedChildren = n.childIds
-        if (n.childIds.includes(nodeIdToDelete)) {
-          parentId = key
-          updatedChildren = n.childIds.filter((cid) => cid !== nodeIdToDelete)
-        }
-        const updatedConnections = n.connectionIds.filter((cid) => cid !== nodeIdToDelete)
-
-        if (updatedChildren !== n.childIds || updatedConnections.length !== n.connectionIds.length) {
-          nextNodes[key] = {
-            ...n,
-            childIds: updatedChildren,
-            connectionIds: updatedConnections,
-          }
-        }
-      }
-
-      const nextSelectedId =
-        currentTree.selectedNodeId === nodeIdToDelete
-          ? parentId ?? currentTree.rootId
-          : currentTree.selectedNodeId
-
-      return {
-        ...currentTree,
-        nodes: nextNodes,
-        positions: nextPositions,
-        selectedNodeId: nextSelectedId,
-      }
-    })
-
+    updateSelectedTree((tree) => deleteNodeFromTree(tree, nodeIdToDelete))
     setEditingNodeId((prev) => (prev === nodeIdToDelete ? null : prev))
   }, [selectedTree.rootId, updateSelectedTree])
 
   const deleteDefinition = useCallback((definitionId: string) => {
-    updateSelectedTree((currentTree) => ({
-      ...currentTree,
-      definitions: currentTree.definitions.filter((def) => def.id !== definitionId),
-    }))
+    updateSelectedTree((tree) => deleteDefinitionFromTree(tree, definitionId))
   }, [updateSelectedTree])
 
   const renameTree = useCallback((treeId: string, newTitle: string) => {
@@ -540,6 +373,7 @@ export function useWorkspace() {
     })
   }, [])
 
+  // Global delete hotkey
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Delete' || event.key === 'Backspace') {

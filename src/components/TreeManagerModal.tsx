@@ -1,5 +1,6 @@
-import { useState, useMemo, type FormEvent } from 'react'
-import type { TreeState } from '../argtree'
+import { useState, useMemo } from 'react'
+import type { TreeState } from '../types/argtree'
+import { TreeCard } from './TreeCard'
 
 type TreeManagerModalProps = {
   isOpen: boolean
@@ -30,7 +31,6 @@ export function TreeManagerModal({
 }: TreeManagerModalProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [editingTreeId, setEditingTreeId] = useState<string | null>(null)
-  const [editingTitle, setEditingTitle] = useState('')
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [selectedForBatch, setSelectedForBatch] = useState<Set<string>>(new Set())
   const [isConfirmingBatchDelete, setIsConfirmingBatchDelete] = useState(false)
@@ -76,21 +76,11 @@ export function TreeManagerModal({
     setIsConfirmingBatchDelete(false)
   }
 
-  const handleStartRename = (tree: TreeState) => {
-    setEditingTreeId(tree.id)
-    setEditingTitle(tree.title)
-  }
-
-  const handleSaveRename = (treeId: string) => {
-    if (editingTitle.trim()) {
-      onRenameTree(treeId, editingTitle.trim())
+  const handleSaveRename = (treeId: string, title: string) => {
+    if (title.trim()) {
+      onRenameTree(treeId, title.trim())
     }
     setEditingTreeId(null)
-  }
-
-  const handleRenameSubmit = (e: FormEvent, treeId: string) => {
-    e.preventDefault()
-    handleSaveRename(treeId)
   }
 
   const handleSelectAndClose = (treeId: string) => {
@@ -214,150 +204,24 @@ export function TreeManagerModal({
               <p>No argument trees match "{searchQuery}"</p>
             </div>
           ) : (
-            filteredTrees.map((tree) => {
-              const isSelected = tree.id === selectedTreeId
-              const isChecked = selectedForBatch.has(tree.id)
-              const isEditing = editingTreeId === tree.id
-              const isConfirmingDelete = confirmDeleteId === tree.id
-              const nodeCount = Object.keys(tree.nodes).length
-              const rootNode = tree.nodes[tree.rootId]
-
-              return (
-                <div
-                  key={tree.id}
-                  className={`tree-card ${isSelected ? 'is-active' : ''} ${isChecked ? 'is-checked' : ''}`}
-                >
-                  <label className="checkbox-label item-checkbox" onClick={(e) => e.stopPropagation()}>
-                    <input
-                      type="checkbox"
-                      checked={isChecked}
-                      onChange={() => handleToggleTreeSelection(tree.id)}
-                      className="custom-checkbox"
-                    />
-                  </label>
-
-                  <div className="tree-card-main">
-                    <div className="tree-card-header">
-                      {isEditing ? (
-                        <form
-                          onSubmit={(e) => handleRenameSubmit(e, tree.id)}
-                          className="inline-rename-form"
-                        >
-                          <input
-                            type="text"
-                            className="inline-rename-input"
-                            value={editingTitle}
-                            onChange={(e) => setEditingTitle(e.target.value)}
-                            onBlur={() => handleSaveRename(tree.id)}
-                            autoFocus
-                          />
-                          <button type="submit" className="btn btn-primary btn-xs">
-                            Save
-                          </button>
-                        </form>
-                      ) : (
-                        <div className="tree-title-group">
-                          <h4
-                            className="tree-title"
-                            onClick={() => handleSelectAndClose(tree.id)}
-                          >
-                            {tree.title}
-                          </h4>
-                          {isSelected && <span className="active-badge">Active</span>}
-                        </div>
-                      )}
-                    </div>
-
-                    {rootNode && (
-                      <p className="tree-claim-preview">
-                        "{rootNode.text}"
-                      </p>
-                    )}
-
-                    <div className="tree-meta">
-                      <span className="meta-item">{nodeCount} {nodeCount === 1 ? 'node' : 'nodes'}</span>
-                      {tree.definitions?.length > 0 && (
-                        <span className="meta-item">• {tree.definitions.length} terms</span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="tree-card-actions">
-                    {!isSelected && (
-                      <button
-                        type="button"
-                        className="btn btn-secondary btn-sm"
-                        onClick={() => handleSelectAndClose(tree.id)}
-                      >
-                        Select
-                      </button>
-                    )}
-
-                    {!isEditing && (
-                      <button
-                        type="button"
-                        className="icon-action-btn"
-                        onClick={() => handleStartRename(tree)}
-                        title="Rename tree"
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                        </svg>
-                      </button>
-                    )}
-
-                    <button
-                      type="button"
-                      className="icon-action-btn"
-                      onClick={() => onDuplicateTree(tree.id)}
-                      title="Duplicate tree"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                      </svg>
-                    </button>
-
-                    {treeList.length > 1 && (
-                      isConfirmingDelete ? (
-                        <div className="delete-confirm-group">
-                          <button
-                            type="button"
-                            className="btn btn-danger btn-xs"
-                            onClick={() => {
-                              onDeleteTree(tree.id)
-                              setConfirmDeleteId(null)
-                            }}
-                          >
-                            Confirm Delete
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-ghost btn-xs"
-                            onClick={() => setConfirmDeleteId(null)}
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          className="icon-action-btn danger"
-                          onClick={() => setConfirmDeleteId(tree.id)}
-                          title="Delete tree"
-                        >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <polyline points="3 6 5 6 21 6" />
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                          </svg>
-                        </button>
-                      )
-                    )}
-                  </div>
-                </div>
-              )
-            })
+            filteredTrees.map((tree) => (
+              <TreeCard
+                key={tree.id}
+                tree={tree}
+                isSelected={tree.id === selectedTreeId}
+                isChecked={selectedForBatch.has(tree.id)}
+                isEditing={editingTreeId === tree.id}
+                isConfirmingDelete={confirmDeleteId === tree.id}
+                treeCount={treeList.length}
+                onToggleSelect={handleToggleTreeSelection}
+                onSelectAndClose={handleSelectAndClose}
+                onStartRename={(t) => setEditingTreeId(t.id)}
+                onSaveRename={handleSaveRename}
+                onDuplicate={onDuplicateTree}
+                onDelete={onDeleteTree}
+                onConfirmDeleteRequest={setConfirmDeleteId}
+              />
+            ))
           )}
         </div>
       </div>
