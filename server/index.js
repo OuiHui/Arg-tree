@@ -11,48 +11,71 @@ const PORT = process.env.PORT || 5000
 app.use(cors())
 app.use(express.json({ limit: '10mb' }))
 
-// Connect to MongoDB and ensure seed data
-connectDB().then(() => {
-  ensureInitialSeed().catch((err) => console.error('Error seeding database:', err))
-})
+let isMongoConnected = false
 
-// GET /api/workspace - Fetch workspace state with all trees
-app.get('/api/workspace', async (req, res) => {
-  try {
-    await ensureInitialSeed()
+const memoryStore = {
+  selectedTreeId: '',
+  trees: {},
+}
 
-    const treesDoc = await TreeModel.find().lean()
-    let configDoc = await WorkspaceConfigModel.findOne({ key: 'main' }).lean()
+function initMemoryStore() {
+  if (Object.keys(memoryStore.trees).length === 0) {
+    const seed = generateSeedTree('Starter tree')
+    memoryStore.trees[seed.id] = seed
+    memoryStore.selectedTreeId = seed.id
+  }
+}
 
-    const trees = {}
-    for (const tree of treesDoc) {
-      trees[tree.id] = {
-        id: tree.id,
-        title: tree.title,
-        rootId: tree.rootId,
-        selectedNodeId: tree.selectedNodeId,
-        nodes: tree.nodes || {},
-        positions: tree.positions || {},
-        definitions: tree.definitions || [],
-      }
-    }
-
-    let selectedTreeId = configDoc?.selectedTreeId
-    if (!selectedTreeId || !trees[selectedTreeId]) {
-      selectedTreeId = Object.keys(trees)[0]
-    }
-
-    res.json({
-      selectedTreeId,
-      trees,
-    })
-  } catch (error) {
-    console.error('Error fetching workspace:', error)
-    res.status(500).json({ error: 'Failed to fetch workspace' })
+connectDB().then((connected) => {
+  isMongoConnected = connected
+  if (connected) {
+    ensureInitialSeed().catch((err) => console.error('Error seeding database:', err))
+  } else {
+    initMemoryStore()
   }
 })
 
-// POST /api/trees - Create a new tree
+// GET /api/workspace
+app.get('/api/workspace', async (req, res) => {
+  try {
+    if (isMongoConnected) {
+      await ensureInitialSeed()
+
+      const treesDoc = await TreeModel.find().lean()
+      let configDoc = await WorkspaceConfigModel.findOne({ key: 'main' }).lean()
+
+      const trees = {}
+      for (const tree of treesDoc) {
+        trees[tree.id] = {
+          id: tree.id,
+          title: tree.title,
+          rootId: tree.rootId,
+          selectedNodeId: tree.selectedNodeId,
+          nodes: tree.nodes || {},
+          positions: tree.positions || {},
+          definitions: tree.definitions || [],
+        }
+      }
+
+      let selectedTreeId = configDoc?.selectedTreeId
+      if (!selectedTreeId || !trees[selectedTreeId]) {
+        selectedTreeId = Object.keys(trees)[0]
+      }
+
+      return res.json({ selectedTreeId, trees })
+    }
+  } catch (error) {
+    console.warn('MongoDB query failed, falling back to memory store:', error.message)
+  }
+
+  initMemoryStore()
+  res.json({
+    selectedTreeId: memoryStore.selectedTreeId,
+    trees: memoryStore.trees,
+  })
+})
+
+// POST /api/trees
 app.post('/api/trees', async (req, res) => {
   try {
     const treeData = req.body
@@ -60,87 +83,110 @@ app.post('/api/trees', async (req, res) => {
       return res.status(400).json({ error: 'Invalid tree data' })
     }
 
-    const createdTree = await TreeModel.create(treeData)
-    await WorkspaceConfigModel.findOneAndUpdate(
-      { key: 'main' },
-      { selectedTreeId: createdTree.id },
-      { upsert: true }
-    )
-
-    res.status(201).json(createdTree)
+    if (isMongoConnected) {
+      const createdTree = await TreeModel.create(treeData)
+      await WorkspaceConfigModel.findOneAndUpdate(
+        { key: 'main' },
+        { selectedTreeId: createdTree.id },
+        { upsert: true }
+      )
+      return res.status(201).json(createdTree)
+    }
   } catch (error) {
-    console.error('Error creating tree:', error)
-    res.status(500).json({ error: 'Failed to create tree' })
+    console.warn('MongoDB tree creation failed, updating memory store:', error.message)
   }
+
+  const treeData = req.body
+  memoryStore.trees[treeData.id] = treeData
+  memoryStore.selectedTreeId = treeData.id
+  res.status(201).json(treeData)
 })
 
-// PUT /api/trees/:id - Update existing tree
+// PUT /api/trees/:id
 app.put('/api/trees/:id', async (req, res) => {
   try {
     const { id } = req.params
     const updateData = req.body
 
-    const updatedTree = await TreeModel.findOneAndUpdate(
-      { id },
-      { $set: updateData },
-      { returnDocument: 'after', upsert: true }
-    )
-
-    res.json(updatedTree)
+    if (isMongoConnected) {
+      const updatedTree = await TreeModel.findOneAndUpdate(
+        { id },
+        { $set: updateData },
+        { returnDocument: 'after', upsert: true }
+      )
+      return res.json(updatedTree)
+    }
   } catch (error) {
-    console.error(`Error updating tree ${req.params.id}:`, error)
-    res.status(500).json({ error: 'Failed to update tree' })
+    console.warn(`MongoDB update failed for tree ${req.params.id}, updating memory store:`, error.message)
   }
+
+  const { id } = req.params
+  memoryStore.trees[id] = req.body
+  res.json(req.body)
 })
 
-// DELETE /api/trees/:id - Delete a tree
+// DELETE /api/trees/:id
 app.delete('/api/trees/:id', async (req, res) => {
   try {
     const { id } = req.params
-    await TreeModel.deleteOne({ id })
 
-    const remainingTrees = await TreeModel.find().lean()
-    let nextSelectedId = ''
+    if (isMongoConnected) {
+      await TreeModel.deleteOne({ id })
 
-    if (remainingTrees.length === 0) {
-      const seed = generateSeedTree('Starter tree')
-      await TreeModel.create(seed)
-      nextSelectedId = seed.id
-    } else {
-      nextSelectedId = remainingTrees[0].id
-    }
+      const remainingTrees = await TreeModel.find().lean()
+      let nextSelectedId = ''
 
-    await WorkspaceConfigModel.findOneAndUpdate(
-      { key: 'main' },
-      { selectedTreeId: nextSelectedId },
-      { upsert: true }
-    )
-
-    const trees = {}
-    const updatedDocs = await TreeModel.find().lean()
-    for (const tree of updatedDocs) {
-      trees[tree.id] = {
-        id: tree.id,
-        title: tree.title,
-        rootId: tree.rootId,
-        selectedNodeId: tree.selectedNodeId,
-        nodes: tree.nodes || {},
-        positions: tree.positions || {},
-        definitions: tree.definitions || [],
+      if (remainingTrees.length === 0) {
+        const seed = generateSeedTree('Starter tree')
+        await TreeModel.create(seed)
+        nextSelectedId = seed.id
+      } else {
+        nextSelectedId = remainingTrees[0].id
       }
-    }
 
-    res.json({
-      selectedTreeId: nextSelectedId,
-      trees,
-    })
+      await WorkspaceConfigModel.findOneAndUpdate(
+        { key: 'main' },
+        { selectedTreeId: nextSelectedId },
+        { upsert: true }
+      )
+
+      const trees = {}
+      const updatedDocs = await TreeModel.find().lean()
+      for (const tree of updatedDocs) {
+        trees[tree.id] = {
+          id: tree.id,
+          title: tree.title,
+          rootId: tree.rootId,
+          selectedNodeId: tree.selectedNodeId,
+          nodes: tree.nodes || {},
+          positions: tree.positions || {},
+          definitions: tree.definitions || [],
+        }
+      }
+
+      return res.json({ selectedTreeId: nextSelectedId, trees })
+    }
   } catch (error) {
-    console.error(`Error deleting tree ${req.params.id}:`, error)
-    res.status(500).json({ error: 'Failed to delete tree' })
+    console.warn(`MongoDB delete failed for tree ${req.params.id}, updating memory store:`, error.message)
   }
+
+  const { id } = req.params
+  delete memoryStore.trees[id]
+  let nextSelectedId = ''
+
+  if (Object.keys(memoryStore.trees).length === 0) {
+    const seed = generateSeedTree('Starter tree')
+    memoryStore.trees[seed.id] = seed
+    nextSelectedId = seed.id
+  } else {
+    nextSelectedId = Object.keys(memoryStore.trees)[0]
+  }
+
+  memoryStore.selectedTreeId = nextSelectedId
+  res.json({ selectedTreeId: nextSelectedId, trees: memoryStore.trees })
 })
 
-// PUT /api/workspace/selected - Update selected tree ID
+// PUT /api/workspace/selected
 app.put('/api/workspace/selected', async (req, res) => {
   try {
     const { selectedTreeId } = req.body
@@ -148,17 +194,21 @@ app.put('/api/workspace/selected', async (req, res) => {
       return res.status(400).json({ error: 'selectedTreeId is required' })
     }
 
-    await WorkspaceConfigModel.findOneAndUpdate(
-      { key: 'main' },
-      { selectedTreeId },
-      { upsert: true }
-    )
-
-    res.json({ selectedTreeId })
+    if (isMongoConnected) {
+      await WorkspaceConfigModel.findOneAndUpdate(
+        { key: 'main' },
+        { selectedTreeId },
+        { upsert: true }
+      )
+      return res.json({ selectedTreeId })
+    }
   } catch (error) {
-    console.error('Error updating selected tree ID:', error)
-    res.status(500).json({ error: 'Failed to update selected tree ID' })
+    console.warn('MongoDB selected tree update failed, updating memory store:', error.message)
   }
+
+  const { selectedTreeId } = req.body
+  memoryStore.selectedTreeId = selectedTreeId
+  res.json({ selectedTreeId })
 })
 
 app.listen(PORT, () => {

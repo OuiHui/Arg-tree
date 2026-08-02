@@ -35,33 +35,29 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
 
   return (
     <div
-      className={`canvas-node ${isSelected ? 'selected' : ''}`}
+      className={`node-card ${isSelected ? 'is-selected' : ''} ${isRoot ? 'is-root' : ''}`}
       style={
         {
           '--node-accent': stanceColor,
-          cursor: 'pointer',
         } as React.CSSProperties
       }
       onClick={() => onSelectNode(node.id)}
     >
-      {/* Top Handle for incoming parent/connection edges */}
       <Handle
         type="target"
         position={Position.Top}
-        style={{
-          background: stanceColor,
-          width: 12,
-          height: 12,
-          border: '2px solid #07101d',
-        }}
+        className="node-handle node-handle-target"
       />
 
-      <div className="node-header">
-        <span className="node-badge">{isRoot ? 'Claim' : node.stance}</span>
-        <div className="node-header-controls">
+      <div className="node-card-header">
+        <span className={`badge badge-${isRoot ? 'claim' : node.stance}`}>
+          {isRoot ? 'Central Claim' : node.stance}
+        </span>
+
+        <div className="node-card-controls">
           <button
             type="button"
-            className="node-edit-button"
+            className="btn-node-action"
             onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation()
@@ -74,80 +70,77 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
           >
             {isEditing ? 'Done' : 'Edit'}
           </button>
+
           {!isRoot && (
             <button
               type="button"
-              className="node-delete-button"
-              title="Delete argument"
-              aria-label="Delete argument"
+              className="btn-node-delete"
+              title="Delete node"
+              aria-label="Delete node"
               onPointerDown={(e) => e.stopPropagation()}
               onClick={(e) => {
                 e.stopPropagation()
                 onDeleteNode(node.id)
               }}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2h4a2 2 0 0 1 2 2v2"></path>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           )}
         </div>
       </div>
 
-      {isEditing ? (
-        <textarea
-          className="node-text-editor nodrag"
-          value={node.text}
-          onPointerDown={(e) => e.stopPropagation()}
-          onChange={(e) => onUpdateNodeText(node.id, e.target.value)}
-          rows={3}
-          autoFocus
-        />
-      ) : (
-        <p className="node-text">{node.text}</p>
-      )}
+      <div className="node-card-body">
+        {isEditing ? (
+          <textarea
+            className="node-textarea nodrag"
+            value={node.text}
+            onPointerDown={(e) => e.stopPropagation()}
+            onChange={(e) => onUpdateNodeText(node.id, e.target.value)}
+            rows={3}
+            autoFocus
+          />
+        ) : (
+          <p className="node-text">{node.text}</p>
+        )}
+      </div>
 
-      <div className="node-actions" onPointerDown={(e) => e.stopPropagation()}>
+      <div className="node-card-footer" onPointerDown={(e) => e.stopPropagation()}>
         <button
           type="button"
-          className="node-branch-button support"
-          style={{ flex: 1 }}
+          className="btn-branch btn-branch-support"
           onClick={(e) => {
             e.stopPropagation()
             onAddBranchFromNode(node.id, 'support')
           }}
         >
-          Support +
+          + Support
         </button>
 
         <button
           type="button"
-          className="node-branch-button attack"
-          style={{ flex: 1 }}
+          className="btn-branch btn-branch-attack"
           onClick={(e) => {
             e.stopPropagation()
             onAddBranchFromNode(node.id, 'attack')
           }}
         >
-          Attack +
+          + Attack
         </button>
       </div>
 
       {node.connectionIds.length > 0 && (
-        <span className="node-footnote">{node.connectionIds.length} cross-link(s)</span>
+        <div className="node-crosslinks-indicator">
+          <span>{node.connectionIds.length} cross-link{node.connectionIds.length > 1 ? 's' : ''}</span>
+        </div>
       )}
 
-      {/* Main bottom source handle */}
       <Handle
         type="source"
         position={Position.Bottom}
-        style={{
-          background: stanceColor,
-          width: 12,
-          height: 12,
-          border: '2px solid #07101d',
-        }}
+        className="node-handle node-handle-source"
       />
     </div>
   )
