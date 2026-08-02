@@ -1,13 +1,15 @@
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, useState, useEffect } from 'react'
 import {
   ReactFlow,
   Background,
   Controls,
   BaseEdge,
   getSmoothStepPath,
+  applyNodeChanges,
   type Node,
   type Edge,
   type Connection,
+  type NodeChange,
   MarkerType,
   type NodeTypes,
   type EdgeProps,
@@ -153,7 +155,7 @@ export function WorkspaceStage({
   onAddDefinition,
   onDeleteDefinition,
 }: WorkspaceStageProps) {
-  const nodes = useMemo(
+  const targetNodes = useMemo(
     () =>
       buildNodes(
         selectedTree,
@@ -176,6 +178,16 @@ export function WorkspaceStage({
       onAddBranchFromNode,
     ],
   )
+
+  const [nodes, setNodes] = useState<Node[]>(targetNodes)
+
+  useEffect(() => {
+    setNodes(targetNodes)
+  }, [targetNodes])
+
+  const handleNodesChange = useCallback((changes: NodeChange[]) => {
+    setNodes((nds) => applyNodeChanges(changes, nds))
+  }, [])
 
   const edges = useMemo(
     () => buildEdges(selectedTree, selectedEdgeId),
@@ -219,6 +231,7 @@ export function WorkspaceStage({
           edges={edges}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
+          onNodesChange={handleNodesChange}
           onNodeDragStop={handleNodeDragStop}
           onConnect={handleConnect}
           onEdgeClick={handleEdgeClick}
