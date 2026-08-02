@@ -4,7 +4,7 @@ import {
   Background,
   Controls,
   BaseEdge,
-  getSmoothStepPath,
+  getBezierPath,
   applyNodeChanges,
   type Node,
   type Edge,
@@ -46,7 +46,7 @@ const nodeTypes: NodeTypes = {
 }
 
 function CustomArgumentEdge(props: EdgeProps) {
-  const [edgePath] = getSmoothStepPath(props)
+  const [edgePath] = getBezierPath(props)
   return (
     <BaseEdge
       id={props.id}

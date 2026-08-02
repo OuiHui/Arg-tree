@@ -1,5 +1,4 @@
 import type { Point, Stance, TreeState, WorkspaceState, ArgumentNode } from './types/argtree'
-import { autoLayoutTree } from './utils/autoLayout'
 
 export * from './types/argtree'
 export * from './utils/autoLayout'

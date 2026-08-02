@@ -1,4 +1,5 @@
-import { createId, type Stance, type TreeState } from '../types/argtree'
+import { createId } from '../argtree'
+import type { Stance, TreeState } from '../types/argtree'
 
 export function updateNodeTextInTree(currentTree: TreeState, nodeId: string, text: string): TreeState {
   if (!currentTree.nodes[nodeId]) return currentTree
