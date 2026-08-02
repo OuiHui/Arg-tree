@@ -5,6 +5,7 @@ import { useWorkspace } from './hooks/useWorkspace'
 import { Header } from './components/Header'
 import { WorkspaceStage } from './components/WorkspaceStage'
 import { NewTreeModal } from './components/NewTreeModal'
+import { TreeManagerModal } from './components/TreeManagerModal'
 
 function App() {
   const {
@@ -15,7 +16,9 @@ function App() {
     selectedEdgeId,
     definitionsCollapsed,
     isNewTreeModalOpen,
+    isTreeManagerOpen,
     setIsNewTreeModalOpen,
+    setIsTreeManagerOpen,
     setEditingNodeId,
     handleSelectTreeId,
     handleEditNode,
@@ -33,6 +36,10 @@ function App() {
     deleteNode,
     deleteDefinition,
     deleteTree,
+    deleteMultipleTrees,
+    renameTree,
+    duplicateTree,
+    cleanUpEmptyTrees,
     setSelectedEdgeId,
     setDefinitionsCollapsed,
   } = useWorkspace()
@@ -53,7 +60,9 @@ function App() {
           treeList={treeList}
           selectedTreeId={selectedTree.id}
           onSelectTreeId={handleSelectTreeId}
+          onRenameTree={renameTree}
           onOpenNewTreeModal={() => setIsNewTreeModalOpen(true)}
+          onOpenTreeManager={() => setIsTreeManagerOpen(true)}
           onAutoLayout={handleAutoLayout}
           onResetWorkspace={resetWorkspace}
           onDeleteTree={deleteTree}
@@ -84,6 +93,20 @@ function App() {
           isOpen={isNewTreeModalOpen}
           onClose={() => setIsNewTreeModalOpen(false)}
           onCreateTree={createTree}
+        />
+
+        <TreeManagerModal
+          isOpen={isTreeManagerOpen}
+          treeList={treeList}
+          selectedTreeId={selectedTree.id}
+          onClose={() => setIsTreeManagerOpen(false)}
+          onSelectTree={handleSelectTreeId}
+          onRenameTree={renameTree}
+          onDuplicateTree={duplicateTree}
+          onDeleteTree={deleteTree}
+          onDeleteMultipleTrees={deleteMultipleTrees}
+          onCleanUpEmptyTrees={cleanUpEmptyTrees}
+          onOpenNewTreeModal={() => setIsNewTreeModalOpen(true)}
         />
       </div>
     </ReactFlowProvider>

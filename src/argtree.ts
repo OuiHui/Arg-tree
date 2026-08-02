@@ -321,6 +321,49 @@ export const createEmptyTree = (title: string, rootText: string): TreeState => {
   }
 }
 
+export const cloneTree = (sourceTree: TreeState, newTitle?: string): TreeState => {
+  const newTreeId = createId()
+  const idMap: Record<string, string> = {}
+
+  Object.keys(sourceTree.nodes).forEach((oldId) => {
+    idMap[oldId] = createId()
+  })
+
+  const newNodes: Record<string, ArgumentNode> = {}
+  const newPositions: Record<string, Point> = {}
+
+  Object.entries(sourceTree.nodes).forEach(([oldId, node]) => {
+    const freshId = idMap[oldId]
+    newNodes[freshId] = {
+      ...node,
+      id: freshId,
+      childIds: node.childIds.map((cid) => idMap[cid] || cid),
+      connectionIds: node.connectionIds.map((cid) => idMap[cid] || cid),
+    }
+    if (sourceTree.positions[oldId]) {
+      newPositions[freshId] = { ...sourceTree.positions[oldId] }
+    }
+  })
+
+  const newRootId = idMap[sourceTree.rootId] || Object.keys(newNodes)[0] || createId()
+  const newSelectedNodeId = idMap[sourceTree.selectedNodeId] || newRootId
+
+  const newDefinitions = sourceTree.definitions.map((def) => ({
+    ...def,
+    id: idMap[def.id] || createId(),
+  }))
+
+  return {
+    id: newTreeId,
+    title: newTitle || `Copy of ${sourceTree.title}`,
+    rootId: newRootId,
+    selectedNodeId: newSelectedNodeId,
+    nodes: newNodes,
+    positions: newPositions,
+    definitions: newDefinitions,
+  }
+}
+
 export const seedWorkspace = (): WorkspaceState => {
   const tree = seedTree('Starter tree')
 

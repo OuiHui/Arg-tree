@@ -42,6 +42,47 @@
   position: relative;
 }
 
+.active-tree-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-icon-subtle {
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  padding: 4px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-icon-subtle:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-surface-hover);
+}
+
+.header-rename-form {
+  display: flex;
+  align-items: center;
+}
+
+.header-rename-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border-focus);
+  border-radius: 6px;
+  color: var(--text-primary);
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  width: 220px;
+}
+
 .tree-select {
   background-color: var(--bg-app);
   border: 1px solid var(--border-subtle);

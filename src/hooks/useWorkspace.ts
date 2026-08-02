@@ -5,6 +5,7 @@ import {
   seedWorkspace,
   seedTree,
   autoLayoutTree,
+  cloneTree,
   type Stance,
   type TreeState,
   type WorkspaceState,
@@ -24,6 +25,7 @@ export function useWorkspace() {
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null)
   const [definitionsCollapsed, setDefinitionsCollapsed] = useState(false)
   const [isNewTreeModalOpen, setIsNewTreeModalOpen] = useState(false)
+  const [isTreeManagerOpen, setIsTreeManagerOpen] = useState(false)
 
   useEffect(() => {
     let isMounted = true
@@ -415,6 +417,88 @@ export function useWorkspace() {
     }))
   }, [updateSelectedTree])
 
+  const renameTree = useCallback((treeId: string, newTitle: string) => {
+    const trimmedTitle = newTitle.trim()
+    if (!trimmedTitle) return
+
+    setWorkspace((current) => {
+      const tree = current.trees[treeId]
+      if (!tree) return current
+
+      const updatedTree = { ...tree, title: trimmedTitle }
+      updateTreeApi(updatedTree).catch((err) => {
+        console.error(`Failed to rename tree ${treeId} in database:`, err)
+      })
+
+      return {
+        ...current,
+        trees: {
+          ...current.trees,
+          [treeId]: updatedTree,
+        },
+      }
+    })
+  }, [])
+
+  const duplicateTree = useCallback((treeIdToDuplicate: string) => {
+    setWorkspace((current) => {
+      const sourceTree = current.trees[treeIdToDuplicate]
+      if (!sourceTree) return current
+
+      const newTree = cloneTree(sourceTree)
+      createTreeApi(newTree).catch((err) => {
+        console.error(`Failed to duplicate tree ${newTree.id} in database:`, err)
+      })
+
+      return {
+        ...current,
+        selectedTreeId: newTree.id,
+        trees: {
+          ...current.trees,
+          [newTree.id]: newTree,
+        },
+      }
+    })
+  }, [])
+
+  const cleanUpEmptyTrees = useCallback(() => {
+    setWorkspace((current) => {
+      const allTrees = Object.values(current.trees)
+      if (allTrees.length <= 1) return current
+
+      const keepTrees: Record<string, TreeState> = {}
+      const deleteIds: string[] = []
+
+      allTrees.forEach((tree) => {
+        const isDefaultTitle = tree.title === 'Untitled tree' || tree.title === 'Starter tree'
+        const nodeCount = Object.keys(tree.nodes).length
+        const isMinimalNode = nodeCount <= 1 || (nodeCount <= 4 && tree.title === 'Starter tree')
+
+        if (tree.id !== current.selectedTreeId && isDefaultTitle && isMinimalNode) {
+          deleteIds.push(tree.id)
+        } else {
+          keepTrees[tree.id] = tree
+        }
+      })
+
+      if (deleteIds.length === 0) return current
+
+      deleteIds.forEach((id) => {
+        deleteTreeApi(id).catch((err) => console.error('Failed to cleanup tree:', err))
+      })
+
+      let nextSelectedId = current.selectedTreeId
+      if (!keepTrees[nextSelectedId]) {
+        nextSelectedId = Object.keys(keepTrees)[0] || current.selectedTreeId
+      }
+
+      return {
+        selectedTreeId: nextSelectedId,
+        trees: keepTrees,
+      }
+    })
+  }, [])
+
   const deleteTree = useCallback((treeIdToDelete: string) => {
     deleteTreeApi(treeIdToDelete)
       .then((updatedWorkspace) => {
@@ -423,6 +507,37 @@ export function useWorkspace() {
       .catch((err) => {
         console.error(`Failed to delete tree ${treeIdToDelete} from database:`, err)
       })
+  }, [])
+
+  const deleteMultipleTrees = useCallback((treeIdsToDelete: string[]) => {
+    if (treeIdsToDelete.length === 0) return
+
+    setWorkspace((current) => {
+      const remaining = { ...current.trees }
+      treeIdsToDelete.forEach((id) => {
+        delete remaining[id]
+        deleteTreeApi(id).catch((err) => {
+          console.error(`Failed to delete tree ${id} from database:`, err)
+        })
+      })
+
+      let nextSelectedId = current.selectedTreeId
+      if (!remaining[nextSelectedId]) {
+        nextSelectedId = Object.keys(remaining)[0] || ''
+      }
+
+      if (Object.keys(remaining).length === 0) {
+        const seed = seedTree('Starter tree')
+        remaining[seed.id] = seed
+        nextSelectedId = seed.id
+        createTreeApi(seed).catch((err) => console.error('Failed to seed replacement tree:', err))
+      }
+
+      return {
+        selectedTreeId: nextSelectedId,
+        trees: remaining,
+      }
+    })
   }, [])
 
   useEffect(() => {
@@ -457,7 +572,9 @@ export function useWorkspace() {
     selectedEdgeId,
     definitionsCollapsed,
     isNewTreeModalOpen,
+    isTreeManagerOpen,
     setIsNewTreeModalOpen,
+    setIsTreeManagerOpen,
     setEditingNodeId,
     setSelectedEdgeId,
     setDefinitionsCollapsed,
@@ -477,5 +594,9 @@ export function useWorkspace() {
     deleteNode,
     deleteDefinition,
     deleteTree,
+    deleteMultipleTrees,
+    renameTree,
+    duplicateTree,
+    cleanUpEmptyTrees,
   }
 }
