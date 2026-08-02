@@ -22,6 +22,7 @@ function App() {
     updateNodeText,
     addBranchFromNode,
     addConnection,
+    linkChildNode,
     handleAutoLayout,
     updateNodePosition,
     addDefinition,
@@ -68,6 +69,7 @@ function App() {
           onSelectNode={handleSelectNode}
           onAddBranchFromNode={addBranchFromNode}
           onAddConnection={addConnection}
+          onLinkChildNode={linkChildNode}
           definitionsCollapsed={definitionsCollapsed}
           onToggleDefinitionsCollapsed={() => setDefinitionsCollapsed((prev) => !prev)}
           onUpdateNodePosition={updateNodePosition}

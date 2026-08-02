@@ -202,6 +202,61 @@ export function useWorkspace() {
     })
   }, [updateSelectedTree])
 
+  const linkChildNode = useCallback((parentId: string, childId: string, stance: Stance) => {
+    if (parentId === childId) return
+
+    updateSelectedTree((currentTree) => {
+      const parentNode = currentTree.nodes[parentId]
+      const childNode = currentTree.nodes[childId]
+      if (!parentNode || !childNode) return currentTree
+
+      const isAncestor = (nodeId: string, targetId: string): boolean => {
+        const n = currentTree.nodes[nodeId]
+        if (!n) return false
+        if (n.childIds.includes(targetId)) return true
+        return n.childIds.some((cid) => isAncestor(cid, targetId))
+      }
+
+      if (isAncestor(childId, parentId)) {
+        return currentTree
+      }
+
+      const nextNodes = { ...currentTree.nodes }
+
+      Object.keys(nextNodes).forEach((key) => {
+        const n = nextNodes[key]
+        if (n.childIds.includes(childId)) {
+          nextNodes[key] = {
+            ...n,
+            childIds: n.childIds.filter((cid) => cid !== childId),
+          }
+        }
+      })
+
+      const updatedParent = nextNodes[parentId] ?? parentNode
+      const updatedChild = nextNodes[childId] ?? childNode
+
+      nextNodes[parentId] = {
+        ...updatedParent,
+        childIds: updatedParent.childIds.includes(childId)
+          ? updatedParent.childIds
+          : [...updatedParent.childIds, childId],
+        connectionIds: updatedParent.connectionIds.filter((cid) => cid !== childId),
+      }
+
+      nextNodes[childId] = {
+        ...updatedChild,
+        stance,
+        connectionIds: updatedChild.connectionIds.filter((cid) => cid !== parentId),
+      }
+
+      return {
+        ...currentTree,
+        nodes: nextNodes,
+      }
+    })
+  }, [updateSelectedTree])
+
   const handleAutoLayout = useCallback(() => {
     updateSelectedTree((currentTree) => ({
       ...currentTree,
@@ -411,6 +466,7 @@ export function useWorkspace() {
     updateNodeText,
     addBranchFromNode,
     addConnection,
+    linkChildNode,
     handleAutoLayout,
     updateNodePosition,
     addDefinition,

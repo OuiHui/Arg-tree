@@ -5,6 +5,7 @@ import { type Stance, type ArgumentNode as ArgNode, palette } from '../argtree'
 export type ArgumentNodeData = {
   node: ArgNode
   isRoot: boolean
+  isOrphan: boolean
   isSelected: boolean
   isEditing: boolean
   onSelectNode: (nodeId: string) => void
@@ -21,6 +22,7 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
   const {
     node,
     isRoot,
+    isOrphan,
     isSelected,
     isEditing,
     onSelectNode,
@@ -35,7 +37,7 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
 
   return (
     <div
-      className={`node-card ${isSelected ? 'is-selected' : ''} ${isRoot ? 'is-root' : ''}`}
+      className={`node-card ${isSelected ? 'is-selected' : ''} ${isRoot ? 'is-root' : ''} ${isOrphan ? 'is-orphan' : ''}`}
       style={
         {
           '--node-accent': stanceColor,
@@ -46,13 +48,24 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
       <Handle
         type="target"
         position={Position.Top}
+        id="top-target"
         className="node-handle node-handle-target"
       />
 
       <div className="node-card-header">
-        <span className={`badge badge-${isRoot ? 'claim' : node.stance}`}>
-          {isRoot ? 'Central Claim' : node.stance}
-        </span>
+        <div className="node-card-badges">
+          <span className={`badge badge-${isRoot ? 'claim' : node.stance}`}>
+            {isRoot ? 'Central Claim' : node.stance}
+          </span>
+          {isOrphan && (
+            <span
+              className="badge badge-orphan"
+              title="Unattached node. Drag to/from Support or Attack handles to link."
+            >
+              Orphaned
+            </span>
+          )}
+        </div>
 
         <div className="node-card-controls">
           <button
@@ -108,27 +121,59 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
       </div>
 
       <div className="node-card-footer" onPointerDown={(e) => e.stopPropagation()}>
-        <button
-          type="button"
-          className="btn-branch btn-branch-support"
-          onClick={(e) => {
-            e.stopPropagation()
-            onAddBranchFromNode(node.id, 'support')
-          }}
-        >
-          + Support
-        </button>
+        <div className="btn-branch-wrapper">
+          <Handle
+            type="target"
+            position={Position.Bottom}
+            id="support-target"
+            className="btn-branch-handle handle-support"
+            title="Drag from a node here to link as Support"
+          />
+          <Handle
+            type="source"
+            position={Position.Bottom}
+            id="support-source"
+            className="btn-branch-handle handle-support"
+            title="Drag from here to a node to link as Support"
+          />
+          <button
+            type="button"
+            className="btn-branch btn-branch-support"
+            onClick={(e) => {
+              e.stopPropagation()
+              onAddBranchFromNode(node.id, 'support')
+            }}
+          >
+            + Support
+          </button>
+        </div>
 
-        <button
-          type="button"
-          className="btn-branch btn-branch-attack"
-          onClick={(e) => {
-            e.stopPropagation()
-            onAddBranchFromNode(node.id, 'attack')
-          }}
-        >
-          + Attack
-        </button>
+        <div className="btn-branch-wrapper">
+          <Handle
+            type="target"
+            position={Position.Bottom}
+            id="attack-target"
+            className="btn-branch-handle handle-attack"
+            title="Drag from a node here to link as Attack"
+          />
+          <Handle
+            type="source"
+            position={Position.Bottom}
+            id="attack-source"
+            className="btn-branch-handle handle-attack"
+            title="Drag from here to a node to link as Attack"
+          />
+          <button
+            type="button"
+            className="btn-branch btn-branch-attack"
+            onClick={(e) => {
+              e.stopPropagation()
+              onAddBranchFromNode(node.id, 'attack')
+            }}
+          >
+            + Attack
+          </button>
+        </div>
       </div>
 
       {node.connectionIds.length > 0 && (
@@ -140,6 +185,7 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
       <Handle
         type="source"
         position={Position.Bottom}
+        id="bottom-source"
         className="node-handle node-handle-source"
       />
     </div>

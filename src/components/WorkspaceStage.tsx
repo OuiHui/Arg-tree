@@ -30,6 +30,7 @@ type WorkspaceStageProps = {
   onSelectNode: (nodeId: string) => void
   onAddBranchFromNode: (parentNodeId: string, stance: Stance) => void
   onAddConnection: (sourceNodeId: string, targetNodeId: string) => void
+  onLinkChildNode: (parentId: string, childId: string, stance: Stance) => void
   definitionsCollapsed: boolean
   onToggleDefinitionsCollapsed: () => void
   onUpdateNodePosition: (nodeId: string, x: number, y: number) => void
@@ -74,6 +75,10 @@ function buildNodes(
   onDeleteNode: (id: string) => void,
   onAddBranchFromNode: (parentId: string, stance: Stance) => void,
 ): Node[] {
+  const attachedChildIds = new Set(
+    Object.values(selectedTree.nodes).flatMap((n) => n.childIds),
+  )
+
   return Object.values(selectedTree.nodes).map((node) => ({
     id: node.id,
     type: 'argumentNode',
@@ -83,6 +88,7 @@ function buildNodes(
     data: {
       node,
       isRoot: node.id === selectedTree.rootId,
+      isOrphan: node.id !== selectedTree.rootId && !attachedChildIds.has(node.id),
       isSelected: node.id === selectedTree.selectedNodeId,
       isEditing: editingNodeId === node.id,
       onSelectNode,
@@ -104,11 +110,14 @@ function buildEdges(selectedTree: TreeState, selectedEdgeId: string | null): Edg
       const color = palette[stance as Stance] ?? palette.support
       const edgeId = `edge-${parentNode.id}-${childId}`
       const isSelected = selectedEdgeId === edgeId
+      const sourceHandle = stance === 'attack' ? 'attack-source' : 'support-source'
 
       edges.push({
         id: edgeId,
         source: parentNode.id,
+        sourceHandle,
         target: childId,
+        targetHandle: 'top-target',
         type: 'smoothstep',
         style: { stroke: isSelected ? '#ffffff' : color, strokeWidth: isSelected ? 4 : 3 },
         markerEnd: { type: MarkerType.ArrowClosed, color: isSelected ? '#ffffff' : color, width: 14, height: 14 },
@@ -121,7 +130,9 @@ function buildEdges(selectedTree: TreeState, selectedEdgeId: string | null): Edg
       edges.push({
         id: edgeId,
         source: parentNode.id,
+        sourceHandle: 'bottom-source',
         target: connId,
+        targetHandle: 'top-target',
         type: 'smoothstep',
         animated: true,
         style: {
@@ -146,6 +157,7 @@ export function WorkspaceStage({
   onSelectNode,
   onAddBranchFromNode,
   onAddConnection,
+  onLinkChildNode,
   definitionsCollapsed,
   onToggleDefinitionsCollapsed,
   onUpdateNodePosition,
@@ -204,9 +216,27 @@ export function WorkspaceStage({
   const handleConnect = useCallback(
     (params: Connection) => {
       if (!params.source || !params.target || params.source === params.target) return
-      onAddConnection(params.source, params.target)
+
+      const { source, target, sourceHandle, targetHandle } = params
+
+      const isSourceSupport = sourceHandle?.includes('support')
+      const isTargetSupport = targetHandle?.includes('support')
+      const isSourceAttack = sourceHandle?.includes('attack')
+      const isTargetAttack = targetHandle?.includes('attack')
+
+      if (isSourceSupport) {
+        onLinkChildNode(source, target, 'support')
+      } else if (isTargetSupport) {
+        onLinkChildNode(target, source, 'support')
+      } else if (isSourceAttack) {
+        onLinkChildNode(source, target, 'attack')
+      } else if (isTargetAttack) {
+        onLinkChildNode(target, source, 'attack')
+      } else {
+        onAddConnection(source, target)
+      }
     },
-    [onAddConnection],
+    [onAddConnection, onLinkChildNode],
   )
 
   const handleEdgeClick = useCallback(
