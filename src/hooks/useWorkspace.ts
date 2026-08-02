@@ -17,6 +17,7 @@ import {
   updateSelectedTreeIdApi,
 } from '../api'
 import { useUrlTreeSync } from './useUrlTreeSync'
+import { useUndoRedo } from './useUndoRedo'
 import {
   updateNodeTextInTree,
   addBranchToTree,
@@ -36,6 +37,8 @@ export function useWorkspace() {
   const [definitionsCollapsed, setDefinitionsCollapsed] = useState(false)
   const [isNewTreeModalOpen, setIsNewTreeModalOpen] = useState(false)
   const [isTreeManagerOpen, setIsTreeManagerOpen] = useState(false)
+
+  const { recordState, undo, redo, getCanUndo, getCanRedo } = useUndoRedo()
 
   // Fetch initial workspace & sync URL state
   useEffect(() => {
@@ -153,33 +156,39 @@ export function useWorkspace() {
   }, [updateSelectedTree])
 
   const updateNodeText = useCallback((nodeId: string, text: string) => {
+    recordState(selectedTree.id, selectedTree, 'text')
     updateSelectedTree((tree) => updateNodeTextInTree(tree, nodeId, text))
-  }, [updateSelectedTree])
+  }, [recordState, selectedTree, updateSelectedTree])
 
   const addBranchFromNode = useCallback((parentNodeId: string, stance: Stance) => {
+    recordState(selectedTree.id, selectedTree, 'addBranch')
     updateSelectedTree((currentTree) => {
       const { tree, newNodeId } = addBranchToTree(currentTree, parentNodeId, stance)
       setEditingNodeId(newNodeId)
       return tree
     })
-  }, [updateSelectedTree])
+  }, [recordState, selectedTree, updateSelectedTree])
 
   const addConnection = useCallback((sourceNodeId: string, targetNodeId: string) => {
+    recordState(selectedTree.id, selectedTree, 'addConnection')
     updateSelectedTree((tree) => addConnectionToTree(tree, sourceNodeId, targetNodeId))
-  }, [updateSelectedTree])
+  }, [recordState, selectedTree, updateSelectedTree])
 
   const linkChildNode = useCallback((parentId: string, childId: string, stance: Stance) => {
+    recordState(selectedTree.id, selectedTree, 'linkChild')
     updateSelectedTree((tree) => linkChildNodeInTree(tree, parentId, childId, stance))
-  }, [updateSelectedTree])
+  }, [recordState, selectedTree, updateSelectedTree])
 
   const handleAutoLayout = useCallback(() => {
+    recordState(selectedTree.id, selectedTree, 'autoLayout')
     updateSelectedTree((currentTree) => ({
       ...currentTree,
       positions: autoLayoutTree(currentTree),
     }))
-  }, [updateSelectedTree])
+  }, [recordState, selectedTree, updateSelectedTree])
 
   const updateNodePosition = useCallback((nodeId: string, x: number, y: number) => {
+    recordState(selectedTree.id, selectedTree, 'moveNode')
     updateSelectedTree((currentTree) => ({
       ...currentTree,
       positions: {
@@ -187,11 +196,12 @@ export function useWorkspace() {
         [nodeId]: { x, y },
       },
     }))
-  }, [updateSelectedTree])
+  }, [recordState, selectedTree, updateSelectedTree])
 
   const addDefinition = useCallback((term: string, description: string) => {
+    recordState(selectedTree.id, selectedTree, 'addDefinition')
     updateSelectedTree((tree) => addDefinitionToTree(tree, term, description))
-  }, [updateSelectedTree])
+  }, [recordState, selectedTree, updateSelectedTree])
 
   const createTree = useCallback((titleInput: string, claimInput: string) => {
     const title = titleInput.trim() || 'Untitled tree'
@@ -236,19 +246,22 @@ export function useWorkspace() {
   }, [updateSelectedTree])
 
   const deleteEdge = useCallback((edgeIdToDelete: string) => {
+    recordState(selectedTree.id, selectedTree, 'deleteEdge')
     updateSelectedTree((tree) => deleteEdgeFromTree(tree, edgeIdToDelete))
     setSelectedEdgeId((prev) => (prev === edgeIdToDelete ? null : prev))
-  }, [updateSelectedTree])
+  }, [recordState, selectedTree, updateSelectedTree])
 
   const deleteNode = useCallback((nodeIdToDelete: string) => {
     if (nodeIdToDelete === selectedTree.rootId) return
+    recordState(selectedTree.id, selectedTree, 'deleteNode')
     updateSelectedTree((tree) => deleteNodeFromTree(tree, nodeIdToDelete))
     setEditingNodeId((prev) => (prev === nodeIdToDelete ? null : prev))
-  }, [selectedTree.rootId, updateSelectedTree])
+  }, [recordState, selectedTree, updateSelectedTree])
 
   const deleteDefinition = useCallback((definitionId: string) => {
+    recordState(selectedTree.id, selectedTree, 'deleteDefinition')
     updateSelectedTree((tree) => deleteDefinitionFromTree(tree, definitionId))
-  }, [updateSelectedTree])
+  }, [recordState, selectedTree, updateSelectedTree])
 
   const renameTree = useCallback((treeId: string, newTitle: string) => {
     const trimmedTitle = newTitle.trim()
@@ -258,6 +271,7 @@ export function useWorkspace() {
       const tree = current.trees[treeId]
       if (!tree) return current
 
+      recordState(treeId, tree, 'renameTree')
       const updatedTree = { ...tree, title: trimmedTitle }
       updateTreeApi(updatedTree).catch((err) => {
         console.error(`Failed to rename tree ${treeId} in database:`, err)
@@ -271,7 +285,7 @@ export function useWorkspace() {
         },
       }
     })
-  }, [])
+  }, [recordState])
 
   const duplicateTree = useCallback((treeIdToDuplicate: string) => {
     setWorkspace((current) => {
@@ -373,14 +387,66 @@ export function useWorkspace() {
     })
   }, [])
 
-  // Global delete hotkey
+  const handleUndo = useCallback(() => {
+    const previousTree = undo(selectedTree.id, selectedTree)
+    if (previousTree) {
+      setWorkspace((current) => ({
+        ...current,
+        trees: {
+          ...current.trees,
+          [previousTree.id]: previousTree,
+        },
+      }))
+    }
+  }, [selectedTree, undo])
+
+  const handleRedo = useCallback(() => {
+    const nextTree = redo(selectedTree.id, selectedTree)
+    if (nextTree) {
+      setWorkspace((current) => ({
+        ...current,
+        trees: {
+          ...current.trees,
+          [nextTree.id]: nextTree,
+        },
+      }))
+    }
+  }, [selectedTree, redo])
+
+  const canUndo = getCanUndo(selectedTree.id)
+  const canRedo = getCanRedo(selectedTree.id)
+
+  // Global keydown handler for Delete/Backspace and Undo/Redo shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Delete' || event.key === 'Backspace') {
-        const activeElement = document.activeElement
-        const isInputActive =
-          activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement
+      const activeElement = document.activeElement
+      const isInputActive =
+        activeElement instanceof HTMLInputElement ||
+        activeElement instanceof HTMLTextAreaElement ||
+        (activeElement instanceof HTMLElement && activeElement.isContentEditable)
 
+      const isCmdOrCtrl = event.metaKey || event.ctrlKey
+
+      if (isCmdOrCtrl) {
+        if (event.key.toLowerCase() === 'z') {
+          if (isInputActive) return
+          event.preventDefault()
+          if (event.shiftKey) {
+            handleRedo()
+          } else {
+            handleUndo()
+          }
+          return
+        }
+        if (event.key.toLowerCase() === 'y' && !event.shiftKey) {
+          if (isInputActive) return
+          event.preventDefault()
+          handleRedo()
+          return
+        }
+      }
+
+      if (event.key === 'Delete' || event.key === 'Backspace') {
         if (isInputActive) return
 
         if (selectedEdgeId) {
@@ -395,7 +461,7 @@ export function useWorkspace() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [deleteEdge, deleteNode, selectedEdgeId, selectedTree.selectedNodeId, selectedTree.rootId])
+  }, [deleteEdge, deleteNode, handleRedo, handleUndo, selectedEdgeId, selectedTree.selectedNodeId, selectedTree.rootId])
 
   return {
     workspace,
@@ -407,6 +473,10 @@ export function useWorkspace() {
     definitionsCollapsed,
     isNewTreeModalOpen,
     isTreeManagerOpen,
+    canUndo,
+    canRedo,
+    handleUndo,
+    handleRedo,
     setIsNewTreeModalOpen,
     setIsTreeManagerOpen,
     setEditingNodeId,
@@ -434,3 +504,4 @@ export function useWorkspace() {
     cleanUpEmptyTrees,
   }
 }
+

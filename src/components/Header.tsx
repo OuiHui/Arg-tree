@@ -4,24 +4,30 @@ import { type TreeState } from '../argtree'
 type HeaderProps = {
   treeList: TreeState[]
   selectedTreeId: string
+  canUndo?: boolean
+  canRedo?: boolean
+  onUndo?: () => void
+  onRedo?: () => void
   onSelectTreeId: (treeId: string) => void
   onRenameTree: (treeId: string, newTitle: string) => void
   onOpenNewTreeModal: () => void
   onOpenTreeManager: () => void
   onAutoLayout: () => void
-  onResetWorkspace: () => void
   onDeleteTree: (treeId: string) => void
 }
 
 export function Header({
   treeList,
   selectedTreeId,
+  canUndo = false,
+  canRedo = false,
+  onUndo,
+  onRedo,
   onSelectTreeId,
   onRenameTree,
   onOpenNewTreeModal,
   onOpenTreeManager,
   onAutoLayout,
-  onResetWorkspace,
   onDeleteTree,
 }: HeaderProps) {
   const selectedTree = treeList.find((t) => t.id === selectedTreeId)
@@ -88,7 +94,7 @@ export function Header({
               >
                 {treeList.map((tree) => (
                   <option key={tree.id} value={tree.id}>
-                    {tree.title} ({Object.keys(tree.nodes).length} nodes)
+                    {tree.title}
                   </option>
                 ))}
                 <option value="__MANAGE__">⚙ Manage All Trees...</option>
@@ -106,12 +112,48 @@ export function Header({
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
               </button>
+
+              {selectedTree && (
+                <span className="tree-meta-badge" title="Total nodes in current tree">
+                  {Object.keys(selectedTree.nodes).length} {Object.keys(selectedTree.nodes).length === 1 ? 'node' : 'nodes'}
+                </span>
+              )}
             </div>
           )}
         </div>
       </div>
 
       <div className="header-actions">
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={onUndo}
+          disabled={!canUndo}
+          title="Undo (Ctrl+Z)"
+          aria-label="Undo action"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 7v6h6" />
+            <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+          </svg>
+          <span>Undo</span>
+        </button>
+
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={onRedo}
+          disabled={!canRedo}
+          title="Redo (Ctrl+Y or Ctrl+Shift+Z)"
+          aria-label="Redo action"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 7v6h-6" />
+            <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />
+          </svg>
+          <span>Redo</span>
+        </button>
+
         <button
           type="button"
           className="btn btn-secondary"
@@ -156,15 +198,6 @@ export function Header({
           <span>Auto Layout</span>
         </button>
 
-        <button
-          type="button"
-          className="btn btn-ghost"
-          onClick={onResetWorkspace}
-          title="Reset workspace to default starter tree"
-        >
-          Reset Sample
-        </button>
-
         {treeList.length > 1 && (
           <button
             type="button"
@@ -179,3 +212,4 @@ export function Header({
     </header>
   )
 }
+

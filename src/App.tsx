@@ -17,6 +17,10 @@ function App() {
     definitionsCollapsed,
     isNewTreeModalOpen,
     isTreeManagerOpen,
+    canUndo,
+    canRedo,
+    handleUndo,
+    handleRedo,
     setIsNewTreeModalOpen,
     setIsTreeManagerOpen,
     setEditingNodeId,
@@ -30,7 +34,6 @@ function App() {
     updateNodePosition,
     addDefinition,
     createTree,
-    resetWorkspace,
     handleSelectNode,
     deleteEdge,
     deleteNode,
@@ -59,12 +62,15 @@ function App() {
         <Header
           treeList={treeList}
           selectedTreeId={selectedTree.id}
+          canUndo={canUndo}
+          canRedo={canRedo}
+          onUndo={handleUndo}
+          onRedo={handleRedo}
           onSelectTreeId={handleSelectTreeId}
           onRenameTree={renameTree}
           onOpenNewTreeModal={() => setIsNewTreeModalOpen(true)}
           onOpenTreeManager={() => setIsTreeManagerOpen(true)}
           onAutoLayout={handleAutoLayout}
-          onResetWorkspace={resetWorkspace}
           onDeleteTree={deleteTree}
         />
 

@@ -45,7 +45,20 @@
 .active-tree-display {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+}
+
+.tree-meta-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background-color: var(--bg-surface-hover);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .btn-icon-subtle {
@@ -157,6 +170,12 @@
 .btn-ghost.danger:hover {
   color: #fca5a5;
   background-color: rgba(244, 63, 94, 0.12);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .w-full {
