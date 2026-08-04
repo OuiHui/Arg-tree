@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "server": "node server/index.js",
+    "import:tree": "node server/scripts/importTree.js",
     "dev": "concurrently \"node server/index.js\" \"wait-on http://localhost:5000/api/workspace && vite\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

@@ -20,7 +20,7 @@ const memoryStore = {
 
 function initMemoryStore() {
   if (Object.keys(memoryStore.trees).length === 0) {
-    const seed = generateSeedTree('Starter tree')
+    const seed = generateSeedTree('Free Will & Determinism')
     memoryStore.trees[seed.id] = seed
     memoryStore.selectedTreeId = seed.id
   }

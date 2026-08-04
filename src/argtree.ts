@@ -130,12 +130,27 @@ export function computeEdgePath(
 export const createId = () =>
   globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`
 
-export const seedTree = (title: string): TreeState => {
+export const seedTree = (title = 'Free Will & Determinism'): TreeState => {
   const treeId = createId()
   const rootId = createId()
-  const rebuttalId = createId()
-  const evidenceId = createId()
-  const definitionId = createId()
+
+  const introspectiveSupportId = createId()
+  const agentCausationId = createId()
+  const moralAgencyId = createId()
+
+  const neuroAttackId = createId()
+  const libetId = createId()
+  const epiphenomenalismId = createId()
+
+  const compatibilismSupportId = createId()
+  const secondOrderVolitionId = createId()
+
+  const determinismAttackId = createId()
+  const luckProblemId = createId()
+
+  const defMoralAgency = createId()
+  const defCompatibilism = createId()
+  const defHardDeterminism = createId()
 
   return {
     id: treeId,
@@ -144,46 +159,111 @@ export const seedTree = (title: string): TreeState => {
     selectedNodeId: rootId,
     positions: {
       [rootId]: { x: 0, y: 0 },
-      [evidenceId]: { x: -260, y: 320 },
-      [rebuttalId]: { x: 260, y: 320 },
-      [definitionId]: { x: -260, y: 640 },
+      [introspectiveSupportId]: { x: -450, y: 320 },
+      [neuroAttackId]: { x: -150, y: 320 },
+      [compatibilismSupportId]: { x: 150, y: 320 },
+      [determinismAttackId]: { x: 450, y: 320 },
+      [agentCausationId]: { x: -550, y: 640 },
+      [moralAgencyId]: { x: -350, y: 640 },
+      [libetId]: { x: -200, y: 640 },
+      [epiphenomenalismId]: { x: 0, y: 640 },
+      [secondOrderVolitionId]: { x: 200, y: 640 },
+      [luckProblemId]: { x: 450, y: 640 },
     },
     nodes: {
       [rootId]: {
         id: rootId,
-        text: 'School should start one hour later to improve student attention and wellbeing.',
+        text: 'Human beings possess genuine free will, exerting conscious agency and moral responsibility over their choices.',
         stance: 'claim',
-        childIds: [evidenceId, rebuttalId],
+        childIds: [introspectiveSupportId, neuroAttackId, compatibilismSupportId, determinismAttackId],
         connectionIds: [],
       },
-      [evidenceId]: {
-        id: evidenceId,
-        text: 'Adolescents often have sleep cycles that make earlier mornings especially costly.',
+      [introspectiveSupportId]: {
+        id: introspectiveSupportId,
+        text: 'First-person subjective experience provides direct, intuitive evidence of conscious deliberation and choice.',
         stance: 'support',
-        childIds: [definitionId],
+        childIds: [agentCausationId, moralAgencyId],
         connectionIds: [],
       },
-      [rebuttalId]: {
-        id: rebuttalId,
-        text: 'Later starts can conflict with after-school jobs, sports, and caregiving duties.',
+      [agentCausationId]: {
+        id: agentCausationId,
+        text: 'Agent-Causation: Conscious minds act as uncaused initiators of events, distinct from deterministic event-event physical chains.',
+        stance: 'support',
+        childIds: [],
+        connectionIds: [],
+      },
+      [moralAgencyId]: {
+        id: moralAgencyId,
+        text: 'Moral & Legal Systems: Society logically requires personal agency, praise, and blame for intentional actions.',
+        stance: 'support',
+        childIds: [],
+        connectionIds: [],
+      },
+      [neuroAttackId]: {
+        id: neuroAttackId,
+        text: 'Neuroscience indicates that decisions are formulated by pre-conscious neural processes prior to subjective awareness.',
         stance: 'attack',
-        childIds: [],
-        connectionIds: [definitionId],
+        childIds: [libetId, epiphenomenalismId],
+        connectionIds: [introspectiveSupportId],
       },
-      [definitionId]: {
-        id: definitionId,
-        text: 'Circadian rhythm: the body’s internal clock that influences sleep timing and alertness.',
+      [libetId]: {
+        id: libetId,
+        text: 'Libet Experiments: Motor readiness potentials in the brain build up hundreds of milliseconds before an agent reports conscious intent.',
+        stance: 'support',
+        childIds: [],
+        connectionIds: [agentCausationId],
+      },
+      [epiphenomenalismId]: {
+        id: epiphenomenalismId,
+        text: 'Epiphenomenal Consciousness: Conscious awareness is a passive observer of neural activity rather than the executive controller.',
         stance: 'support',
         childIds: [],
         connectionIds: [],
+      },
+      [compatibilismSupportId]: {
+        id: compatibilismSupportId,
+        text: 'Compatibilism: Free will is compatible with physical determinism when defined as acting on internal desires without external coercion.',
+        stance: 'support',
+        childIds: [secondOrderVolitionId],
+        connectionIds: [],
+      },
+      [secondOrderVolitionId]: {
+        id: secondOrderVolitionId,
+        text: 'Second-Order Volition: Freedom consists of reflective alignment between higher-order desires and immediate motivations.',
+        stance: 'support',
+        childIds: [],
+        connectionIds: [],
+      },
+      [determinismAttackId]: {
+        id: determinismAttackId,
+        text: 'Hard Determinism: Every physical event, including human brain states, is completely determined by preceding physical causes and natural laws.',
+        stance: 'attack',
+        childIds: [luckProblemId],
+        connectionIds: [compatibilismSupportId],
+      },
+      [luckProblemId]: {
+        id: luckProblemId,
+        text: 'The Luck Problem: If actions are uncaused or quantum-random, they represent stochastic chance rather than intentional free choice.',
+        stance: 'support',
+        childIds: [],
+        connectionIds: [secondOrderVolitionId],
       },
     },
     definitions: [
       {
-        id: definitionId,
-        term: 'Circadian rhythm',
-        description:
-          'The internal daily timing system that shapes when a person naturally feels sleepy or alert.',
+        id: defMoralAgency,
+        term: 'Moral Agency',
+        description: 'The capacity of a rational being to make moral judgments and be held morally accountable for actions.',
+      },
+      {
+        id: defCompatibilism,
+        term: 'Compatibilism',
+        description: 'The philosophical view that causal determinism and free will are logically compatible perspectives.',
+      },
+      {
+        id: defHardDeterminism,
+        term: 'Hard Determinism',
+        description: 'The view that causal determinism is true and completely rules out free will and moral responsibility.',
       },
     ],
   }

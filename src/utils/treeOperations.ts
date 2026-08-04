@@ -102,6 +102,10 @@ export function linkChildNodeInTree(
   const childNode = currentTree.nodes[childId]
   if (!parentNode || !childNode) return currentTree
 
+  if (childId === currentTree.rootId || childNode.stance === 'claim') {
+    return currentTree
+  }
+
   const isAncestor = (nodeId: string, targetId: string): boolean => {
     const n = currentTree.nodes[nodeId]
     if (!n) return false
