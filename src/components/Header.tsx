@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
-import { type TreeState } from '../argtree'
+import { type TreeState } from '../types/argtree'
+import { TreeDropdown } from './TreeDropdown'
 
 type HeaderProps = {
   treeList: TreeState[]
@@ -80,25 +81,12 @@ export function Header({
             </form>
           ) : (
             <div className="active-tree-display">
-              <select
-                className="tree-select"
-                value={selectedTreeId}
-                onChange={(e) => {
-                  if (e.target.value === '__MANAGE__') {
-                    onOpenTreeManager()
-                  } else {
-                    onSelectTreeId(e.target.value)
-                  }
-                }}
-                aria-label="Select active argument tree"
-              >
-                {treeList.map((tree) => (
-                  <option key={tree.id} value={tree.id}>
-                    {tree.title}
-                  </option>
-                ))}
-                <option value="__MANAGE__">⚙ Manage All Trees...</option>
-              </select>
+              <TreeDropdown
+                treeList={treeList}
+                selectedTreeId={selectedTreeId}
+                onSelectTreeId={onSelectTreeId}
+                onOpenTreeManager={onOpenTreeManager}
+              />
 
               <button
                 type="button"
@@ -112,12 +100,6 @@ export function Header({
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
               </button>
-
-              {selectedTree && (
-                <span className="tree-meta-badge" title="Total nodes in current tree">
-                  {Object.keys(selectedTree.nodes).length} {Object.keys(selectedTree.nodes).length === 1 ? 'node' : 'nodes'}
-                </span>
-              )}
             </div>
           )}
         </div>
