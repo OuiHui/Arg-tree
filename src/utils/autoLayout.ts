@@ -56,3 +56,51 @@ export function autoLayoutTree(tree: TreeState): Record<string, Point> {
 
   return newPositions
 }
+
+/**
+ * Easing function for smooth layout transition (cubic ease-out).
+ */
+export function cubicEaseOut(t: number): number {
+  return 1 - Math.pow(1 - t, 3)
+}
+
+/**
+ * Interpolates between start and target node positions based on animation progress (0 to 1).
+ */
+export function interpolatePositions(
+  start: Record<string, Point>,
+  target: Record<string, Point>,
+  progress: number,
+  nodeIds: string[],
+): Record<string, Point> {
+  const eased = cubicEaseOut(Math.max(0, Math.min(1, progress)))
+  const interpolated: Record<string, Point> = {}
+
+  for (const id of nodeIds) {
+    const startPos = start[id] || target[id] || { x: 0, y: 0 }
+    const targetPos = target[id] || startPos
+    interpolated[id] = {
+      x: startPos.x + (targetPos.x - startPos.x) * eased,
+      y: startPos.y + (targetPos.y - startPos.y) * eased,
+    }
+  }
+
+  return interpolated
+}
+
+/**
+ * Checks if layout positions differ significantly between start and target positions.
+ */
+export function hasLayoutChanged(
+  start: Record<string, Point>,
+  target: Record<string, Point>,
+  nodeIds: string[],
+  threshold = 1,
+): boolean {
+  return nodeIds.some((id) => {
+    const s = start[id] || { x: 0, y: 0 }
+    const t = target[id] || { x: 0, y: 0 }
+    return Math.abs(s.x - t.x) > threshold || Math.abs(s.y - t.y) > threshold
+  })
+}
+

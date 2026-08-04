@@ -54,7 +54,9 @@ function calculateNodePositions(nodes, rootId) {
 }
 
 export function parseDeclarativeTree(treeSpec) {
-  const treeId = createId()
+  const treeId =
+    treeSpec.id ||
+    (treeSpec.title ? `tree-${treeSpec.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : createId())
   const rootId = createId()
 
   const nodes = {}
@@ -150,15 +152,25 @@ export async function importTreeFromFile(filePath) {
   const treeSpec = JSON.parse(content)
   const fullTree = parseDeclarativeTree(treeSpec)
 
-  const existingTree = await TreeModel.findOne({ title: fullTree.title })
+  const existingTrees = await TreeModel.find({
+    $or: [{ id: fullTree.id }, { title: fullTree.title }],
+  }).lean()
+
   let savedTree
 
-  if (existingTree) {
+  if (existingTrees.length > 0) {
+    const keepTree = existingTrees[0]
+    fullTree.id = keepTree.id
     savedTree = await TreeModel.findOneAndUpdate(
-      { id: existingTree.id },
+      { id: keepTree.id },
       { $set: fullTree },
       { returnDocument: 'after' }
     )
+
+    if (existingTrees.length > 1) {
+      const duplicateIds = existingTrees.slice(1).map((t) => t.id)
+      await TreeModel.deleteMany({ id: { $in: duplicateIds } })
+    }
   } else {
     savedTree = await TreeModel.create(fullTree)
   }

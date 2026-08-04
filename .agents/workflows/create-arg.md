@@ -7,6 +7,7 @@ description: Use the app to create an expansive argument exploring a topic
 
 ```json
 {
+  "id": "tree-<topic_slug>", // static tree ID (e.g. "tree-objective-morality")
   "title": "Topic Title",
   "rootClaim": "Central claim statement...",
   "branches": [
@@ -31,7 +32,7 @@ description: Use the app to create an expansive argument exploring a topic
 }
 ```
 
-3. **Seed Database & Workspace**: Run the importer script to automatically assign UUIDs, compute 2D layout coordinates, and seed MongoDB:
+3. **Seed Database & Workspace**: Copy the file to `public/trees/<topic_slug>.json` (and update `public/trees/manifest.json` if needed for static hosting), then run the importer script:
 
 ```bash
 npm run import:tree data/trees/<topic_slug>.json

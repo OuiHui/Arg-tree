@@ -4,6 +4,8 @@ import {
   seedWorkspace,
   seedTree,
   autoLayoutTree,
+  interpolatePositions,
+  hasLayoutChanged,
   cloneTree,
   type Stance,
   type TreeState,
@@ -15,6 +17,7 @@ import {
   updateTreeApi,
   deleteTreeApi,
   updateSelectedTreeIdApi,
+  deduplicateWorkspaceTrees,
 } from '../api'
 import { useUrlTreeSync } from './useUrlTreeSync'
 import { useUndoRedo } from './useUndoRedo'
@@ -40,6 +43,15 @@ export function useWorkspace() {
   const [definitionsCollapsed, setDefinitionsCollapsed] = useState(false)
   const [isNewTreeModalOpen, setIsNewTreeModalOpen] = useState(false)
   const [isTreeManagerOpen, setIsTreeManagerOpen] = useState(false)
+
+  const animationFrameRef = useRef<number | null>(null)
+
+  const cancelLayoutAnimation = useCallback(() => {
+    if (animationFrameRef.current !== null) {
+      cancelAnimationFrame(animationFrameRef.current)
+      animationFrameRef.current = null
+    }
+  }, [])
 
   const { recordState, undo, redo, getCanUndo, getCanRedo } = useUndoRedo()
 
@@ -105,6 +117,13 @@ export function useWorkspace() {
   const treeList = useMemo(() => Object.values(workspace.trees), [workspace.trees])
   const selectedTree = workspace.trees[workspace.selectedTreeId] ?? treeList[0] ?? seedTree('Starter tree')
 
+  // Cancel any running layout animation when switching active trees
+  useEffect(() => {
+    return () => {
+      cancelLayoutAnimation()
+    }
+  }, [selectedTree?.id, cancelLayoutAnimation])
+
   // Auto-save changes to database
   const isFirstRender = useRef(true)
   useEffect(() => {
@@ -143,11 +162,12 @@ export function useWorkspace() {
   }, [])
 
   const handleSelectTreeId = useCallback((treeId: string) => {
+    cancelLayoutAnimation()
     setWorkspace((current) => ({ ...current, selectedTreeId: treeId }))
     updateSelectedTreeIdApi(treeId).catch((err) => {
       console.error('Failed to update active tree ID in database:', err)
     })
-  }, [])
+  }, [cancelLayoutAnimation])
 
   const handleEditNode = useCallback((nodeId: string) => {
     setSelectedEdgeId(null)
@@ -183,14 +203,48 @@ export function useWorkspace() {
   }, [recordState, selectedTree, updateSelectedTree])
 
   const handleAutoLayout = useCallback(() => {
+    cancelLayoutAnimation()
     recordState(selectedTree.id, selectedTree, 'autoLayout')
-    updateSelectedTree((currentTree) => ({
-      ...currentTree,
-      positions: autoLayoutTree(currentTree),
-    }))
-  }, [recordState, selectedTree, updateSelectedTree])
+
+    const targetPositions = autoLayoutTree(selectedTree)
+    const startPositions = { ...selectedTree.positions }
+    const nodeIds = Object.keys(selectedTree.nodes)
+
+    if (!hasLayoutChanged(startPositions, targetPositions, nodeIds)) {
+      return
+    }
+
+    const DURATION = 450
+    const startTime = performance.now()
+
+    const animateFrame = (now: number) => {
+      const elapsed = now - startTime
+      const progress = elapsed / DURATION
+
+      if (progress >= 1) {
+        animationFrameRef.current = null
+        updateSelectedTree((tree) => ({
+          ...tree,
+          positions: targetPositions,
+        }))
+        return
+      }
+
+      const currentPositions = interpolatePositions(startPositions, targetPositions, progress, nodeIds)
+
+      updateSelectedTree((tree) => ({
+        ...tree,
+        positions: currentPositions,
+      }))
+
+      animationFrameRef.current = requestAnimationFrame(animateFrame)
+    }
+
+    animationFrameRef.current = requestAnimationFrame(animateFrame)
+  }, [cancelLayoutAnimation, recordState, selectedTree, updateSelectedTree])
 
   const updateNodePosition = useCallback((nodeId: string, x: number, y: number) => {
+    cancelLayoutAnimation()
     recordState(selectedTree.id, selectedTree, 'moveNode')
     updateSelectedTree((currentTree) => ({
       ...currentTree,
@@ -199,7 +253,7 @@ export function useWorkspace() {
         [nodeId]: { x, y },
       },
     }))
-  }, [recordState, selectedTree, updateSelectedTree])
+  }, [cancelLayoutAnimation, recordState, selectedTree, updateSelectedTree])
 
   const addDefinition = useCallback((term: string, description: string, linkToNodeId?: string) => {
     recordState(selectedTree.id, selectedTree, 'addDefinition')
@@ -318,8 +372,9 @@ export function useWorkspace() {
 
   const cleanUpEmptyTrees = useCallback(() => {
     setWorkspace((current) => {
-      const allTrees = Object.values(current.trees)
-      if (allTrees.length <= 1) return current
+      const deduplicated = deduplicateWorkspaceTrees(current)
+      const allTrees = Object.values(deduplicated.trees)
+      if (allTrees.length <= 1) return deduplicated
 
       const keepTrees: Record<string, TreeState> = {}
       const deleteIds: string[] = []
@@ -329,22 +384,22 @@ export function useWorkspace() {
         const nodeCount = Object.keys(tree.nodes).length
         const isMinimalNode = nodeCount <= 1 || (nodeCount <= 4 && tree.title === 'Starter tree')
 
-        if (tree.id !== current.selectedTreeId && isDefaultTitle && isMinimalNode) {
+        if (tree.id !== deduplicated.selectedTreeId && isDefaultTitle && isMinimalNode) {
           deleteIds.push(tree.id)
         } else {
           keepTrees[tree.id] = tree
         }
       })
 
-      if (deleteIds.length === 0) return current
+      if (deleteIds.length === 0) return deduplicated
 
       deleteIds.forEach((id) => {
         deleteTreeApi(id).catch((err) => console.error('Failed to cleanup tree:', err))
       })
 
-      let nextSelectedId = current.selectedTreeId
+      let nextSelectedId = deduplicated.selectedTreeId
       if (!keepTrees[nextSelectedId]) {
-        nextSelectedId = Object.keys(keepTrees)[0] || current.selectedTreeId
+        nextSelectedId = Object.keys(keepTrees)[0] || deduplicated.selectedTreeId
       }
 
       return {
@@ -396,6 +451,7 @@ export function useWorkspace() {
   }, [])
 
   const handleUndo = useCallback(() => {
+    cancelLayoutAnimation()
     const previousTree = undo(selectedTree.id, selectedTree)
     if (previousTree) {
       setWorkspace((current) => ({
@@ -406,9 +462,10 @@ export function useWorkspace() {
         },
       }))
     }
-  }, [selectedTree, undo])
+  }, [cancelLayoutAnimation, selectedTree, undo])
 
   const handleRedo = useCallback(() => {
+    cancelLayoutAnimation()
     const nextTree = redo(selectedTree.id, selectedTree)
     if (nextTree) {
       setWorkspace((current) => ({
@@ -419,7 +476,7 @@ export function useWorkspace() {
         },
       }))
     }
-  }, [selectedTree, redo])
+  }, [cancelLayoutAnimation, selectedTree, redo])
 
   const canUndo = getCanUndo(selectedTree.id)
   const canRedo = getCanRedo(selectedTree.id)

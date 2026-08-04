@@ -26,9 +26,66 @@ function saveToLocalStorage(workspace: WorkspaceState): void {
   }
 }
 
+export function deduplicateWorkspaceTrees(workspace: WorkspaceState): WorkspaceState {
+  const treeList = Object.values(workspace.trees)
+  if (treeList.length <= 1) return workspace
+
+  const groupedByTitle: Record<string, TreeState[]> = {}
+  treeList.forEach((tree) => {
+    const key = tree.title.trim().toLowerCase()
+    if (!groupedByTitle[key]) groupedByTitle[key] = []
+    groupedByTitle[key].push(tree)
+  })
+
+  const keptTrees: Record<string, TreeState> = {}
+  const removedIds: string[] = []
+
+  Object.values(groupedByTitle).forEach((trees) => {
+    if (trees.length === 1) {
+      keptTrees[trees[0].id] = trees[0]
+      return
+    }
+
+    let bestTree = trees[0]
+    for (const tree of trees) {
+      if (tree.id === workspace.selectedTreeId) {
+        bestTree = tree
+        break
+      }
+      const currentBestCount = Object.keys(bestTree.nodes).length
+      const treeNodeCount = Object.keys(tree.nodes).length
+      if (treeNodeCount > currentBestCount) {
+        bestTree = tree
+      }
+    }
+
+    keptTrees[bestTree.id] = bestTree
+    trees.forEach((t) => {
+      if (t.id !== bestTree.id) {
+        removedIds.push(t.id)
+      }
+    })
+  })
+
+  if (removedIds.length === 0) return workspace
+
+  let selectedTreeId = workspace.selectedTreeId
+  if (!keptTrees[selectedTreeId]) {
+    selectedTreeId = Object.keys(keptTrees)[0] || selectedTreeId
+  }
+
+  const updated: WorkspaceState = {
+    selectedTreeId,
+    trees: keptTrees,
+  }
+
+  saveToLocalStorage(updated)
+  return updated
+}
+
 async function fetchStaticWorkspace(): Promise<WorkspaceState> {
   const local = loadFromLocalStorage()
-  if (local) return local
+  if (local) return deduplicateWorkspaceTrees(local)
 
   const baseUrl = import.meta.env.BASE_URL.endsWith('/')
     ? import.meta.env.BASE_URL
@@ -71,14 +128,15 @@ async function fetchStaticWorkspace(): Promise<WorkspaceState> {
     saveToLocalStorage(staticWorkspace)
   }
 
-  return staticWorkspace
+  return deduplicateWorkspaceTrees(staticWorkspace)
 }
 
 export async function fetchWorkspaceApi(): Promise<WorkspaceState> {
   try {
     const response = await fetch('/api/workspace')
     if (response.ok) {
-      return await response.json()
+      const workspace = await response.json()
+      return deduplicateWorkspaceTrees(workspace)
     }
   } catch {
     // API endpoint unreachable (e.g. static hosting on GitHub Pages)

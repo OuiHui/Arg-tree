@@ -26,7 +26,9 @@ export interface DeclarativeTreeSpec {
 }
 
 export function parseDeclarativeTree(treeSpec: DeclarativeTreeSpec): TreeState {
-  const treeId = treeSpec.id || createId()
+  const treeId =
+    treeSpec.id ||
+    (treeSpec.title ? `tree-${treeSpec.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : createId())
   const rootId = createId()
 
   const nodes: Record<string, ArgumentNode> = {}
