@@ -19,7 +19,7 @@ import {
 import { type Stance, type TreeState, palette } from '../argtree'
 import { ArgumentNode, type ArgumentNodeType } from './ArgumentNode'
 import { DefinitionsDrawer } from './DefinitionsDrawer'
-import { getBranchNodeIds, isDefinitionLinkedToNode } from '../utils/treeOperations'
+import { getBranchNodeIds, isDefinitionLinkedToNode, getNodeClaimPolarity } from '../utils/treeOperations'
 
 type WorkspaceStageProps = {
   selectedTree: TreeState
@@ -88,6 +88,8 @@ function buildNodes(
       isDefinitionLinkedToNode(def, node.text, node.id, node.definitionIds)
     )
 
+    const claimPolarity = getNodeClaimPolarity(selectedTree, node.id)
+
     return {
       id: node.id,
       type: 'argumentNode',
@@ -97,6 +99,8 @@ function buildNodes(
       data: {
         node,
         isRoot: node.id === selectedTree.rootId,
+        isChildOfRoot: selectedTree.nodes[selectedTree.rootId]?.childIds.includes(node.id) || false,
+        claimPolarity,
         isOrphan: node.id !== selectedTree.rootId && !attachedChildIds.has(node.id),
         isSelected: node.id === selectedTree.selectedNodeId,
         isDimmed: !isFocused,
@@ -125,7 +129,8 @@ function buildEdges(
     parentNode.childIds.forEach((childId) => {
       const childNode = selectedTree.nodes[childId]
       const stance = childNode ? childNode.stance : 'support'
-      const color = palette[stance as Stance] ?? palette.support
+      const isRebuttal = stance === 'attack' && parentNode.id !== selectedTree.rootId
+      const color = isRebuttal ? palette.rebuttal : (palette[stance as Stance] ?? palette.support)
       const edgeId = `edge-${parentNode.id}-${childId}`
       const isSelected = selectedEdgeId === edgeId
       const sourceHandle = stance === 'attack' ? 'attack-source' : 'support-source'

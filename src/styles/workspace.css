@@ -46,8 +46,8 @@
 /* Argument Node Card */
 .node-card {
   width: 280px;
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
+  background: linear-gradient(180deg, var(--node-bg-tint, rgba(255, 255, 255, 0.03)) 0%, var(--bg-surface) 100%);
+  border: 1.5px solid var(--node-card-border, var(--border-subtle));
   border-radius: 8px;
   padding: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
@@ -55,25 +55,15 @@
   flex-direction: column;
   gap: 8px;
   position: relative;
-  transition: opacity 0.25s ease, filter 0.25s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
   -webkit-user-select: none;
 }
 
-.node-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 4px;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  background-color: var(--node-accent, var(--claim));
-}
-
 .node-card:hover {
-  border-color: var(--border-strong);
+  border-color: var(--node-accent, var(--border-strong));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 16px var(--node-accent-glow, rgba(99, 102, 241, 0.25));
+  transform: translateY(-2px);
 }
 
 .node-card.is-selected {

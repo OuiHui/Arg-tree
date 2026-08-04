@@ -1,5 +1,5 @@
 import { createId } from '../argtree'
-import type { Stance, TreeState, DefinitionEntry } from '../types/argtree'
+import type { Stance, TreeState, DefinitionEntry, ClaimPolarity } from '../types/argtree'
 
 export function updateNodeTextInTree(currentTree: TreeState, nodeId: string, text: string): TreeState {
   if (!currentTree.nodes[nodeId]) return currentTree
@@ -421,6 +421,41 @@ export function getDefinitionsForBranch(
     }
     return false
   })
+}
+
+export function getNodeClaimPolarity(tree: TreeState, nodeId: string): ClaimPolarity {
+  if (nodeId === tree.rootId) return 'neutral'
+  const node = tree.nodes[nodeId]
+  if (!node || node.stance === 'claim') return 'neutral'
+
+  const parentMap: Record<string, string> = {}
+  Object.values(tree.nodes).forEach((pNode) => {
+    pNode.childIds.forEach((childId) => {
+      parentMap[childId] = pNode.id
+    })
+  })
+
+  const path: string[] = []
+  let curr: string | undefined = nodeId
+  const visited = new Set<string>()
+
+  while (curr && curr !== tree.rootId && !visited.has(curr)) {
+    visited.add(curr)
+    path.unshift(curr)
+    curr = parentMap[curr]
+  }
+
+  if (curr !== tree.rootId) return 'neutral'
+
+  let isPro = true
+  for (const nId of path) {
+    const n = tree.nodes[nId]
+    if (n && n.stance === 'attack') {
+      isPro = !isPro
+    }
+  }
+
+  return isPro ? 'pro' : 'con'
 }
 
 

@@ -1,4 +1,5 @@
 export type Stance = 'support' | 'attack'
+export type ClaimPolarity = 'pro' | 'con' | 'neutral'
 
 export type ArgumentNode = {
   id: string

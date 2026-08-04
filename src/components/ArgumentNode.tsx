@@ -1,10 +1,12 @@
 import React from 'react'
 import { Handle, Position, type NodeProps, type Node } from '@xyflow/react'
-import { type Stance, type ArgumentNode as ArgNode, type DefinitionEntry, palette } from '../argtree'
+import { type Stance, type ArgumentNode as ArgNode, type DefinitionEntry, type ClaimPolarity, palette } from '../argtree'
 
 export type ArgumentNodeData = {
   node: ArgNode
   isRoot: boolean
+  isChildOfRoot: boolean
+  claimPolarity?: ClaimPolarity
   isOrphan: boolean
   isSelected: boolean
   isDimmed?: boolean
@@ -24,6 +26,8 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
   const {
     node,
     isRoot,
+    isChildOfRoot,
+    claimPolarity,
     isOrphan,
     isSelected,
     isDimmed,
@@ -37,9 +41,45 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
     onAddBranchFromNode,
   } = data
 
+  const isRebuttal = node.stance === 'attack' && !isChildOfRoot && !isRoot
+
   const stanceColor = isOrphan
     ? '#94a3b8'
-    : (palette[node.stance as Stance] ?? palette.support)
+    : isRoot
+      ? palette.claim
+      : isRebuttal
+        ? (claimPolarity === 'pro' ? '#fb923c' : '#f43f5e')
+        : (palette[node.stance as Stance] ?? palette.support)
+
+  const nodeBgTint = isOrphan
+    ? 'rgba(148, 163, 184, 0.04)'
+    : isRoot
+      ? 'rgba(99, 102, 241, 0.08)'
+      : isRebuttal
+        ? (claimPolarity === 'pro' ? 'rgba(249, 115, 22, 0.07)' : 'rgba(244, 63, 94, 0.07)')
+        : node.stance === 'attack'
+          ? 'rgba(244, 63, 94, 0.07)'
+          : 'rgba(16, 185, 129, 0.07)'
+
+  const nodeCardBorder = isOrphan
+    ? 'rgba(148, 163, 184, 0.3)'
+    : isRoot
+      ? 'rgba(99, 102, 241, 0.35)'
+      : isRebuttal
+        ? (claimPolarity === 'pro' ? 'rgba(249, 115, 22, 0.4)' : 'rgba(244, 63, 94, 0.4)')
+        : node.stance === 'attack'
+          ? 'rgba(244, 63, 94, 0.35)'
+          : 'rgba(16, 185, 129, 0.35)'
+
+  const nodeAccentGlow = isOrphan
+    ? 'rgba(148, 163, 184, 0.2)'
+    : isRoot
+      ? 'rgba(99, 102, 241, 0.35)'
+      : isRebuttal
+        ? (claimPolarity === 'pro' ? 'rgba(249, 115, 22, 0.35)' : 'rgba(244, 63, 94, 0.35)')
+        : node.stance === 'attack'
+          ? 'rgba(244, 63, 94, 0.35)'
+          : 'rgba(16, 185, 129, 0.35)'
 
   return (
     <div
@@ -47,6 +87,9 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
       style={
         {
           '--node-accent': stanceColor,
+          '--node-bg-tint': nodeBgTint,
+          '--node-card-border': nodeCardBorder,
+          '--node-accent-glow': nodeAccentGlow,
         } as React.CSSProperties
       }
       onClick={() => onSelectNode(node.id)}
@@ -62,10 +105,24 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
         <div className="node-card-badges">
           <span
             className={`badge ${
-              isRoot ? 'badge-claim' : isOrphan ? 'badge-orphan' : `badge-${node.stance}`
+              isRoot
+                ? 'badge-claim'
+                : isOrphan
+                  ? 'badge-orphan'
+                  : isRebuttal
+                    ? (claimPolarity === 'pro' ? 'badge-rebuttal-pro' : 'badge-rebuttal-con')
+                    : `badge-${node.stance}`
             }`}
           >
-            {isRoot ? 'Central Claim' : node.stance}
+            {isRoot
+              ? 'Central Claim'
+              : isOrphan
+                ? 'Orphan'
+                : isRebuttal
+                  ? (claimPolarity === 'pro' ? '🛡️ Rebuttal (Pro)' : '⚔️ Rebuttal (Con)')
+                  : node.stance === 'attack'
+                    ? '⚔️ Attack'
+                    : '🛡️ Support'}
           </span>
           {linkedDefinitions && linkedDefinitions.length > 0 && (
             <span

@@ -20,6 +20,8 @@
   --support-bg: rgba(16, 185, 129, 0.12);
   --attack: #f43f5e;
   --attack-bg: rgba(244, 63, 94, 0.12);
+  --rebuttal: #f97316;
+  --rebuttal-bg: rgba(249, 115, 22, 0.12);
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 

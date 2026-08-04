@@ -348,10 +348,11 @@ export const seedWorkspace = (): WorkspaceState => {
   }
 }
 
-export const palette: Record<Stance | 'claim', string> = {
+export const palette: Record<Stance | 'claim' | 'rebuttal', string> = {
   claim: '#7ea7ff',
   support: '#58d39b',
   attack: '#ff7a73',
+  rebuttal: '#fb923c',
 }
 
 export const formatNodeLabel = (text: string) => {
