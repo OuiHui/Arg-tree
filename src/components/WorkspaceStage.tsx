@@ -19,7 +19,7 @@ import {
 import { type Stance, type TreeState, palette } from '../argtree'
 import { ArgumentNode, type ArgumentNodeType } from './ArgumentNode'
 import { DefinitionsDrawer } from './DefinitionsDrawer'
-import { getBranchNodeIds } from '../utils/treeOperations'
+import { getBranchNodeIds, isDefinitionLinkedToNode } from '../utils/treeOperations'
 
 type WorkspaceStageProps = {
   selectedTree: TreeState
@@ -38,8 +38,9 @@ type WorkspaceStageProps = {
   selectedEdgeId: string | null
   onSelectEdge: (edgeId: string | null) => void
   onDeleteEdge: (edgeId: string) => void
-  onAddDefinition: (term: string, description: string) => void
+  onAddDefinition: (term: string, description: string, linkToNodeId?: string) => void
   onDeleteDefinition: (definitionId: string) => void
+  onToggleDefinitionNodeLink: (definitionId: string, nodeId: string) => void
 }
 
 const nodeTypes: NodeTypes = {
@@ -83,6 +84,10 @@ function buildNodes(
 
   return Object.values(selectedTree.nodes).map((node) => {
     const isFocused = focusedNodeIds === null || focusedNodeIds.has(node.id)
+    const linkedDefs = selectedTree.definitions.filter((def) =>
+      isDefinitionLinkedToNode(def, node.text, node.id, node.definitionIds)
+    )
+
     return {
       id: node.id,
       type: 'argumentNode',
@@ -96,6 +101,7 @@ function buildNodes(
         isSelected: node.id === selectedTree.selectedNodeId,
         isDimmed: !isFocused,
         isEditing: editingNodeId === node.id,
+        linkedDefinitions: linkedDefs,
         onSelectNode,
         onEditNode,
         onStopEditingNode,
@@ -190,6 +196,7 @@ export function WorkspaceStage({
   onDeleteEdge,
   onAddDefinition,
   onDeleteDefinition,
+  onToggleDefinitionNodeLink,
 }: WorkspaceStageProps) {
   const focusedNodeIds = useMemo(
     () => getBranchNodeIds(selectedTree, selectedTree.selectedNodeId),
@@ -313,10 +320,15 @@ export function WorkspaceStage({
 
       <DefinitionsDrawer
         definitions={selectedTree.definitions}
+        nodes={selectedTree.nodes}
+        selectedNodeId={selectedTree.selectedNodeId}
+        focusedNodeIds={focusedNodeIds}
         isCollapsed={definitionsCollapsed}
         onToggleCollapsed={onToggleDefinitionsCollapsed}
         onAddDefinition={onAddDefinition}
         onDeleteDefinition={onDeleteDefinition}
+        onToggleDefinitionNodeLink={onToggleDefinitionNodeLink}
+        onSelectNode={onSelectNode}
       />
     </div>
   )

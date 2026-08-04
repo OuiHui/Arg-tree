@@ -1,5 +1,5 @@
 import { createId } from '../argtree'
-import type { Stance, TreeState } from '../types/argtree'
+import type { Stance, TreeState, DefinitionEntry } from '../types/argtree'
 
 export function updateNodeTextInTree(currentTree: TreeState, nodeId: string, text: string): TreeState {
   if (!currentTree.nodes[nodeId]) return currentTree
@@ -226,16 +226,37 @@ export function deleteNodeFromTree(currentTree: TreeState, nodeIdToDelete: strin
 export function addDefinitionToTree(
   currentTree: TreeState,
   term: string,
-  description: string
+  description: string,
+  linkToNodeId?: string
 ): TreeState {
   const cleanTerm = term.trim()
   const cleanDesc = description.trim()
   if (!cleanTerm || !cleanDesc) return currentTree
 
   const id = createId()
+  const newDef: DefinitionEntry = {
+    id,
+    term: cleanTerm,
+    description: cleanDesc,
+    nodeIds: linkToNodeId ? [linkToNodeId] : [],
+  }
+
+  let updatedNodes = currentTree.nodes
+  if (linkToNodeId && currentTree.nodes[linkToNodeId]) {
+    const existingNode = currentTree.nodes[linkToNodeId]
+    updatedNodes = {
+      ...currentTree.nodes,
+      [linkToNodeId]: {
+        ...existingNode,
+        definitionIds: [...(existingNode.definitionIds || []), id],
+      },
+    }
+  }
+
   return {
     ...currentTree,
-    definitions: [...currentTree.definitions, { id, term: cleanTerm, description: cleanDesc }],
+    nodes: updatedNodes,
+    definitions: [...currentTree.definitions, newDef],
   }
 }
 
@@ -331,5 +352,76 @@ export function getBranchNodeIds(selectedTree: TreeState, selectedId: string | n
 
   return focused
 }
+
+export function isDefinitionLinkedToNode(
+  def: DefinitionEntry,
+  nodeText: string,
+  nodeId: string,
+  nodeDefinitionIds?: string[]
+): boolean {
+  if (def.nodeIds?.includes(nodeId) || nodeDefinitionIds?.includes(def.id)) {
+    return true
+  }
+  if (!def.term || def.term.trim().length < 2) return false
+  const lowerTerm = def.term.toLowerCase()
+  const lowerText = nodeText.toLowerCase()
+  return lowerText.includes(lowerTerm)
+}
+
+export function toggleDefinitionLinkToNode(
+  currentTree: TreeState,
+  definitionId: string,
+  nodeId: string
+): TreeState {
+  const targetDef = currentTree.definitions.find((d) => d.id === definitionId)
+  const targetNode = currentTree.nodes[nodeId]
+  if (!targetDef || !targetNode) return currentTree
+
+  const currentDefNodeIds = targetDef.nodeIds ?? []
+  const currentDefHasNode = currentDefNodeIds.includes(nodeId)
+  const nextDefNodeIds = currentDefHasNode
+    ? currentDefNodeIds.filter((id) => id !== nodeId)
+    : [...currentDefNodeIds, nodeId]
+
+  const currentNodeDefIds = targetNode.definitionIds ?? []
+  const currentNodeHasDef = currentNodeDefIds.includes(definitionId)
+  const nextNodeDefIds = currentNodeHasDef
+    ? currentNodeDefIds.filter((id) => id !== definitionId)
+    : [...currentNodeDefIds, definitionId]
+
+  return {
+    ...currentTree,
+    definitions: currentTree.definitions.map((def) =>
+      def.id === definitionId ? { ...def, nodeIds: nextDefNodeIds } : def
+    ),
+    nodes: {
+      ...currentTree.nodes,
+      [nodeId]: {
+        ...targetNode,
+        definitionIds: nextNodeDefIds,
+      },
+    },
+  }
+}
+
+export function getDefinitionsForBranch(
+  tree: TreeState,
+  activeNodeIds: Set<string> | null
+): DefinitionEntry[] {
+  if (!activeNodeIds || activeNodeIds.size === 0) {
+    return tree.definitions
+  }
+
+  return tree.definitions.filter((def) => {
+    for (const nodeId of activeNodeIds) {
+      const node = tree.nodes[nodeId]
+      if (node && isDefinitionLinkedToNode(def, node.text, node.id, node.definitionIds)) {
+        return true
+      }
+    }
+    return false
+  })
+}
+
 
 

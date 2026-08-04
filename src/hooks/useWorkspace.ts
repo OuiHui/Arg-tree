@@ -28,6 +28,7 @@ import {
   addDefinitionToTree,
   deleteDefinitionFromTree,
   pasteNodeInTree,
+  toggleDefinitionLinkToNode,
 } from '../utils/treeOperations'
 
 
@@ -200,9 +201,9 @@ export function useWorkspace() {
     }))
   }, [recordState, selectedTree, updateSelectedTree])
 
-  const addDefinition = useCallback((term: string, description: string) => {
+  const addDefinition = useCallback((term: string, description: string, linkToNodeId?: string) => {
     recordState(selectedTree.id, selectedTree, 'addDefinition')
-    updateSelectedTree((tree) => addDefinitionToTree(tree, term, description))
+    updateSelectedTree((tree) => addDefinitionToTree(tree, term, description, linkToNodeId))
   }, [recordState, selectedTree, updateSelectedTree])
 
   const createTree = useCallback((titleInput: string, claimInput: string) => {
@@ -263,6 +264,11 @@ export function useWorkspace() {
   const deleteDefinition = useCallback((definitionId: string) => {
     recordState(selectedTree.id, selectedTree, 'deleteDefinition')
     updateSelectedTree((tree) => deleteDefinitionFromTree(tree, definitionId))
+  }, [recordState, selectedTree, updateSelectedTree])
+
+  const toggleDefinitionNodeLink = useCallback((definitionId: string, nodeId: string) => {
+    recordState(selectedTree.id, selectedTree, 'toggleDefinitionNodeLink')
+    updateSelectedTree((tree) => toggleDefinitionLinkToNode(tree, definitionId, nodeId))
   }, [recordState, selectedTree, updateSelectedTree])
 
   const renameTree = useCallback((treeId: string, newTitle: string) => {
@@ -536,6 +542,7 @@ export function useWorkspace() {
     deleteEdge,
     deleteNode,
     deleteDefinition,
+    toggleDefinitionNodeLink,
     deleteTree,
     deleteMultipleTrees,
     renameTree,

@@ -38,6 +38,7 @@ function App() {
     deleteEdge,
     deleteNode,
     deleteDefinition,
+    toggleDefinitionNodeLink,
     deleteTree,
     deleteMultipleTrees,
     renameTree,
@@ -93,6 +94,7 @@ function App() {
           onDeleteEdge={deleteEdge}
           onAddDefinition={addDefinition}
           onDeleteDefinition={deleteDefinition}
+          onToggleDefinitionNodeLink={toggleDefinitionNodeLink}
         />
 
         <NewTreeModal

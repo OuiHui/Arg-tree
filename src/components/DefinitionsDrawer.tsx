@@ -1,27 +1,74 @@
-import { useState } from 'react'
-import type { DefinitionEntry } from '../argtree'
+import { useState, useMemo } from 'react'
+import type { DefinitionEntry, ArgumentNode } from '../argtree'
+import { isDefinitionLinkedToNode } from '../utils/treeOperations'
 
 type DefinitionsDrawerProps = {
   definitions: DefinitionEntry[]
+  nodes: Record<string, ArgumentNode>
+  selectedNodeId: string | null
+  focusedNodeIds: Set<string> | null
   isCollapsed: boolean
   onToggleCollapsed: () => void
-  onAddDefinition: (term: string, description: string) => void
+  onAddDefinition: (term: string, description: string, linkToNodeId?: string) => void
   onDeleteDefinition: (definitionId: string) => void
+  onToggleDefinitionNodeLink: (definitionId: string, nodeId: string) => void
+  onSelectNode: (nodeId: string | null) => void
 }
+
+type FilterMode = 'branch' | 'all'
 
 export function DefinitionsDrawer({
   definitions,
+  nodes,
+  selectedNodeId,
+  focusedNodeIds,
   isCollapsed,
   onToggleCollapsed,
   onAddDefinition,
   onDeleteDefinition,
+  onToggleDefinitionNodeLink,
+  onSelectNode,
 }: DefinitionsDrawerProps) {
   const [term, setTerm] = useState('')
   const [description, setDescription] = useState('')
+  const [linkToSelected, setLinkToSelected] = useState(true)
+  const [filterMode, setFilterMode] = useState<FilterMode>('branch')
+
+  const selectedNode = selectedNodeId ? nodes[selectedNodeId] : null
+
+  // Determine active node IDs set for branch filtering
+  const activeBranchNodeIds = useMemo(() => {
+    if (focusedNodeIds && focusedNodeIds.size > 0) {
+      return focusedNodeIds
+    }
+    if (selectedNodeId) {
+      return new Set([selectedNodeId])
+    }
+    return null
+  }, [focusedNodeIds, selectedNodeId])
+
+  // Filter definitions for current active branch
+  const branchDefinitions = useMemo(() => {
+    if (!activeBranchNodeIds) {
+      return definitions
+    }
+    return definitions.filter((def) => {
+      for (const nodeId of activeBranchNodeIds) {
+        const n = nodes[nodeId]
+        if (n && isDefinitionLinkedToNode(def, n.text, n.id, n.definitionIds)) {
+          return true
+        }
+      }
+      return false
+    })
+  }, [definitions, nodes, activeBranchNodeIds])
+
+  const displayedDefinitions = filterMode === 'branch' && activeBranchNodeIds ? branchDefinitions : definitions
 
   const handleAdd = () => {
     if (!term.trim() || !description.trim()) return
-    onAddDefinition(term, description)
+    const targetNodeId = linkToSelected && selectedNodeId ? selectedNodeId : undefined
+    onAddDefinition(term, description, targetNodeId)
     setTerm('')
     setDescription('')
   }
@@ -61,6 +108,35 @@ export function DefinitionsDrawer({
 
       {!isCollapsed && (
         <div className="drawer-body">
+          {/* Filter Mode Tabs */}
+          <div className="drawer-filter-tabs">
+            <button
+              type="button"
+              className={`filter-tab ${filterMode === 'branch' ? 'active' : ''}`}
+              onClick={() => setFilterMode('branch')}
+              title="Show definitions relevant to the selected node or branch"
+            >
+              Branch ({activeBranchNodeIds ? branchDefinitions.length : definitions.length})
+            </button>
+            <button
+              type="button"
+              className={`filter-tab ${filterMode === 'all' ? 'active' : ''}`}
+              onClick={() => setFilterMode('all')}
+              title="Show all definitions in tree"
+            >
+              All ({definitions.length})
+            </button>
+          </div>
+
+          {/* Active selection banner */}
+          {selectedNode && (
+            <div className="selected-node-banner">
+              <div className="banner-label">Active Branch Focus</div>
+              <p className="banner-node-text">{selectedNode.text}</p>
+            </div>
+          )}
+
+          {/* New Definition Form */}
           <div className="definition-form">
             <div className="form-group">
               <label htmlFor="def-term">Term / Concept</label>
@@ -86,31 +162,108 @@ export function DefinitionsDrawer({
               />
             </div>
 
+            {selectedNodeId && (
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={linkToSelected}
+                  onChange={(e) => setLinkToSelected(e.target.checked)}
+                />
+                <span>Link term to active node</span>
+              </label>
+            )}
+
             <button type="button" className="btn btn-secondary w-full" onClick={handleAdd}>
               Add Definition
             </button>
           </div>
 
+          {/* Definitions Cards List */}
           <div className="definition-cards-list">
-            {definitions.map((def) => (
-              <div key={def.id} className="definition-card">
-                <div className="definition-card-header">
-                  <h3>{def.term}</h3>
+            {displayedDefinitions.length === 0 ? (
+              <div className="drawer-empty-state">
+                <p>
+                  {filterMode === 'branch' && activeBranchNodeIds
+                    ? 'No definitions linked to this branch.'
+                    : 'No definitions added yet.'}
+                </p>
+                {filterMode === 'branch' && activeBranchNodeIds && (
                   <button
                     type="button"
-                    className="btn-icon-delete"
-                    onClick={() => onDeleteDefinition(def.id)}
-                    title="Delete definition"
+                    className="btn-link-action"
+                    onClick={() => setFilterMode('all')}
                   >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
+                    View all {definitions.length} definition{definitions.length === 1 ? '' : 's'}
                   </button>
-                </div>
-                <p>{def.description}</p>
+                )}
               </div>
-            ))}
+            ) : (
+              displayedDefinitions.map((def) => {
+                const isExplicitlyLinkedToSelected = selectedNodeId
+                  ? def.nodeIds?.includes(selectedNodeId) || nodes[selectedNodeId]?.definitionIds?.includes(def.id)
+                  : false
+
+                const linkedNodeIds = def.nodeIds || []
+
+                return (
+                  <div key={def.id} className="definition-card">
+                    <div className="definition-card-header">
+                      <h3>{def.term}</h3>
+                      <button
+                        type="button"
+                        className="btn-icon-delete"
+                        onClick={() => onDeleteDefinition(def.id)}
+                        title="Delete definition"
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <p>{def.description}</p>
+
+                    <div className="definition-card-footer">
+                      {selectedNodeId && (
+                        <button
+                          type="button"
+                          className={`btn-link-toggle ${isExplicitlyLinkedToSelected ? 'is-linked' : ''}`}
+                          onClick={() => onToggleDefinitionNodeLink(def.id, selectedNodeId)}
+                          title={
+                            isExplicitlyLinkedToSelected
+                              ? 'Click to unlink from active node'
+                              : 'Click to link to active node'
+                          }
+                        >
+                          {isExplicitlyLinkedToSelected ? '✓ Linked to Node' : '🔗 Link to Node'}
+                        </button>
+                      )}
+
+                      {linkedNodeIds.length > 0 && (
+                        <div className="linked-nodes-tags">
+                          <span className="linked-label">Linked:</span>
+                          {linkedNodeIds.map((nid) => {
+                            const n = nodes[nid]
+                            if (!n) return null
+                            return (
+                              <span
+                                key={nid}
+                                className={`node-link-chip ${selectedNodeId === nid ? 'active' : ''}`}
+                                onClick={() => onSelectNode(nid)}
+                                title={`Click to view node: ${n.text}`}
+                              >
+                                {n.text.slice(0, 18)}...
+                              </span>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })
+            )}
           </div>
         </div>
       )}

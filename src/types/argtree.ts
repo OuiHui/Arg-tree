@@ -6,12 +6,14 @@ export type ArgumentNode = {
   stance: Stance | 'claim'
   childIds: string[]
   connectionIds: string[]
+  definitionIds?: string[]
 }
 
 export type DefinitionEntry = {
   id: string
   term: string
   description: string
+  nodeIds?: string[]
 }
 
 export type TreeState = {

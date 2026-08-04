@@ -11,7 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
-data\trees
+
+# Data trees
+data/trees/
 
 # Editor directories and files
 .vscode/*
@@ -25,4 +27,3 @@ data\trees
 *.sw?
 
 .env
-data/trees/free_will.json

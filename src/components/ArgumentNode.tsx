@@ -1,6 +1,6 @@
 import React from 'react'
 import { Handle, Position, type NodeProps, type Node } from '@xyflow/react'
-import { type Stance, type ArgumentNode as ArgNode, palette } from '../argtree'
+import { type Stance, type ArgumentNode as ArgNode, type DefinitionEntry, palette } from '../argtree'
 
 export type ArgumentNodeData = {
   node: ArgNode
@@ -9,6 +9,7 @@ export type ArgumentNodeData = {
   isSelected: boolean
   isDimmed?: boolean
   isEditing: boolean
+  linkedDefinitions?: DefinitionEntry[]
   onSelectNode: (nodeId: string) => void
   onEditNode: (nodeId: string) => void
   onStopEditingNode: () => void
@@ -27,6 +28,7 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
     isSelected,
     isDimmed,
     isEditing,
+    linkedDefinitions,
     onSelectNode,
     onEditNode,
     onStopEditingNode,
@@ -65,6 +67,14 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
           >
             {isRoot ? 'Central Claim' : node.stance}
           </span>
+          {linkedDefinitions && linkedDefinitions.length > 0 && (
+            <span
+              className="badge badge-def-count"
+              title={linkedDefinitions.map((d) => d.term).join(', ')}
+            >
+              📖 {linkedDefinitions.length} {linkedDefinitions.length === 1 ? 'def' : 'defs'}
+            </span>
+          )}
         </div>
 
 
@@ -117,7 +127,18 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
             autoFocus
           />
         ) : (
-          <p className="node-text">{node.text}</p>
+          <>
+            <p className="node-text">{node.text}</p>
+            {linkedDefinitions && linkedDefinitions.length > 0 && (
+              <div className="node-card-terms">
+                {linkedDefinitions.map((def) => (
+                  <span key={def.id} className="term-chip" title={def.description}>
+                    📖 {def.term}
+                  </span>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
 
