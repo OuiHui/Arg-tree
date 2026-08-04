@@ -33,6 +33,7 @@ export function DefinitionsDrawer({
   const [description, setDescription] = useState('')
   const [linkToSelected, setLinkToSelected] = useState(true)
   const [filterMode, setFilterMode] = useState<FilterMode>('branch')
+  const [confirmDeleteDefId, setConfirmDeleteDefId] = useState<string | null>(null)
 
   const selectedNode = selectedNodeId ? nodes[selectedNodeId] : null
 
@@ -209,17 +210,49 @@ export function DefinitionsDrawer({
                   <div key={def.id} className="definition-card">
                     <div className="definition-card-header">
                       <h3>{def.term}</h3>
-                      <button
-                        type="button"
-                        className="btn-icon-delete"
-                        onClick={() => onDeleteDefinition(def.id)}
-                        title="Delete definition"
-                      >
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                          <line x1="18" y1="6" x2="6" y2="18" />
-                          <line x1="6" y1="6" x2="18" y2="18" />
-                        </svg>
-                      </button>
+                      {confirmDeleteDefId === def.id ? (
+                        <div className="def-delete-confirm-group">
+                          <button
+                            type="button"
+                            className="btn-node-confirm-btn"
+                            onClick={() => {
+                              onDeleteDefinition(def.id)
+                              setConfirmDeleteDefId(null)
+                            }}
+                            title="Click to confirm deletion"
+                            aria-label="Confirm delete definition"
+                          >
+                            Confirm?
+                          </button>
+                          <button
+                            type="button"
+                            className="btn-icon-delete"
+                            onClick={() => setConfirmDeleteDefId(null)}
+                            title="Cancel delete"
+                            aria-label="Cancel delete"
+                          >
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="18" y1="6" x2="6" y2="18" />
+                              <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          className="btn-icon-delete"
+                          onClick={() => setConfirmDeleteDefId(def.id)}
+                          title="Delete definition"
+                          aria-label="Delete definition"
+                        >
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1="10" y1="11" x2="10" y2="17" />
+                            <line x1="14" y1="11" x2="14" y2="17" />
+                          </svg>
+                        </button>
+                      )}
                     </div>
 
                     <p>{def.description}</p>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Handle, Position, type NodeProps, type Node } from '@xyflow/react'
 import { type Stance, type ArgumentNode as ArgNode, type DefinitionEntry, type ClaimPolarity, palette } from '../argtree'
 
@@ -23,6 +23,8 @@ export type ArgumentNodeData = {
 export type ArgumentNodeType = Node<ArgumentNodeData, 'argumentNode'>
 
 export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
+
   const {
     node,
     isRoot,
@@ -136,40 +138,113 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
 
 
         <div className="node-card-controls">
-          <button
-            type="button"
-            className="btn-node-action"
-            onPointerDown={(e) => e.stopPropagation()}
-            onClick={(e) => {
-              e.stopPropagation()
-              if (isEditing) {
-                onStopEditingNode()
-              } else {
-                onEditNode(node.id)
-              }
-            }}
-          >
-            {isEditing ? 'Done' : 'Edit'}
-          </button>
-
-          {!isRoot && (
+          {isEditing ? (
+            <>
+              <button
+                type="button"
+                className="btn-node-action btn-node-done"
+                title="Done editing"
+                aria-label="Done editing"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onStopEditingNode()
+                }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                className="btn-node-action btn-node-cancel"
+                title="Cancel editing"
+                aria-label="Cancel editing"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onStopEditingNode()
+                }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </>
+          ) : (
             <button
               type="button"
-              className="btn-node-delete"
-              title="Delete node"
-              aria-label="Delete node"
+              className="btn-node-action"
+              title="Edit node"
+              aria-label="Edit node"
               onPointerDown={(e) => e.stopPropagation()}
               onClick={(e) => {
                 e.stopPropagation()
-                onDeleteNode(node.id)
+                onEditNode(node.id)
               }}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
               </svg>
             </button>
           )}
+
+          {!isRoot &&
+            (isConfirmingDelete ? (
+              <div className="node-delete-confirm-group">
+                <button
+                  type="button"
+                  className="btn-node-confirm-btn"
+                  title="Click to confirm deletion"
+                  aria-label="Confirm delete node"
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setIsConfirmingDelete(false)
+                    onDeleteNode(node.id)
+                  }}
+                >
+                  Confirm?
+                </button>
+                <button
+                  type="button"
+                  className="btn-node-delete"
+                  title="Cancel delete"
+                  aria-label="Cancel delete"
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setIsConfirmingDelete(false)
+                  }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="btn-node-delete"
+                title="Delete node"
+                aria-label="Delete node"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIsConfirmingDelete(true)
+                }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  <line x1="10" y1="11" x2="10" y2="17" />
+                  <line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
+              </button>
+            ))}
         </div>
       </div>
 
