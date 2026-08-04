@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141925" />
+      <stop offset="100%" stop-color="#080a0f" />
+    </linearGradient>
+
+    <!-- Border Ring Gradient -->
+    <linearGradient id="border-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.6" />
+      <stop offset="50%" stop-color="#312e81" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0.6" />
+    </linearGradient>
+
+    <!-- Node Gradients -->
+    <linearGradient id="claim-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#4f46e5" />
+    </linearGradient>
+    <linearGradient id="support-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="attack-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb7185" />
+      <stop offset="100%" stop-color="#e11d48" />
+    </linearGradient>
+
+    <!-- Branching Line Gradients -->
+    <linearGradient id="branch-left" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <linearGradient id="branch-right" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#f43f5e" />
+    </linearGradient>
+
+    <!-- Subtle Drop Shadow Filter -->
+    <filter id="node-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.5" />
+    </filter>
+
+    <!-- Glowing Aura Filter -->
+    <filter id="claim-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="14" flood-color="#6366f1" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <!-- Background Squircle with Border -->
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#bg-grad)" stroke="url(#border-grad)" stroke-width="12" />
+
+  <!-- Connecting Branches -->
+  <!-- Left Branch (Root to Support) -->
+  <path d="M 256 160 C 256 260 144 260 144 340" stroke="url(#branch-left)" stroke-width="28" stroke-linecap="round" fill="none" />
+  <!-- Right Branch (Root to Attack) -->
+  <path d="M 256 160 C 256 260 368 260 368 340" stroke="url(#branch-right)" stroke-width="28" stroke-linecap="round" fill="none" />
+
+  <!-- Root Node (Claim) at (256, 140) -->
+  <g filter="url(#claim-glow)">
+    <circle cx="256" cy="140" r="54" fill="url(#claim-grad)" filter="url(#node-shadow)" />
+    <!-- Inner Core Icon: Central node indicator -->
+    <circle cx="256" cy="140" r="20" fill="#ffffff" opacity="0.9" />
+  </g>
+
+  <!-- Support Node (Green) at (144, 356) -->
+  <g filter="url(#node-shadow)">
+    <circle cx="144" cy="356" r="46" fill="url(#support-grad)" />
+    <!-- Plus symbol for Support -->
+    <path d="M 144 338 V 374 M 126 356 H 162" stroke="#ffffff" stroke-width="10" stroke-linecap="round" opacity="0.95" />
+  </g>
+
+  <!-- Attack Node (Red) at (368, 356) -->
+  <g filter="url(#node-shadow)">
+    <circle cx="368" cy="356" r="46" fill="url(#attack-grad)" />
+    <!-- Minus symbol for Attack -->
+    <path d="M 350 356 H 386" stroke="#ffffff" stroke-width="10" stroke-linecap="round" opacity="0.95" />
+  </g>
+</svg>
