@@ -1,0 +1,189 @@
+{
+  "title": "Objective Morality",
+  "rootClaim": "Objective moral facts exist independently of human opinions, cultural beliefs, individual attitudes, or evolutionary conditioning.",
+  "branches": [
+    {
+      "text": "Moral Intuition & Universal Convergence: First-person moral experience and cross-cultural consensus provide direct prima facie evidence of stance-independent moral facts.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Moral Intuitionism: Fundamental moral truths are self-evident rational intuitions apprehended directly, functioning analogously to mathematical or logical axioms.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Evolutionary Debunking Argument: Natural selection shaped human moral intuitions strictly for survival and reproductive fitness, rendering their alignment with stance-independent moral facts an ungrounded coincidence.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Normative Tracking & Evolutionary Reliability: Abstract reasoning in mathematics and logic evolved under identical adaptive pressures yet tracks objective truth; moral cognition similarly utilizes generalized rational faculties.",
+                  "stance": "support"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Cultural Relativism & Diversity: Moral codes vary radically across history and civilizations, indicating that moral standards are socio-cultural constructs rather than objective discoveries.",
+          "stance": "attack",
+          "children": [
+            {
+              "text": "Surface Diversity vs. Core Consensus: Surface moral variations stem from differing empirical beliefs or environmental constraints, whereas core principles (prohibiting arbitrary murder, protecting children, reciprocal fairness) exhibit universal agreement.",
+              "stance": "support"
+            }
+          ]
+        },
+        {
+          "text": "Moral Progress Argument: Historical developments—such as the global abolition of slavery and expansion of universal human rights—represent genuine objective progress toward a moral truth benchmark.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Social Power Realignment: Perceived 'moral progress' merely reflects changing economic structures, technological capabilities, and shifts in dominant socio-political power rather than convergence on an external moral benchmark.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Rational Deontology & Universal Imperatives: Moral duties are derived directly from the requirements of practical reason, which obligates all rational agents universally.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Universalizability Principle: An action is morally permissible if and only if its underlying maxim can be consistently willed as a universal law without generating a logical or practical contradiction.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Is-Ought Problem: Descriptive premises about what 'is' (natural facts or logical principles) cannot yield prescriptive premises about what 'ought' to be done without smuggling in unproven normative claims.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Constitutivism & Agency: Rational agency possesses constitutive aims; engaging in deliberation logically commits agents to valuing their own agency and, by rational consistency, the agency of all rational beings.",
+                  "stance": "support"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Transcendental & Ontological Grounding: Objective moral obligations require an immutable, transcendent foundation—such as a necessary supreme nature—to establish objective value and authoritative duty.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Divine Command & Moral Duty: Absent a transcendent personal source to ground binding moral commands, moral values reduce to subjective aesthetic preferences or biological imperatives.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Euthyphro Dilemma: If actions are good solely because God commands them, morality is arbitrary; if God commands them because they are inherently good, morality is independent of divine authority.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Modified Divine Command Theory: God's immutable, perfectly good nature—rather than arbitrary divine choice or an external law—serves as the foundational standard of moral goodness.",
+                  "stance": "support"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Moral Anti-Realism & Emotivism: Moral statements do not express objective propositions about reality; they express subjective emotional reactions, social attitudes, or prescriptive desires.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Emotivism & Expressivism: Declarations like 'Cruelty is wrong' are not true-or-false factual assertions, but emotional expressions equivalent to saying 'Boo to cruelty!' or issuing personal imperatives.",
+          "stance": "attack",
+          "children": [
+            {
+              "text": "Frege-Geach Embedding Problem: Moral statements function syntactically and logically in unasserted conditional premises (e.g., 'If lying is wrong, then getting others to lie is wrong'), which non-cognitivist expressivism fails to explain without logical equivocation.",
+              "stance": "support"
+            }
+          ]
+        },
+        {
+          "text": "Subjective Constructivism: Moral values are valid only relative to individual preferences or social contracts, possessing no stance-independent status in the natural world.",
+          "stance": "attack",
+          "children": [
+            {
+              "text": "Disagreement Paradox: If moral subjectivism were accurate, individuals with opposing moral views would not actually be disagreeing, but merely stating separate psychological facts about themselves.",
+              "stance": "support"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Moral Error Theory & Metaphysical Queerness: Moral claims attempt to assert objective facts, but because objective prescriptivity is incompatible with naturalism, all positive moral assertions are false.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Argument from Queerness: Objective moral values would have to be entities of a bizarre non-natural type—combining objective properties with intrinsic motivational direction—requiring an unexplainable faculty of moral intuition.",
+          "stance": "attack",
+          "children": [
+            {
+              "text": "Companions in Guilt Argument: Epistemic norms (such as logical consistency, empirical evidence, and cognitive justification) are equally unobservable and prescriptive; denying objective moral facts logically forces the rejection of objective rational standards.",
+              "stance": "support"
+            }
+          ]
+        },
+        {
+          "text": "Explanatory Superfluity: Science and evolutionary biology fully account for the existence of human moral beliefs and behaviors without postulating real moral facts.",
+          "stance": "attack",
+          "targetRebuttalIndex": "0.0"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Moral Realism",
+      "description": "The metaethical view that objective moral facts exist independently of human beliefs, desires, feelings, or social conventions."
+    },
+    {
+      "term": "Moral Anti-Realism",
+      "description": "The position that there are no objective moral facts; moral values are subjective, socially constructed, or non-existent."
+    },
+    {
+      "term": "Moral Error Theory",
+      "description": "A metaethical stance asserting that moral statements purport to express objective truths, but because objective moral values do not exist, all positive moral claims are strictly false."
+    },
+    {
+      "term": "Argument from Queerness",
+      "description": "J.L. Mackie's argument that objective moral values would be metaphysically entity-types unlike anything else in the universe and would require an epistemologically peculiar faculty of intuition."
+    },
+    {
+      "term": "Evolutionary Debunking Argument",
+      "description": "An argument claiming that because evolutionary forces selected human moral intuitions for survival rather than truth-tracking, our moral beliefs lack epistemic justification."
+    },
+    {
+      "term": "Euthyphro Dilemma",
+      "description": "Socrates' famous challenge asking whether an action is morally good because a deity commands it, or whether a deity commands it because the action is inherently morally good."
+    },
+    {
+      "term": "Is-Ought Problem",
+      "description": "David Hume's observation that logical deductions cannot move from purely descriptive claims about what 'is' to prescriptive claims about what 'ought' to be without additional normative premises."
+    },
+    {
+      "term": "Frege-Geach Problem",
+      "description": "A challenge for moral expressivism explaining how moral terms retain valid logic and meaning when embedded in unasserted conditional statements."
+    },
+    {
+      "term": "Categorical Imperative",
+      "description": "Immanuel Kant's foundational deontological principle requiring that one act only according to maxims that can be consistently willed as universal laws."
+    },
+    {
+      "term": "Companions in Guilt Argument",
+      "description": "A defense of moral realism showing that attacks on moral facts (such as non-naturalism or prescriptivity) equally apply to epistemic norms, which all rational discourse requires."
+    },
+    {
+      "term": "Emotivism",
+      "description": "A non-cognitivist theory holding that moral statements do not state facts, but rather express emotional attitudes or feelings of approval or disapproval."
+    },
+    {
+      "term": "Moral Intuitionism",
+      "description": "The epistemological view that foundational moral truths can be apprehended directly through rational moral intuition without needing empirical proof."
+    }
+  ]
+}
