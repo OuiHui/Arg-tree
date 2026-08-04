@@ -7,6 +7,7 @@ export type ArgumentNodeData = {
   isRoot: boolean
   isOrphan: boolean
   isSelected: boolean
+  isDimmed?: boolean
   isEditing: boolean
   onSelectNode: (nodeId: string) => void
   onEditNode: (nodeId: string) => void
@@ -24,6 +25,7 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
     isRoot,
     isOrphan,
     isSelected,
+    isDimmed,
     isEditing,
     onSelectNode,
     onEditNode,
@@ -39,7 +41,7 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
 
   return (
     <div
-      className={`node-card ${isSelected ? 'is-selected' : ''} ${isRoot ? 'is-root' : ''} ${isOrphan ? 'is-orphan' : ''}`}
+      className={`node-card ${isSelected ? 'is-selected' : ''} ${isDimmed ? 'is-dimmed' : ''} ${isRoot ? 'is-root' : ''} ${isOrphan ? 'is-orphan' : ''}`}
       style={
         {
           '--node-accent': stanceColor,

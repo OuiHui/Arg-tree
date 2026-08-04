@@ -21,7 +21,7 @@ export type TreeState = {
   positions: Record<string, { x: number; y: number }>
   rootId: string
   definitions: DefinitionEntry[]
-  selectedNodeId: string
+  selectedNodeId: string | null
 }
 
 export type WorkspaceState = {

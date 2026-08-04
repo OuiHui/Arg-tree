@@ -319,7 +319,7 @@ export const cloneTree = (sourceTree: TreeState, newTitle?: string): TreeState =
   })
 
   const newRootId = idMap[sourceTree.rootId] || Object.keys(newNodes)[0] || createId()
-  const newSelectedNodeId = idMap[sourceTree.selectedNodeId] || newRootId
+  const newSelectedNodeId = sourceTree.selectedNodeId ? (idMap[sourceTree.selectedNodeId] || null) : null
 
   const newDefinitions = sourceTree.definitions.map((def) => ({
     ...def,

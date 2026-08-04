@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState, useEffect } from 'react'
+import { useMemo, useCallback, useState } from 'react'
 import {
   ReactFlow,
   Background,
@@ -19,6 +19,7 @@ import {
 import { type Stance, type TreeState, palette } from '../argtree'
 import { ArgumentNode, type ArgumentNodeType } from './ArgumentNode'
 import { DefinitionsDrawer } from './DefinitionsDrawer'
+import { getBranchNodeIds } from '../utils/treeOperations'
 
 type WorkspaceStageProps = {
   selectedTree: TreeState
@@ -27,7 +28,7 @@ type WorkspaceStageProps = {
   onStopEditingNode: () => void
   onUpdateNodeText: (nodeId: string, text: string) => void
   onDeleteNode: (nodeId: string) => void
-  onSelectNode: (nodeId: string) => void
+  onSelectNode: (nodeId: string | null) => void
   onAddBranchFromNode: (parentNodeId: string, stance: Stance) => void
   onAddConnection: (sourceNodeId: string, targetNodeId: string) => void
   onLinkChildNode: (parentId: string, childId: string, stance: Stance) => void
@@ -68,6 +69,7 @@ const edgeTypes: EdgeTypes = {
 function buildNodes(
   selectedTree: TreeState,
   editingNodeId: string | null,
+  focusedNodeIds: Set<string> | null,
   onSelectNode: (id: string) => void,
   onEditNode: (id: string) => void,
   onStopEditingNode: () => void,
@@ -79,31 +81,41 @@ function buildNodes(
     Object.values(selectedTree.nodes).flatMap((n) => n.childIds),
   )
 
-  return Object.values(selectedTree.nodes).map((node) => ({
-    id: node.id,
-    type: 'argumentNode',
-    position: selectedTree.positions[node.id] || { x: 0, y: 0 },
-    initialWidth: 280,
-    initialHeight: 160,
-    data: {
-      node,
-      isRoot: node.id === selectedTree.rootId,
-      isOrphan: node.id !== selectedTree.rootId && !attachedChildIds.has(node.id),
-      isSelected: node.id === selectedTree.selectedNodeId,
-      isEditing: editingNodeId === node.id,
-      onSelectNode,
-      onEditNode,
-      onStopEditingNode,
-      onUpdateNodeText,
-      onDeleteNode,
-      onAddBranchFromNode,
-    },
-  }))
+  return Object.values(selectedTree.nodes).map((node) => {
+    const isFocused = focusedNodeIds === null || focusedNodeIds.has(node.id)
+    return {
+      id: node.id,
+      type: 'argumentNode',
+      position: selectedTree.positions[node.id] || { x: 0, y: 0 },
+      initialWidth: 280,
+      initialHeight: 160,
+      data: {
+        node,
+        isRoot: node.id === selectedTree.rootId,
+        isOrphan: node.id !== selectedTree.rootId && !attachedChildIds.has(node.id),
+        isSelected: node.id === selectedTree.selectedNodeId,
+        isDimmed: !isFocused,
+        isEditing: editingNodeId === node.id,
+        onSelectNode,
+        onEditNode,
+        onStopEditingNode,
+        onUpdateNodeText,
+        onDeleteNode,
+        onAddBranchFromNode,
+      },
+    }
+  })
 }
 
-function buildEdges(selectedTree: TreeState, selectedEdgeId: string | null): Edge[] {
+function buildEdges(
+  selectedTree: TreeState,
+  selectedEdgeId: string | null,
+  focusedNodeIds: Set<string> | null,
+): Edge[] {
   const edges: Edge[] = []
   Object.values(selectedTree.nodes).forEach((parentNode) => {
+    const isParentFocused = focusedNodeIds === null || focusedNodeIds.has(parentNode.id)
+
     parentNode.childIds.forEach((childId) => {
       const childNode = selectedTree.nodes[childId]
       const stance = childNode ? childNode.stance : 'support'
@@ -111,6 +123,8 @@ function buildEdges(selectedTree: TreeState, selectedEdgeId: string | null): Edg
       const edgeId = `edge-${parentNode.id}-${childId}`
       const isSelected = selectedEdgeId === edgeId
       const sourceHandle = stance === 'attack' ? 'attack-source' : 'support-source'
+      const isChildFocused = focusedNodeIds === null || focusedNodeIds.has(childId)
+      const isEdgeFocused = isParentFocused && isChildFocused
 
       edges.push({
         id: edgeId,
@@ -119,7 +133,12 @@ function buildEdges(selectedTree: TreeState, selectedEdgeId: string | null): Edg
         target: childId,
         targetHandle: 'top-target',
         type: 'smoothstep',
-        style: { stroke: isSelected ? '#ffffff' : color, strokeWidth: isSelected ? 4 : 3 },
+        style: {
+          stroke: isSelected ? '#ffffff' : color,
+          strokeWidth: isSelected ? 4 : 3,
+          opacity: isEdgeFocused ? 1 : 0.15,
+          transition: 'opacity 0.25s ease',
+        },
         markerEnd: { type: MarkerType.ArrowClosed, color: isSelected ? '#ffffff' : color, width: 14, height: 14 },
       })
     })
@@ -127,6 +146,9 @@ function buildEdges(selectedTree: TreeState, selectedEdgeId: string | null): Edg
     parentNode.connectionIds.forEach((connId) => {
       const edgeId = `conn-${parentNode.id}-${connId}`
       const isSelected = selectedEdgeId === edgeId
+      const isConnTargetFocused = focusedNodeIds === null || focusedNodeIds.has(connId)
+      const isConnFocused = isParentFocused && isConnTargetFocused
+
       edges.push({
         id: edgeId,
         source: parentNode.id,
@@ -139,6 +161,8 @@ function buildEdges(selectedTree: TreeState, selectedEdgeId: string | null): Edg
           stroke: isSelected ? '#ffffff' : '#64748b',
           strokeWidth: 2,
           strokeDasharray: '5 5',
+          opacity: isConnFocused ? 1 : 0.15,
+          transition: 'opacity 0.25s ease',
         },
         markerEnd: { type: MarkerType.ArrowClosed, color: isSelected ? '#ffffff' : '#64748b', width: 12, height: 12 },
       })
@@ -167,11 +191,17 @@ export function WorkspaceStage({
   onAddDefinition,
   onDeleteDefinition,
 }: WorkspaceStageProps) {
+  const focusedNodeIds = useMemo(
+    () => getBranchNodeIds(selectedTree, selectedTree.selectedNodeId),
+    [selectedTree],
+  )
+
   const targetNodes = useMemo(
     () =>
       buildNodes(
         selectedTree,
         editingNodeId,
+        focusedNodeIds,
         onSelectNode,
         onEditNode,
         onStopEditingNode,
@@ -182,6 +212,7 @@ export function WorkspaceStage({
     [
       selectedTree,
       editingNodeId,
+      focusedNodeIds,
       onSelectNode,
       onEditNode,
       onStopEditingNode,
@@ -192,18 +223,20 @@ export function WorkspaceStage({
   )
 
   const [nodes, setNodes] = useState<Node[]>(targetNodes)
+  const [prevTargetNodes, setPrevTargetNodes] = useState<Node[]>(targetNodes)
 
-  useEffect(() => {
+  if (prevTargetNodes !== targetNodes) {
+    setPrevTargetNodes(targetNodes)
     setNodes(targetNodes)
-  }, [targetNodes])
+  }
 
   const handleNodesChange = useCallback((changes: NodeChange[]) => {
     setNodes((nds) => applyNodeChanges(changes, nds))
   }, [])
 
   const edges = useMemo(
-    () => buildEdges(selectedTree, selectedEdgeId),
-    [selectedTree, selectedEdgeId],
+    () => buildEdges(selectedTree, selectedEdgeId, focusedNodeIds),
+    [selectedTree, selectedEdgeId, focusedNodeIds],
   )
 
   const handleNodeDragStop = useCallback(
@@ -266,7 +299,10 @@ export function WorkspaceStage({
           onConnect={handleConnect}
           onEdgeClick={handleEdgeClick}
           onEdgeDoubleClick={handleEdgeDoubleClick}
-          onPaneClick={() => onSelectEdge(null)}
+          onPaneClick={() => {
+            onSelectEdge(null)
+            onSelectNode(null)
+          }}
           fitView
           colorMode="dark"
         >

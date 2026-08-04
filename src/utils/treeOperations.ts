@@ -251,10 +251,8 @@ export function pasteNodeInTree(
   copiedData: { text: string; stance: Stance | 'claim' }
 ): { tree: TreeState; newNodeId: string } {
   const id = createId()
-  const basePos =
-    currentTree.positions[currentTree.selectedNodeId] ??
-    currentTree.positions[currentTree.rootId] ??
-    { x: 0, y: 0 }
+  const selectedPos = currentTree.selectedNodeId ? currentTree.positions[currentTree.selectedNodeId] : undefined
+  const basePos = selectedPos ?? currentTree.positions[currentTree.rootId] ?? { x: 0, y: 0 }
 
   const stance: Stance = copiedData.stance === 'claim' ? 'support' : copiedData.stance
 
@@ -282,4 +280,56 @@ export function pasteNodeInTree(
 
   return { tree: updatedTree, newNodeId: id }
 }
+
+export function getBranchNodeIds(selectedTree: TreeState, selectedId: string | null): Set<string> | null {
+  if (!selectedId || !selectedTree.nodes[selectedId]) {
+    return null
+  }
+
+  if (selectedId === selectedTree.rootId) {
+    return null
+  }
+
+  const focused = new Set<string>()
+  focused.add(selectedId)
+
+  const parentMap: Record<string, string[]> = {}
+  Object.values(selectedTree.nodes).forEach((pNode) => {
+    pNode.childIds.forEach((childId) => {
+      if (!parentMap[childId]) {
+        parentMap[childId] = []
+      }
+      parentMap[childId].push(pNode.id)
+    })
+  })
+
+  const ancestorQueue = [selectedId]
+  while (ancestorQueue.length > 0) {
+    const currentId = ancestorQueue.shift()!
+    const parents = parentMap[currentId] ?? []
+    parents.forEach((parentId) => {
+      if (!focused.has(parentId)) {
+        focused.add(parentId)
+        ancestorQueue.push(parentId)
+      }
+    })
+  }
+
+  const descendantQueue = [selectedId]
+  while (descendantQueue.length > 0) {
+    const currentId = descendantQueue.shift()!
+    const currNode = selectedTree.nodes[currentId]
+    if (currNode && currNode.childIds) {
+      currNode.childIds.forEach((childId) => {
+        if (!focused.has(childId)) {
+          focused.add(childId)
+          descendantQueue.push(childId)
+        }
+      })
+    }
+  }
+
+  return focused
+}
+
 

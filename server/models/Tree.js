@@ -5,7 +5,7 @@ const treeSchema = new mongoose.Schema(
     id: { type: String, required: true, unique: true },
     title: { type: String, required: true },
     rootId: { type: String, required: true },
-    selectedNodeId: { type: String, required: true },
+    selectedNodeId: { type: String, default: null },
     nodes: { type: Object, default: {} },
     positions: { type: Object, default: {} },
     definitions: { type: Array, default: [] },

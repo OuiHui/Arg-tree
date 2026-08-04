@@ -239,7 +239,7 @@ export function useWorkspace() {
     setEditingNodeId(null)
   }, [])
 
-  const handleSelectNode = useCallback((nodeId: string) => {
+  const handleSelectNode = useCallback((nodeId: string | null) => {
     setSelectedEdgeId(null)
     updateSelectedTree((currentTree) => ({
       ...currentTree,

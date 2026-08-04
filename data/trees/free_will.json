@@ -12,7 +12,13 @@
         },
         {
           "text": "Moral & Legal Systems: Society logically requires personal agency, praise, and blame for intentional actions.",
-          "stance": "support"
+          "stance": "support",
+          "children": [
+            {
+              "text": "Retributive Justice: Legal institutions and contractual accountability presuppose genuine moral responsibility rather than puppet causation.",
+              "stance": "support"
+            }
+          ]
         }
       ]
     },
@@ -27,7 +33,13 @@
         },
         {
           "text": "Epiphenomenal Consciousness: Conscious awareness is a passive observer of neural activity rather than the executive controller.",
-          "stance": "support"
+          "stance": "support",
+          "children": [
+            {
+              "text": "Veto Power ('Free Won't'): Conscious awareness retains executive power to consciously veto pre-conscious impulses before physical execution.",
+              "stance": "attack"
+            }
+          ]
         }
       ]
     },
@@ -64,6 +76,10 @@
     {
       "term": "Hard Determinism",
       "description": "The view that causal determinism is true and completely rules out free will and moral responsibility."
+    },
+    {
+      "term": "Free Won't",
+      "description": "The capacity of conscious awareness to inhibit or veto motor actions initiated by pre-conscious brain processes."
     }
   ]
 }
