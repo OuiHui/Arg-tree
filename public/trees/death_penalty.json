@@ -1,0 +1,83 @@
+{
+  "id": "tree-death-penalty",
+  "title": "Death Penalty",
+  "rootClaim": "The death penalty should be abolished globally as an irreversible, inhumane, and ineffective form of justice.",
+  "branches": [
+    {
+      "text": "Flaws in judicial procedures lead to the irreversible, state-sanctioned execution of innocent human beings.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "DNA testing and post-conviction reviews have exonerated over 190 individuals from death row in the United States since 1973.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Systemic causes such as unreliable eyewitness testimony, coerced confessions, inadequate legal representation, and prosecutorial misconduct contaminate capital trials.",
+              "stance": "support"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Capital punishment violates the fundamental right to life and constitutes cruel, inhuman, and degrading treatment.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Botched executions using untested lethal injection protocols cause intense prolonged suffering, violating constitutional protections against cruel and unusual punishment.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Capital punishment is disproportionately applied based on race, socioeconomic status, and geographic jurisdiction rather than the severity of the crime.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Empirical studies consistently show that defendants accused of killing white victims face significantly higher probabilities of receiving a death sentence than those accused of killing minority victims.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Capital punishment provides necessary moral proportionality and retributive justice for the most heinous offenses.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Retributivism maintains that the severity of punishment must match the moral gravity of the crime to uphold society's moral order.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "State-sanctioned execution undermines the sanctity of life and reduces the justice system to institutionalized vengeance.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "The death penalty deters potential offenders from committing premeditated murder.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Criminological consensus and FBI homicide data demonstrate no statistically significant difference in murder rates between states with and without the death penalty.",
+          "stance": "attack"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Retributivism",
+      "description": "A theory of justice asserting that criminals deserve to suffer punishment proportional to the severity of their wrongdoing."
+    },
+    {
+      "term": "Exoneration",
+      "description": "The official absolution of a convicted person following clear evidence establishing their innocence."
+    },
+    {
+      "term": "Botched Execution",
+      "description": "An execution encounter that experiences breakdown, unnecessary delay, or severe suffering contrary to established legal standard protocols."
+    }
+  ]
+}
