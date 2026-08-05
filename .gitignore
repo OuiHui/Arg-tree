@@ -12,8 +12,12 @@ dist
 dist-ssr
 *.local
 
-# Data trees
+# Data trees (local only)
 data/trees/
+
+# Public tree JSON files (local only, manifest is tracked)
+public/trees/*.json
+!public/trees/manifest.json
 
 # Editor directories and files
 .vscode/*
