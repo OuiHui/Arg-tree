@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Handle, Position, type NodeProps, type Node } from '@xyflow/react'
-import { type Stance, type ArgumentNode as ArgNode, type DefinitionEntry, type ClaimPolarity, palette } from '../argtree'
+import { type Stance, type ArgumentNode as ArgNode, type DefinitionEntry, type ClaimPolarity } from '../argtree'
+import { getNodeStyleTokens } from '../utils/styles'
+import { CheckIcon, CloseIcon, EditIcon, TrashIcon } from './NodeIcons'
 
 export type ArgumentNodeData = {
   node: ArgNode
@@ -43,48 +45,32 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
   } = data
 
   const isPro = claimPolarity === 'pro'
+  const styles = getNodeStyleTokens(isOrphan, isRoot, isPro)
 
-  const stanceColor = isOrphan
-    ? '#94a3b8'
-    : isRoot
-      ? palette.claim
-      : isPro
-        ? '#10b981'
-        : '#ef4444'
+  const getBadgeLabel = () => {
+    if (isRoot) return 'Central Claim'
+    if (isOrphan) return 'Orphan'
+    if (isPro) {
+      return node.stance === 'support' ? '🛡️ Support (Pro)' : '⚔️ Rebuttal (Pro)'
+    }
+    return node.stance === 'attack' ? '⚔️ Attack (Con)' : '🛡️ Support (Con)'
+  }
 
-  const nodeBgTint = isOrphan
-    ? 'rgba(148, 163, 184, 0.04)'
-    : isRoot
-      ? 'rgba(139, 92, 246, 0.08)'
-      : isPro
-        ? 'rgba(16, 185, 129, 0.08)'
-        : 'rgba(239, 68, 68, 0.08)'
-
-  const nodeCardBorder = isOrphan
-    ? 'rgba(148, 163, 184, 0.3)'
-    : isRoot
-      ? 'rgba(139, 92, 246, 0.35)'
-      : isPro
-        ? 'rgba(16, 185, 129, 0.4)'
-        : 'rgba(239, 68, 68, 0.4)'
-
-  const nodeAccentGlow = isOrphan
-    ? 'rgba(148, 163, 184, 0.2)'
-    : isRoot
-      ? 'rgba(139, 92, 246, 0.35)'
-      : isPro
-        ? 'rgba(16, 185, 129, 0.35)'
-        : 'rgba(239, 68, 68, 0.35)'
+  const getBadgeClass = () => {
+    if (isRoot) return 'badge-claim'
+    if (isOrphan) return 'badge-orphan'
+    return isPro ? 'badge-pro' : 'badge-con'
+  }
 
   return (
     <div
       className={`node-card ${isSelected ? 'is-selected' : ''} ${isDimmed ? 'is-dimmed' : ''} ${isRoot ? 'is-root' : ''} ${isOrphan ? 'is-orphan' : ''}`}
       style={
         {
-          '--node-accent': stanceColor,
-          '--node-bg-tint': nodeBgTint,
-          '--node-card-border': nodeCardBorder,
-          '--node-accent-glow': nodeAccentGlow,
+          '--node-accent': styles.stanceColor,
+          '--node-bg-tint': styles.nodeBgTint,
+          '--node-card-border': styles.nodeCardBorder,
+          '--node-accent-glow': styles.nodeAccentGlow,
         } as React.CSSProperties
       }
       onClick={() => onSelectNode(node.id)}
@@ -98,24 +84,8 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
 
       <div className="node-card-header">
         <div className="node-card-badges">
-          <span
-            className={`badge ${
-              isRoot
-                ? 'badge-claim'
-                : isOrphan
-                  ? 'badge-orphan'
-                  : isPro
-                    ? 'badge-pro'
-                    : 'badge-con'
-            }`}
-          >
-            {isRoot
-              ? 'Central Claim'
-              : isOrphan
-                ? 'Orphan'
-                : isPro
-                  ? (node.stance === 'support' ? '🛡️ Support (Pro)' : '⚔️ Rebuttal (Pro)')
-                  : (node.stance === 'attack' ? '⚔️ Attack (Con)' : '🛡️ Support (Con)')}
+          <span className={`badge ${getBadgeClass()}`}>
+            {getBadgeLabel()}
           </span>
           {linkedDefinitions && linkedDefinitions.length > 0 && (
             <span
@@ -126,7 +96,6 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
             </span>
           )}
         </div>
-
 
         <div className="node-card-controls">
           {isEditing ? (
@@ -142,9 +111,7 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
                   onStopEditingNode()
                 }}
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+                <CheckIcon />
               </button>
               <button
                 type="button"
@@ -157,10 +124,7 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
                   onStopEditingNode()
                 }}
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
+                <CloseIcon />
               </button>
             </>
           ) : (
@@ -175,10 +139,7 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
                 onEditNode(node.id)
               }}
             >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-              </svg>
+              <EditIcon />
             </button>
           )}
 
@@ -210,10 +171,7 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
                     setIsConfirmingDelete(false)
                   }}
                 >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
+                  <CloseIcon width={12} height={12} />
                 </button>
               </div>
             ) : (
@@ -228,12 +186,7 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
                   setIsConfirmingDelete(true)
                 }}
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="3 6 5 6 21 6" />
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                  <line x1="10" y1="11" x2="10" y2="17" />
-                  <line x1="14" y1="11" x2="14" y2="17" />
-                </svg>
+                <TrashIcon />
               </button>
             ))}
         </div>
