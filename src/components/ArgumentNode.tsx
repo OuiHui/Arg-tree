@@ -28,7 +28,6 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
   const {
     node,
     isRoot,
-    isChildOfRoot,
     claimPolarity,
     isOrphan,
     isSelected,
@@ -43,45 +42,39 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
     onAddBranchFromNode,
   } = data
 
-  const isRebuttal = node.stance === 'attack' && !isChildOfRoot && !isRoot
+  const isPro = claimPolarity === 'pro'
 
   const stanceColor = isOrphan
     ? '#94a3b8'
     : isRoot
       ? palette.claim
-      : isRebuttal
-        ? (claimPolarity === 'pro' ? '#fb923c' : '#f43f5e')
-        : (palette[node.stance as Stance] ?? palette.support)
+      : isPro
+        ? '#10b981'
+        : '#ef4444'
 
   const nodeBgTint = isOrphan
     ? 'rgba(148, 163, 184, 0.04)'
     : isRoot
-      ? 'rgba(99, 102, 241, 0.08)'
-      : isRebuttal
-        ? (claimPolarity === 'pro' ? 'rgba(249, 115, 22, 0.07)' : 'rgba(244, 63, 94, 0.07)')
-        : node.stance === 'attack'
-          ? 'rgba(244, 63, 94, 0.07)'
-          : 'rgba(16, 185, 129, 0.07)'
+      ? 'rgba(139, 92, 246, 0.08)'
+      : isPro
+        ? 'rgba(16, 185, 129, 0.08)'
+        : 'rgba(239, 68, 68, 0.08)'
 
   const nodeCardBorder = isOrphan
     ? 'rgba(148, 163, 184, 0.3)'
     : isRoot
-      ? 'rgba(99, 102, 241, 0.35)'
-      : isRebuttal
-        ? (claimPolarity === 'pro' ? 'rgba(249, 115, 22, 0.4)' : 'rgba(244, 63, 94, 0.4)')
-        : node.stance === 'attack'
-          ? 'rgba(244, 63, 94, 0.35)'
-          : 'rgba(16, 185, 129, 0.35)'
+      ? 'rgba(139, 92, 246, 0.35)'
+      : isPro
+        ? 'rgba(16, 185, 129, 0.4)'
+        : 'rgba(239, 68, 68, 0.4)'
 
   const nodeAccentGlow = isOrphan
     ? 'rgba(148, 163, 184, 0.2)'
     : isRoot
-      ? 'rgba(99, 102, 241, 0.35)'
-      : isRebuttal
-        ? (claimPolarity === 'pro' ? 'rgba(249, 115, 22, 0.35)' : 'rgba(244, 63, 94, 0.35)')
-        : node.stance === 'attack'
-          ? 'rgba(244, 63, 94, 0.35)'
-          : 'rgba(16, 185, 129, 0.35)'
+      ? 'rgba(139, 92, 246, 0.35)'
+      : isPro
+        ? 'rgba(16, 185, 129, 0.35)'
+        : 'rgba(239, 68, 68, 0.35)'
 
   return (
     <div
@@ -111,20 +104,18 @@ export function ArgumentNode({ data }: NodeProps<ArgumentNodeType>) {
                 ? 'badge-claim'
                 : isOrphan
                   ? 'badge-orphan'
-                  : isRebuttal
-                    ? (claimPolarity === 'pro' ? 'badge-rebuttal-pro' : 'badge-rebuttal-con')
-                    : `badge-${node.stance}`
+                  : isPro
+                    ? 'badge-pro'
+                    : 'badge-con'
             }`}
           >
             {isRoot
               ? 'Central Claim'
               : isOrphan
                 ? 'Orphan'
-                : isRebuttal
-                  ? (claimPolarity === 'pro' ? '🛡️ Rebuttal (Pro)' : '⚔️ Rebuttal (Con)')
-                  : node.stance === 'attack'
-                    ? '⚔️ Attack'
-                    : '🛡️ Support'}
+                : isPro
+                  ? (node.stance === 'support' ? '🛡️ Support (Pro)' : '⚔️ Rebuttal (Pro)')
+                  : (node.stance === 'attack' ? '⚔️ Attack (Con)' : '🛡️ Support (Con)')}
           </span>
           {linkedDefinitions && linkedDefinitions.length > 0 && (
             <span

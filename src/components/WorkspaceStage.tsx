@@ -129,8 +129,7 @@ function buildEdges(
     parentNode.childIds.forEach((childId) => {
       const childNode = selectedTree.nodes[childId]
       const stance = childNode ? childNode.stance : 'support'
-      const isRebuttal = stance === 'attack' && parentNode.id !== selectedTree.rootId
-      const color = isRebuttal ? palette.rebuttal : (palette[stance as Stance] ?? palette.support)
+      const color = palette[stance as Stance] ?? palette.support
       const edgeId = `edge-${parentNode.id}-${childId}`
       const isSelected = selectedEdgeId === edgeId
       const sourceHandle = stance === 'attack' ? 'attack-source' : 'support-source'
