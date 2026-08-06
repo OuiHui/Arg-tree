@@ -1,7 +1,29 @@
 import type { TreeState, WorkspaceState } from './argtree'
+import { getPublicTreeSpecs } from './data/publicTrees'
 import { parseDeclarativeTree } from './utils/parseDeclarativeTree'
 
 const STORAGE_KEY = 'argtree_workspace'
+
+function getApiBaseUrl(): string | null {
+  const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim()
+  if (configuredBaseUrl) {
+    return configuredBaseUrl.endsWith('/') ? configuredBaseUrl : `${configuredBaseUrl}/`
+  }
+
+  // Keep local development working with the Vite proxy, but avoid making
+  // doomed API requests on static deployments such as GitHub Pages.
+  if (import.meta.env.DEV) {
+    return '/api/'
+  }
+
+  return null
+}
+
+function buildApiUrl(path: string): string | null {
+  const baseUrl = getApiBaseUrl()
+  if (!baseUrl) return null
+  return new URL(path.replace(/^\//, ''), baseUrl).toString()
+}
 
 function loadFromLocalStorage(): WorkspaceState | null {
   try {
@@ -87,32 +109,16 @@ async function fetchStaticWorkspace(): Promise<WorkspaceState> {
   const local = loadFromLocalStorage()
   if (local) return deduplicateWorkspaceTrees(local)
 
-  const baseUrl = import.meta.env.BASE_URL.endsWith('/')
-    ? import.meta.env.BASE_URL
-    : `${import.meta.env.BASE_URL}/`
-
-  let filenames: string[] = ['free_will.json', 'objective_morality.json']
-  try {
-    const manifestRes = await fetch(`${baseUrl}trees/manifest.json`)
-    if (manifestRes.ok) {
-      filenames = await manifestRes.json()
-    }
-  } catch {
-    // Fallback to default filenames
-  }
+  const treeSpecs = getPublicTreeSpecs()
 
   const trees: Record<string, TreeState> = {}
 
-  for (const filename of filenames) {
+  for (const spec of treeSpecs) {
     try {
-      const res = await fetch(`${baseUrl}trees/${filename}`)
-      if (res.ok) {
-        const data = await res.json()
-        const parsedTree = parseDeclarativeTree(data)
-        trees[parsedTree.id] = parsedTree
-      }
+      const parsedTree = parseDeclarativeTree(spec)
+      trees[parsedTree.id] = parsedTree
     } catch (err) {
-      console.warn(`Failed to fetch static tree ${filename}:`, err)
+      console.warn(`Failed to parse static tree ${spec.title}:`, err)
     }
   }
 
@@ -132,8 +138,13 @@ async function fetchStaticWorkspace(): Promise<WorkspaceState> {
 }
 
 export async function fetchWorkspaceApi(): Promise<WorkspaceState> {
+  const workspaceUrl = buildApiUrl('workspace')
+  if (!workspaceUrl) {
+    return fetchStaticWorkspace()
+  }
+
   try {
-    const response = await fetch('/api/workspace')
+    const response = await fetch(workspaceUrl)
     if (response.ok) {
       const workspace = await response.json()
       return deduplicateWorkspaceTrees(workspace)
@@ -146,8 +157,19 @@ export async function fetchWorkspaceApi(): Promise<WorkspaceState> {
 }
 
 export async function createTreeApi(tree: TreeState): Promise<void> {
+  const createTreeUrl = buildApiUrl('trees')
+  if (!createTreeUrl) {
+    const local = loadFromLocalStorage()
+    if (local) {
+      local.trees[tree.id] = tree
+      local.selectedTreeId = tree.id
+      saveToLocalStorage(local)
+    }
+    return
+  }
+
   try {
-    const response = await fetch('/api/trees', {
+    const response = await fetch(createTreeUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(tree),
@@ -166,8 +188,18 @@ export async function createTreeApi(tree: TreeState): Promise<void> {
 }
 
 export async function updateTreeApi(tree: TreeState): Promise<void> {
+  const updateTreeUrl = buildApiUrl(`trees/${tree.id}`)
+  if (!updateTreeUrl) {
+    const local = loadFromLocalStorage()
+    if (local) {
+      local.trees[tree.id] = tree
+      saveToLocalStorage(local)
+    }
+    return
+  }
+
   try {
-    const response = await fetch(`/api/trees/${tree.id}`, {
+    const response = await fetch(updateTreeUrl, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(tree),
@@ -185,8 +217,19 @@ export async function updateTreeApi(tree: TreeState): Promise<void> {
 }
 
 export async function deleteTreeApi(treeId: string): Promise<WorkspaceState> {
+  const deleteTreeUrl = buildApiUrl(`trees/${treeId}`)
+  if (!deleteTreeUrl) {
+    const local = loadFromLocalStorage() || { selectedTreeId: '', trees: {} }
+    delete local.trees[treeId]
+    if (local.selectedTreeId === treeId) {
+      local.selectedTreeId = Object.keys(local.trees)[0] || ''
+    }
+    saveToLocalStorage(local)
+    return local
+  }
+
   try {
-    const response = await fetch(`/api/trees/${treeId}`, {
+    const response = await fetch(deleteTreeUrl, {
       method: 'DELETE',
     })
     if (response.ok) {
@@ -206,8 +249,18 @@ export async function deleteTreeApi(treeId: string): Promise<WorkspaceState> {
 }
 
 export async function updateSelectedTreeIdApi(selectedTreeId: string): Promise<void> {
+  const updateSelectedUrl = buildApiUrl('workspace/selected')
+  if (!updateSelectedUrl) {
+    const local = loadFromLocalStorage()
+    if (local) {
+      local.selectedTreeId = selectedTreeId
+      saveToLocalStorage(local)
+    }
+    return
+  }
+
   try {
-    const response = await fetch('/api/workspace/selected', {
+    const response = await fetch(updateSelectedUrl, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ selectedTreeId }),
