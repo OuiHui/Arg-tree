@@ -115,7 +115,8 @@ export function useWorkspace() {
   useUrlTreeSync(workspace, setWorkspace, isLoading)
 
   const treeList = useMemo(() => Object.values(workspace.trees), [workspace.trees])
-  const selectedTree = workspace.trees[workspace.selectedTreeId] ?? treeList[0] ?? seedTree('Starter tree')
+  const fallbackTree = useMemo(() => seedTree('Starter tree'), [])
+  const selectedTree = workspace.trees[workspace.selectedTreeId] ?? treeList[0] ?? fallbackTree
 
   // Cancel any running layout animation when switching active trees
   useEffect(() => {

@@ -1,6 +1,8 @@
 import type { DeclarativeTreeSpec } from '../utils/parseDeclarativeTree'
 
-const treeModules = import.meta.glob<DeclarativeTreeSpec>('../../data/trees/*.json', {
+// Use an absolute project-root path so Vite includes the declarative tree JSON files
+// in both dev and GitHub Pages production builds.
+const treeModules = import.meta.glob<DeclarativeTreeSpec>('/data/trees/*.json', {
   eager: true,
   import: 'default',
 })
