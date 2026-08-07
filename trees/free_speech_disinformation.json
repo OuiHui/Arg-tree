@@ -1,0 +1,78 @@
+{
+  "id": "tree-free-speech-disinformation",
+  "title": "Free Speech Absolutism vs Digital Disinformation Regulation",
+  "rootClaim": "Government regulation or state-mandated platform suppression of online hate speech and disinformation poses a far greater threat to liberty and truth than the speech itself.",
+  "branches": [
+    {
+      "text": "Millian Marketplace of Ideas & State Censorship Danger: Free expression relies on robust counter-speech; empowering state bureaus or platforms to regulate truth inevitably leads to censorship.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Epistemic Subjectivity & Political Weaponization: Authoritative state bodies cannot objectively determine political 'truth' and will weaponize regulatory mandates to silence political opponents and whistleblowers.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Algorithmic Virality Distortion: Digital platforms are not neutral public squares; attention-economy algorithms artificially amplify harmful outrage and targeted disinformation for profit.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Algorithmic Transparency vs Speech Control: Platforms can modify engagement algorithms and add contextual fact-checking notes without censoring speech or banning users.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Chilling Effect & Legal Ambiguity: Vaguely worded statutes penalizing 'hate speech' or 'disinformation' intimidate citizens into self-censorship, stifling controversial debate.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Democratic Vulnerability & Epistemic Crisis: Hostile state actors and viral conspiracies exploit unchecked speech ecosystems to undermine democratic election integrity and public health consensus.",
+              "stance": "attack",
+              "targetRebuttalIndex": "0.1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Harm Reduction & Civic Defense: Democratic institutions require baseline protections against targeted harassment, incitement to violence, and deliberate systemic disinformation.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Inciteful Violence & Targeted Harms: Unchecked hate speech directly mobilizes radicalized violence and suppresses civic participation of marginalized groups.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Privatized Censorship Oligopoly: Outsourcing content regulation to tech monopolies places democratic public discourse under the unchecked control of private corporate executives.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Public Health & Critical Infrastructure Security: Weaponized false medical claims and digital hybrid warfare threaten public safety and emergency management.",
+          "stance": "support"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Marketplace of Ideas",
+      "description": "John Stuart Mill's rationale that truth emerges from the open competition of diverse ideas rather than state enforcement."
+    },
+    {
+      "term": "Chilling Effect",
+      "description": "The legal concept where vague or harsh laws discourage citizens from exercising legitimate free speech rights."
+    },
+    {
+      "term": "Algorithmic Amplification",
+      "description": "The process by which social media recommendation systems prioritize sensational or outrage-inducing content to maximize user engagement."
+    },
+    {
+      "term": "Epistemic Crisis",
+      "description": "A collapse of shared public understanding of facts and evidence, making societal consensus difficult to achieve."
+    }
+  ]
+}

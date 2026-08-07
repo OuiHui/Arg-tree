@@ -1,0 +1,151 @@
+{
+  "id": "tree-atomic-bomb",
+  "title": "Use of the Atomic Bomb in WWII",
+  "rootClaim": "The use of atomic bombs on Hiroshima and Nagasaki was unjustified and morally indefensible.",
+  "branches": [
+    {
+      "text": "Mass killing of non-combatants and innocent civilians violates fundamental principles of just war theory and international humanitarian law.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Civilian populations in Hiroshima and Nagasaki were intentionally targeted to maximize psychological shock and terror.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Targeting cities contained military headquarters and industrial plants integral to Japanese defense infrastructure, satisfying doctrine of dual-use targets.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Principle of Proportionality: Obliterating entire municipal populations for localized military targets produces overwhelmingly disproportionate collateral damage.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Doctrine of Total War: World War II combatants routinely engaged in strategic firebombing of urban centers (e.g., Tokyo, Dresden), eroding traditional combatant distinction.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Radiation sickness and intergenerational genetic defects caused prolonged, indiscriminate human suffering long after the initial blast.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Radiation poisoning affected generations of Hibakusha, resulting in exceptionally high rates of leukemia, severe birth defects, and social ostracization.",
+              "stance": "support",
+              "children": [
+                {
+                  "text": "Allied commanders lacked full scientific understanding of long-term ionizing radiation lingering effects when the operational deployment order was signed.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Japan was already on the verge of total economic collapse and actively seeking terms of surrender, rendering nuclear weapons militarily unnecessary.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Allied naval blockades and conventional strategic bombing had obliterated Japan's industrial capacity, merchant fleet, and oil reserves.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Economic blockade alone would have prolonged the war by months, subjecting millions across Japanese-occupied China and Southeast Asia to continued atrocity and starvation.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "The Soviet invasion of Manchuria (Operation August Storm) shattered Japanese military hopes of a negotiated peace, serving as the decisive catalyst for surrender.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "High Command in Tokyo was far more alarmed by Soviet entry and potential Communist occupation than by atomic strikes on provincial cities.",
+              "stance": "support",
+              "children": [
+                {
+                  "text": "The Imperial Army remained committed to decisive home island resistance (Ketsu-Go) regardless of Soviet intervention until Emperor Hirohito intervened following Nagasaki.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "The decision to drop the bombs was heavily driven by geopolitical posturing to intimidate the Soviet Union at the dawn of the Cold War.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "US political leaders expedited the atomic strikes specifically to compel Japanese surrender before Soviet forces could claim major territorial concessions in East Asia.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Atomic Diplomacy Thesis: Truman utilized nuclear capability primarily as post-war diplomatic leverage against Moscow rather than strict military operational necessity.",
+              "stance": "support"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "The bombings prevented a full-scale invasion of mainland Japan (Operation Downfall), saving hundreds of thousands of Allied and Japanese lives.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "The fierce, suicidal defense at Okinawa and Iwo Jima demonstrated that a mainland invasion would result in catastrophic casualties on both sides.",
+          "stance": "support"
+        },
+        {
+          "text": "Fanatical civilian mobilization under the Ketsu-Go doctrine meant Japanese resistance during an invasion would have led to widespread civilian deaths anyway.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Casualty estimates for Operation Downfall were retroactively inflated by military and political leaders to justify the deployment of atomic weapons to the public.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Declassified Joint Chiefs of Staff projections from mid-1945 confirmed anticipated Allied casualties ranging up to several hundred thousand casualties.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Hibakusha",
+      "description": "The Japanese term for the surviving victims of the 1945 atomic bombings of Hiroshima and Nagasaki."
+    },
+    {
+      "term": "Operation Downfall",
+      "description": "The overall Allied plan for the invasion of Japan, which was rendered unnecessary by Japan's surrender."
+    },
+    {
+      "term": "Just War Theory",
+      "description": "A framework of ethical criteria determining whether a war is morally justified, emphasizing discrimination between combatants and non-combatants."
+    },
+    {
+      "term": "Ketsu-Go",
+      "description": "The Japanese defense strategy for the home islands aimed at inflicting unbearable casualties on invading Allied forces to negotiate better peace terms."
+    },
+    {
+      "term": "Atomic Diplomacy",
+      "description": "The geopolitical strategy of using nuclear monopoly as leverage in foreign policy negotiations, specifically regarding post-WWII Soviet relations."
+    },
+    {
+      "term": "Principle of Proportionality",
+      "description": "The requirement in international law that military harm caused to civilians must not be excessive in relation to the concrete military advantage expected."
+    }
+  ]
+}

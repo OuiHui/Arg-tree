@@ -1,0 +1,83 @@
+{
+  "id": "tree-simulation-argument",
+  "title": "Bostrom's Simulation Argument",
+  "rootClaim": "It is statistically overwhelming that our current reality is a computer simulation engineered by a post-human technological civilization.",
+  "branches": [
+    {
+      "text": "Bostrom's Trilemma dictates that unless civilizations go extinct early or refuse simulation research, simulated ancestors exponentially outnumber real humans.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Computational Feasibility: A post-human civilization possessing planet-scale computing power could run billions of high-fidelity ancestor simulations easily.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Energy and Thermodynamics Limits: Simulating quantum mechanics for 10^80 particles in an entire universe requires more energy than exists in the physical world.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Procedural rendering: The simulation only needs to compute fine-grained quantum events when observed by a conscious entity (like rendering in video games).",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Principle of Indifference: Since simulated minds vastly outnumber biological minds across the multiverse, any random observer should assign a high prior to being simulated.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Self-Indication Assumption Bias: Using anthropic reasoning to infer simulation status introduces subtle probabilistic paradoxes in reference class selection.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "The Simulation Hypothesis is epistemically unstable, scientifically unprovable, and morally problematic.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Infinite Regress Problem: If our universe is simulated, the host universe could also be simulated, leading to an infinite regress with decaying computational capacity.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Regress Termination: The root universe at the top of the stack must be physical, but that does not reduce the statistical dominance of lower-tier simulations.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Falsifiability & Occam's Razor: Proposing unseen post-human simulators introduces immense extra entity assumptions over accepting our physical observations directly.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Simulated Glitches & Constraints: Pixellation of spacetime at Planck scale and cosmic ray energy cutoffs could represent hardware limitations of the underlying computer.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Bostrom's Trilemma",
+      "description": "The proposition that at least one of three claims is true: (1) humanity goes extinct before post-humanity, (2) post-humans don't run simulations, or (3) we live in a simulation."
+    },
+    {
+      "term": "Principle of Indifference",
+      "description": "The rule in probability theory that in the absence of relevant evidence, equal probabilities should be assigned to all possibilities."
+    },
+    {
+      "term": "Procedural Rendering",
+      "description": "In graphics and simulation theory, computing details only when and where an observer is looking rather than simulating the full environment constantly."
+    },
+    {
+      "term": "Reference Class",
+      "description": "The group of observers to which an individual compares themselves when calculating anthropic probabilities."
+    }
+  ]
+}

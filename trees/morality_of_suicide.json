@@ -1,0 +1,77 @@
+{
+  "id": "tree-morality-of-suicide",
+  "title": "The Morality of Suicide",
+  "rootClaim": "An individual possesses absolute bodily autonomy and moral authority over their own life, making rational suicide morally permissible under specific circumstances.",
+  "branches": [
+    {
+      "text": "Bodily Autonomy & Self-Ownership: A competent adult owns their physical existence, granting them the ultimate right to choose when and how to end their life.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Mitigation of Intolerable Suffering: In cases of terminal illness or intractable agony, ending one's life is a rational act of self-compassion and dignity.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Depression & Cognitive Distortion: Severe psychological distress distorts rational decision-making capacity, rendering 'rational consent' illusory in acute mental crises.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Assisted Dying Safeguards: Palliative medical protocols mandate independent psychiatric evaluation, waiting periods, and terminal prognosis confirmation to ensure genuine rational autonomy.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Slippery Slope Objection: Legalizing assisted suicide incentivizes vulnerable, elderly, or disabled individuals to end life due to perceived burden on family or state budgets.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Stoic Rationality: Ancient Stoic philosophy (Seneca, Epictetus) posits that when life's conditions permanently prevent virtuous living, exiting life ('leaving the room') is morally acceptable.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Duties to Others & Sanctity of Life: Suicide violates fundamental obligations to loved ones, society, and the intrinsic sanctity of human life.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Relational Harm & Social Contract: Suicide inflicts devastating psychological trauma, social disruption, and emotional grief on surviving family and community.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Asymmetry of Obligation: Obligating an individual to endure unbearable lifetime agony solely to spare others grief constitutes emotional coercion.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Kantian Categorical Imperative: Suicide treats one's own humanity merely as a means to escape discomfort, destroying the foundational agent of all moral value.",
+          "stance": "support"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Bodily Autonomy",
+      "description": "The right of an individual to govern their own body and make decisions about their personal physical integrity."
+    },
+    {
+      "term": "Voluntary Assisted Dying (VAD)",
+      "description": "The practice where a physician provides a lethal dose of medication that the patient self-administers to end unbearable suffering."
+    },
+    {
+      "term": "Categorical Imperative",
+      "description": "Immanuel Kant's supreme moral principle requiring that actions be universalizable and treat humanity as an end in itself, never merely as a means."
+    },
+    {
+      "term": "Stoic Departure",
+      "description": "The ancient Stoic doctrine that ending one's life is rational when physical or social circumstances render living virtuously impossible."
+    }
+  ]
+}

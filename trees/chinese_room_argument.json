@@ -1,0 +1,89 @@
+{
+  "id": "tree-chinese-room-argument",
+  "title": "The Chinese Room Argument",
+  "rootClaim": "A computer executing a program cannot possess a mind or genuine mental understanding regardless of how convincingly it simulates intelligent conversation.",
+  "branches": [
+    {
+      "text": "Syntax is insufficient for semantics: formal symbol manipulation based on shape rules cannot generate subjective comprehension or meaning.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "The human operator in Searle's room converts Chinese inputs to outputs using a English rulebook without understanding a single word of Chinese.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Systems Reply: The isolated operator does not understand Chinese, but the entire system (operator, rulebook, input slate) possesses systemic semantic comprehension.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Internalization Rebuttal: If the operator memorizes the rulebook and performs all calculations internally, the entire system resides in one person who still lacks Chinese intentionality.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Biological Naturalism: Intentionality and consciousness are specific causal powers of biological brain tissue that abstract computational substrate cannot replicate.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Substrate Independence: Mind is a software pattern; any physical substrate executing the identical causal functional network will produce identical mental states.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Simulation Fallacy: Simulating a physical phenomenon (like a gravitational field or digestion) in code does not create actual physical gravity or digestion.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Functionalism and embodiment demonstrate that computers can achieve genuine semantics through interaction and network complexity.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Robot Reply: Equipping the program with motor controls and optical sensors grounds abstract symbols in physical cause-and-effect interactions with the environment.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Transducer Counter: Causal inputs from cameras merely feed additional symbolic tokens into the room, which remain syntactically ungrounded to the internal processor.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Brain Simulator Reply: A program that simulates the exact sequence of neuron firings and synaptic transmissions of a fluent speaker must produce identical subjective understanding.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Water-Pipe Variation: Replacing electronic gates with a massive system of water pipes and valves highlights that mechanical flow lacks intrinsic subjective qualia.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Syntax",
+      "description": "The formal rules governing the combination and manipulation of symbols without reference to their meaning."
+    },
+    {
+      "term": "Semantics",
+      "description": "The intrinsic meaning, reference, and representational truth-value of words and thoughts."
+    },
+    {
+      "term": "Intentionality",
+      "description": "The characteristic of mental states to be 'about' or directed toward objects and states in the world."
+    },
+    {
+      "term": "Substrate Independence",
+      "description": "The thesis that mental processes can be realized across diverse physical hardware, from carbon biology to silicon circuits."
+    }
+  ]
+}

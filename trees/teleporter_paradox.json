@@ -1,0 +1,89 @@
+{
+  "id": "tree-teleporter-paradox",
+  "title": "The Teleporter Paradox & Personal Identity",
+  "rootClaim": "Destructive teleportation (dematerializing a body and scanning it to assemble an exact replica on Mars) kills the original person and creates a duplicate.",
+  "branches": [
+    {
+      "text": "Numerical identity requires continuity of physical matter or unbroken spatiotemporal paths, which teleportation severs.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "The Double-Teleportation Case: If the scanner fails to destroy the Earth body while creating the Mars replica, two conscious beings exist simultaneously, proving identity is not preserved.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Parfit's Relation R: Identity is not what matters in survival; psychological connectedness and continuity are what matter, even if branching occurs.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Ego-Death Reality: From the first-person perspective, your stream of consciousness permanently ends on Earth when the dematerializer fires.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Physical Criterion: Personal identity is grounded in the continuous persistence of the living organism and its specific physical neural tissue.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Gradual Atomic Replacement: Biological cells naturally replace all their constituent atoms over years without destroying identity, making specific physical matter irrelevant.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Spatiotemporal Continuity: Natural cellular replacement maintains a continuous physical trajectory through time, whereas teleportation creates a spatial gap.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Psychological Continuity Criterion: Personal identity consists in the preservation of psychological patterns, memories, character traits, and mental states.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "The Mars duplicate possesses perfect memory recall, identical beliefs, feelings, and character structure, making them functionally the same individual.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Duplication Fallacy: Two distinct physical objects cannot be numerically identical to one another (Leibniz's Law of Identity).",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Information Realism: The self is a high-level informational pattern; medium of storage and physical instance transitions are irrelevant to pattern identity.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Subjective Illusion: Conflating qualitative similarity (looking and acting identical) with numerical identity (being one and the same entity).",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Numerical Identity",
+      "description": "The relation an object bears only to itself (being one and the same entity over time)."
+    },
+    {
+      "term": "Qualitative Identity",
+      "description": "The relation between two distinct entities that share all intrinsic properties and features."
+    },
+    {
+      "term": "Psychological Continuity",
+      "description": "The overlap of chains of memory, belief, preference, and character traits connecting a person at different times."
+    },
+    {
+      "term": "Relation R",
+      "description": "Derek Parfit's concept of psychological connectedness and continuity with any cause, which he argues is what really matters in survival."
+    }
+  ]
+}

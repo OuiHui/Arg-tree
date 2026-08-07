@@ -1,0 +1,73 @@
+{
+  "id": "tree-transgender-athletes",
+  "title": "Transgender Athletes in Sports",
+  "rootClaim": "Transgender women who have undergone male puberty retain physiological advantages that justify separate sports category regulations to protect fair competition in female athletics.",
+  "branches": [
+    {
+      "text": "Physiological & Anatomical Advantage Retention: Testosterone suppression post-puberty fails to eliminate biological advantages in skeletal structure, lung volume, heart size, and muscle fiber density.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Longitudinal Sports Science Studies: Research indicates muscle mass and strength parameters remain significantly elevated above cisgender female baselines even after multi-year hormone replacement therapy (HRT).",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Inclusion & Human Rights Principle: Categorical bans inflict severe psychological harm and violate fundamental human rights to sports participation and social inclusion.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Open Category Alternative Proposal: Elite athletics can introduce an 'Open Category' (for male, transgender, and non-binary athletes) alongside a protected 'Female Category' based on natal sex.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Stigmatization & Marginalization: Forcing transgender women into open categories invalidates their gender identity and creates social isolation.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Protection of Title IX & Female Athletic Opportunities: Elite female sports categories were specifically created to preserve fair competitive opportunities for individuals without male physiological advantages.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Individual Physiological Variability Argument: Natural biological variations in cisgender female athletes (e.g., height, hemoglobin levels, Marfan syndrome) demonstrate that sports is never a level biological playing field.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Overlapping Distribution Thesis: Under hormone suppression, many transgender female athletes perform well within the normal elite cisgender female athletic performance range.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Qualitative Male Puberty Shift: Male puberty induces systemic biomechanical shifts (lever arm lengths, bone density, cardiorespiratory capacity) that are qualitatively distinct from normal intra-female variation.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Hormone Replacement Therapy (HRT)",
+      "description": "Medical treatment used to align secondary sex characteristics with gender identity, including estrogen administration and androgen suppression."
+    },
+    {
+      "term": "Title IX",
+      "description": "A landmark federal civil rights law in the United States prohibiting sex-based discrimination in education and athletic programs."
+    },
+    {
+      "term": "Open Category Framework",
+      "description": "A policy proposal in sports governing bodies where a general open category accommodates all athletes regardless of gender identity, while preserving a female category based on birth sex."
+    },
+    {
+      "term": "Biomechanics",
+      "description": "The study of the mechanical laws relating to the movement or structure of living organisms, including leverage and force generation in human muscle."
+    }
+  ]
+}

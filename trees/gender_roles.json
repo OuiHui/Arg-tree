@@ -1,0 +1,73 @@
+{
+  "id": "tree-gender-roles",
+  "title": "Traditional Gender Roles",
+  "rootClaim": "Traditional gender roles are social constructs that restrict individual freedom, perpetuate gender inequality, and should be dismantled in modern society.",
+  "branches": [
+    {
+      "text": "Social Constructivism: Gender roles are culturally enforced behavioral expectations that artificially constrain individual potential regardless of biological sex.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Performativity Theory: Judith Butler argues gender is not an internal essence but a continuous series of socially coerced cultural performances.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Cross-Cultural Evolutionary Universals: Specific labor divisions (e.g., male physical defense/hunting, female child-nurturing) evolved independently across isolated human societies, pointing to biological underpinnings.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Technological Decoupling: Industrialization, artificial infant formula, and modern reproductive control render ancestral physical division of labor obsolete.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Hormonal & Neurological Dimorphism: Prenatal androgen exposure systematically influences personality traits like risk tolerance, spatial processing, and occupational interest patterns.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Psychological Harm to Men: Rigid traditional masculinity ('toxic masculinity') discourages emotional vulnerability, leading to elevated male suicide rates and resistance to mental healthcare.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Evolutionary Psychology & Functionalism: Traditional gender roles reflect complementary biological adaptations that optimize family stability and reproductive success.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Gender Equality Paradox: In Scandinavian countries with high gender equity, sex differences in STEM vs caretaking career choices increase rather than decrease.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Confounding Structural Pressures: Even egalitarian welfare states retain subtle cultural biases and tax structures that nudge women toward flexible public sector jobs.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Gender Performativity",
+      "description": "Judith Butler's theory that gender is produced through repeated stylized acts rather than being an innate biological identity."
+    },
+    {
+      "term": "Gender Equality Paradox",
+      "description": "The empirical finding that personality and occupational choice differences between men and women are larger in more gender-equal societies."
+    },
+    {
+      "term": "Social Constructivism",
+      "description": "The perspective that human development and concepts of reality are socially situated and built through cooperative cultural norms."
+    },
+    {
+      "term": "Sexual Dimorphism",
+      "description": "Systematic differences in physical form or psychological traits between individuals of different biological sexes in the same species."
+    }
+  ]
+}

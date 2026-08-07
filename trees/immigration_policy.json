@@ -1,0 +1,84 @@
+{
+  "id": "tree-immigration-policy",
+  "title": "Sovereign Border Regulation vs Open Mobility Rights",
+  "rootClaim": "Sovereign democratic nation-states possess the moral authority and political duty to restrict immigration and enforce national border controls.",
+  "branches": [
+    {
+      "text": "Communitarian Social Contract & Public Goods Defense: Welfare state sustainability, civic trust, and public sector capacity require defined, enforceable national boundaries.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Fiscal Burden & Public Service Strain: High volumes of low-skilled immigration place immediate non-linear pressure on municipal public infrastructure, healthcare systems, and affordable housing.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Net Fiscal Contribution Fallacy: Econometric data demonstrates that immigrants contribute more in lifetime tax revenues than they consume in public services, while counteracting aging demographic trends.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Spatial Localized Disparity: Federal tax gains accrue to central governments, whereas municipal budgets absorb immediate educational and healthcare infrastructure costs without adequate federal reimbursement.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Wage Suppression & Worker Displacement: Uncontrolled expansion of low-skilled labor supply exerts downward pressure on wages for vulnerable domestic workers.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Complementary Labor Hypothesis: Foreign-born workers complement native-born labor rather than substituting it, driving overall economic productivity, lowering consumer prices, and creating new overall jobs.",
+              "stance": "attack",
+              "targetRebuttalIndex": "0.1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Cosmopolitan Global Justice & Universal Freedom of Movement: National borders are arbitrary products of historical chance; restricting human mobility violates basic human liberty and perpetuates global inequality.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Rawlsian Global Veil of Ignorance: Rational individuals behind a veil of ignorance would reject national border restrictions that lock millions into geographical poverty and authoritarian oppression.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Self-Determination & Democratic Cohesion: A self-governing political community requires a bounded civic body with shared democratic norms to maintain institutional trust and social welfare consent.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Dynamic Pluralist Integration: Constitutional democracies historically absorb and integrate diverse migrant streams without eroding legal institutions or civic commitment.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Global Economic Surplus: Removing international labor barriers would double global GDP by allocating human capital where it yields highest marginal productivity.",
+          "stance": "support"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Communitarianism",
+      "description": "A philosophy emphasizing the connection between the individual and the community, asserting that rights and social obligations depend on bounded political memberships."
+    },
+    {
+      "term": "Cosmopolitanism",
+      "description": "The ethical view that all human beings belong to a single global community with equal moral standing regardless of citizenship."
+    },
+    {
+      "term": "Complementary Labor Hypothesis",
+      "description": "The economic theory that immigrant workers possess skill sets that complement rather than directly compete with native-born workers."
+    },
+    {
+      "term": "Veil of Ignorance",
+      "description": "John Rawls's thought experiment where principles of justice are chosen without knowing one's social position, wealth, or place of birth."
+    }
+  ]
+}

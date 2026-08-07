@@ -1,0 +1,81 @@
+{
+  "id": "tree-moral-luck",
+  "title": "Moral Luck",
+  "rootClaim": "Moral luck invalidates the core Kantian intuition that individuals should be morally judged only for factors within their conscious control.",
+  "branches": [
+    {
+      "text": "Control Principle Paradox: We intuitively hold that agents are only morally assessable for what is within their control, yet our actual moral judgments depend heavily on luck.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Resultant Moral Luck: Two equally negligent drivers commit identical reckless acts; one hits a pedestrian due to unexpected luck, while the other drives home safely. We judge the first far more harshly.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Epistemic vs Moral Blame Defense: Differences in punishment reflect pragmatic legal deterrence and evidentiary clarity rather than true differences in moral guilt.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Moral Resentment Asymmetry: The driver who strikes a child experiences genuine, appropriate 'agent-regret' that the safe driver logically cannot experience, proving moral luck is real.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Psychological vs Moral Blameworthiness: Agent-regret is an emotional byproduct of causal responsibility, not a reflection of moral blameworthiness.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Circumstantial Moral Luck: Ordinary citizens in 1930s Germany who became Nazi collaborators were exposed to unique historical circumstances that citizens in peacetime democracies never faced.",
+          "stance": "support"
+        },
+        {
+          "text": "Constitutive Moral Luck: An individual's temperament, empathy levels, and biological impulse control are determined by genetics and upbringing outside their control.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Kantian Moral Purity Defense: True moral worth attaches strictly to the good will and inner intention, regardless of external consequences or luck.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Deontological Imperative: If moral luck exists, morality becomes arbitrary, reducing moral praise and blame to an unfair lottery.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Incoherent Character Paradox: Denying moral luck forces us to judge people purely by abstract unseen intentions, ignoring all real-world actions, outcomes, and character manifestations.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Moral Luck",
+      "description": "A phenomenon where a significant aspect of a person's moral assessment depends on factors beyond their control."
+    },
+    {
+      "term": "Control Principle",
+      "description": "The moral principle that people cannot be morally assessed for what is not their fault, or for what is due to factors beyond their control."
+    },
+    {
+      "term": "Resultant Luck",
+      "description": "Luck in the way things turn out following an action or choice."
+    },
+    {
+      "term": "Circumstantial Luck",
+      "description": "Luck in the surroundings, opportunities, and historical situation an agent finds themselves in."
+    },
+    {
+      "term": "Agent-Regret",
+      "description": "Bernard Williams' concept of a specific form of regret an agent feels towards their own past actions when those actions cause bad outcomes, even without fault."
+    }
+  ]
+}

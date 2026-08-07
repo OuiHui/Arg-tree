@@ -1,0 +1,79 @@
+{
+  "id": "tree-red-button-blue-button",
+  "title": "Red Button vs Blue Button Dilemma",
+  "rootClaim": "In the global Red/Blue button dilemma, choosing the Red Button is the optimal choice to maximize net human survival and eliminate individual mortality risk under epistemic uncertainty.",
+  "branches": [
+    {
+      "text": "Dominant Survival Strategy: Choosing Red guarantees individual survival regardless of whether the global majority chooses Blue (>50%) or Red (≤50%).",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Asymmetric Payoff Structure: If Blue succeeds (>50%), everyone survives including Red pressers; if Blue fails (≤50%), Red pressers survive while Blue pressers die.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Collective Action Free-Riding: If all individuals act on pure Red dominance, collective trust collapses, penalizing any altruistic minority who chose Blue.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Zero-Loss Red Utility: Because choosing Red when Blue succeeds still yields 100% global survival, choosing Red imposes no physical penalty on global aggregate welfare while shielding the individual from fatal miscoordination.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Universal Red Convergence: If 100% of the population chooses Red, zero percent choose Blue (≤50%), resulting in Red winning and 100% of humanity surviving safely.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Risk-Dominant Game Theory: Under uncertainty about others' choices, Red eliminates the catastrophic downside outcome of death caused by miscoordination.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Moral Duty of Trust (Pro-Blue): Choosing Blue is an indispensable act of civic coordination required to guarantee the >50% threshold and protect global social solidarity.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Categorical Imperative of Cooperation: If everyone chooses Blue, 100% of humanity survives with full mutual trust and zero deaths.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Catastrophic Miscoordination Vulnerability: If Blue turnout falls between 1% and 50%, millions or billions of well-meaning Blue pressers perish unnecessarily, producing massive net utility loss.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Pre-Choice Communication & Focal Points: Public coordination signals or binding global consensus could establish Blue as a Schelling point, eliminating coordination failure.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Dominant Strategy",
+      "description": "In game theory, a strategy that earns a player a payoff better than or equal to all other strategies, regardless of what the other players do."
+    },
+    {
+      "term": "Schelling Point (Focal Point)",
+      "description": "A solution that people tend to choose in default of communication because it seems natural, special, or relevant to them."
+    },
+    {
+      "term": "Risk-Dominance",
+      "description": "A game theory concept describing a choice that minimizes potential loss under uncertainty regarding other players' actions."
+    },
+    {
+      "term": "Coordination Failure",
+      "description": "A state where independent decision-makers fail to achieve a mutually beneficial outcome due to lack of trust or communication."
+    }
+  ]
+}

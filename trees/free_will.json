@@ -1,4 +1,5 @@
 {
+  "id": "tree-free-will",
   "title": "Free Will & Determinism",
   "rootClaim": "Human beings possess genuine free will, exerting conscious agency and moral responsibility over their choices.",
   "branches": [
@@ -12,7 +13,19 @@
           "children": [
             {
               "text": "Violates Physical Closure: Agent-causation relies on non-physical mind-matter interactions that violate energy conservation without explaining how non-physical minds intervene.",
-              "stance": "attack"
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Quantum Indeterminacy: Subatomic indeterminacy breaks strict Laplacian determinism, leaving room for non-deterministic physical state transitions.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Randomness Fallacy: Quantum randomness is not agency; choices driven by stochastic particle collapses are random events, not controlled actions.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -29,7 +42,7 @@
               "stance": "attack"
             },
             {
-              "text": "Retributive Justice: Legal institutions and contractual accountability presuppose genuine moral responsibility rather than puppet causation.",
+              "text": "Retributive Justice: Legal institutions presuppose genuine moral responsibility rather than puppet causation.",
               "stance": "support",
               "children": [
                 {
@@ -53,7 +66,6 @@
         {
           "text": "Libet Experiments: Motor readiness potentials in the brain build up hundreds of milliseconds before an agent reports conscious intent.",
           "stance": "support",
-          "targetRebuttalIndex": "0.0",
           "children": [
             {
               "text": "Stochastic Accumulation Model: Modern neuroimaging suggests readiness potentials reflect random background neural noise crossing an activation threshold rather than a committed decision.",
@@ -88,7 +100,7 @@
       "stance": "support",
       "children": [
         {
-          "text": "Manipulation Argument: If an agent is covertly engineered by neuroscientists to desire X, they satisfy compatibilist freedom while remaining completely controlled, demonstrating compatibilism is insufficient for true responsibility.",
+          "text": "Manipulation Argument: If an agent is covertly engineered by neuroscientists to desire X, they satisfy compatibilist freedom while remaining completely controlled.",
           "stance": "attack"
         },
         {
@@ -102,64 +114,32 @@
           ]
         }
       ]
-    },
-    {
-      "text": "Hard Determinism: Every physical event, including human brain states, is completely determined by preceding physical causes and natural laws.",
-      "stance": "attack",
-      "children": [
-        {
-          "text": "Quantum Indeterminism: Fundamental physics via quantum mechanics shows that physical nature at the microscopic scale is probabilistic rather than strictly deterministic.",
-          "stance": "attack"
-        },
-        {
-          "text": "The Luck Problem: If actions are uncaused or quantum-random, they represent stochastic chance rather than intentional free choice.",
-          "stance": "support",
-          "children": [
-            {
-              "text": "Adequate Determinism & Emergence: Macroscopic brain processes integrate quantum randomness into structured probabilistic choices, allowing indeterminism to yield options without making choices arbitrary.",
-              "stance": "attack"
-            }
-          ]
-        }
-      ]
     }
   ],
   "definitions": [
     {
-      "term": "Moral Agency",
-      "description": "The capacity of a rational being to make moral judgments and be held morally accountable for actions."
+      "term": "Hard Determinism",
+      "description": "The view that all events, including human actions, are strictly determined by preceding causes, making free will impossible."
     },
     {
       "term": "Compatibilism",
-      "description": "The philosophical view that causal determinism and free will are logically compatible perspectives."
+      "description": "The thesis that free will and physical determinism are logically compatible concepts."
     },
     {
-      "term": "Hard Determinism",
-      "description": "The view that causal determinism is true and completely rules out free will and moral responsibility."
+      "term": "Libet Experiments",
+      "description": "Neuroscience studies led by Benjamin Libet showing motor readiness potentials preceding conscious reports of the intention to move."
     },
     {
-      "term": "Free Won't",
-      "description": "The capacity of conscious awareness to inhibit or veto motor actions initiated by pre-conscious brain processes."
+      "term": "Epiphenomenalism",
+      "description": "The position in philosophy of mind that mental events are caused by physical events in the brain, but have no causal effects on the physical world."
     },
     {
-      "term": "Introspective Illusion",
-      "description": "The cognitive bias in which humans falsely believe they have direct insight into the origins of their mental states."
+      "term": "Agent-Causation",
+      "description": "The idea that a mind or self can initiate new causal chains without its own decision being determined by prior physical events."
     },
     {
-      "term": "Manipulation Argument",
-      "description": "A philosophical thought experiment asserting that if covert neuro-manipulation undermines free will, determinism must do so as well under identical conditions."
-    },
-    {
-      "term": "Stochastic Accumulation Model",
-      "description": "A neuroscientific framework proposing that readiness potentials represent random fluctuations of neural noise reaching a decision threshold rather than pre-conscious intent."
-    },
-    {
-      "term": "Quarantine Model of Justice",
-      "description": "A consequentialist penal framework that justifies detaining dangerous individuals for public safety, analogous to medical quarantine, without requiring moral retributivism."
-    },
-    {
-      "term": "Physical Closure",
-      "description": "The principle in physics asserting that every physical event has a sufficient physical cause, leaving no room for non-physical mental intervention."
+      "term": "Quarantine Model",
+      "description": "Derk Pereboom's penal philosophy arguing that offenders can be ethically detained for public safety like carriers of contagious diseases, without retributive moral blame."
     }
   ]
 }

@@ -1,0 +1,89 @@
+{
+  "id": "tree-anti-natalism",
+  "title": "Benatar's Anti-Natalism & The Ethics of Procreation",
+  "rootClaim": "Bringing new sentient human beings into existence is always a net harm and morally wrong.",
+  "branches": [
+    {
+      "text": "The Asymmetry of Pleasure and Pain dictates that non-existence is strictly preferable to existence.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Benatar's Asymmetry: Pain is bad and pleasure is good; but the absence of pain is good even if no one exists to enjoy it, whereas the absence of pleasure is not bad unless someone is deprived.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Symmetrical Evaluation Counter: If no one exists to suffer the absence of pleasure, then equally no one exists to benefit from the absence of pain.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Duty Asymmetry: We feel a duty not to bring suffering children into existence, but no duty to create happy children to experience pleasure.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Consent Violation: Procreation imposes guaranteed existential risks, suffering, and inevitable mortality on a person who never gave prior consent.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Hypothetical Consent: Most existing people are glad to be alive, implying retroactive consent for the choice to bring them into existence.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Optimism Bias (Pollyanna Principle): Human psychological adaptation systematically underestimates personal suffering and overestimates life quality.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Procreation is a positive good that creates net flourishing, moral agency, and meaningful life experiences.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Overall Positive Goods: Deep human relationships, creative accomplishments, joy, and discovery outweigh the ordinary burdens of suffering for most individuals.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Chronic Vulnerability: Extreme pain, disease, bereavement, and aging are guaranteed structural components of all biological lives.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Extinction Consequences: Universal adoption of anti-natalism leads to voluntary human extinction, eliminating all future culture, moral progress, and consciousness.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Harm-Free Extinction: A painless phase-out of the species causes zero suffering to unborn generations, fulfilling the ultimate utilitarian harm reduction.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Benatar's Asymmetry",
+      "description": "The philosophical claim that there is an asymmetry between pain and pleasure such that coming into existence is always a serious harm."
+    },
+    {
+      "term": "Pollyanna Principle",
+      "description": "The psychological tendency for people to remember pleasant items more accurately than unpleasant ones and rate their own lives as happier than objective metrics suggest."
+    },
+    {
+      "term": "Anti-Natalism",
+      "description": "The ethical position that assigns a negative value to birth and argues procreation is morally wrong."
+    },
+    {
+      "term": "Procreative Beneficence",
+      "description": "The principle that prospective parents should choose to create children who are expected to have the best possible life."
+    }
+  ]
+}

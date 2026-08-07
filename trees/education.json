@@ -1,0 +1,83 @@
+{
+  "id": "tree-education",
+  "title": "Standardized Testing & Education",
+  "rootClaim": "Standardized testing and rigid national curricula hinder genuine intellectual development and should be replaced by student-centered, exploratory learning.",
+  "branches": [
+    {
+      "text": "Standardized testing reduces education to memorization, promotes 'teaching to the test', and destroys intrinsic intellectual curiosity.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Multiple-choice assessments penalize lateral, creative thinking by forcing complex real-world concepts into binary right-or-wrong metrics.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Psychometric Reliability: Standardized assessments offer objective, verifiable, and scalable evaluation across diverse demographics without subjective teacher grading bias.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Socioeconomic Confounding: Standardized scores correlate far more strongly with family income and test-prep coaching access than actual student capability or diligence.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Holistic admissions and subjective evaluations show even higher correlations with elite privilege due to un-standardized legacy network opportunities.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Exploratory Montessori/Dewey models foster critical problem-solving, self-efficacy, and adaptive passion-driven skill acquisition.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Standardized testing is essential for maintaining academic accountability, equity benchmarks, and meritocratic resource allocation.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Signaling Model of Education: Standardized metrics provide external labor markets and universities with clear signals of cognitive discipline and persistence.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Goodhart's Law: When a measure becomes a high-stakes target (e.g., school funding tied to test scores), it ceases to be a good measure.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Adaptive computer testing (e.g., CAT) continually adjusts difficulty based on prior answers, mitigating simple test-coaching exploits.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Without standardized national benchmarks, educational disparities between underfunded and wealthy school districts remain invisible and uncorrected.",
+          "stance": "support"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Goodhart's Law",
+      "description": "An adage stating that 'When a measure becomes a target, it ceases to be a good measure'."
+    },
+    {
+      "term": "Signaling Model",
+      "description": "Economic theory proposing that the primary value of higher education lies in signaling pre-existing traits (intelligence, discipline) to employers rather than skill acquisition."
+    },
+    {
+      "term": "Montessori Method",
+      "description": "A student-centered learning approach based on self-directed activity, hands-on learning, and collaborative play."
+    },
+    {
+      "term": "Psychometric Reliability",
+      "description": "The degree to which an assessment tool produces stable and consistent results across different trials and environments."
+    }
+  ]
+}

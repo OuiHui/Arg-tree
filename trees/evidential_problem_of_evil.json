@@ -1,0 +1,121 @@
+{
+  "id": "tree-evidential-problem-of-evil",
+  "title": "The Evidential Problem of Evil",
+  "rootClaim": "The existence of gratuitous and unnecessary suffering makes the existence of an omnipotent, omniscient, and all-loving God highly improbable.",
+  "branches": [
+    {
+      "text": "Rowe's Evidential Premise: Instances of intense suffering exist which an omnipotent, omniscient entity could have prevented without losing a greater good or permitting an equal or worse evil.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Natural Animal Suffering: Billions of years of animal agony (e.g. a fawn trapped in a forest fire) occurred before human existence, serving no moral test or free-will development for humanity.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Skeptical Theism (CORNEA Principle): Humans lack the cognitive capacity to survey all possible cosmic goods and evils; thus, our inability to see a reason for suffering does not prove no reason exists.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Moral Paralysis Counter-Rebuttal: If Skeptical Theism is true, humans can never be morally justified in preventing suffering, as any apparent horrific evil might secretly be necessary for an unknown divine greater good.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Radical Epistemic Skepticism: Skeptical Theism undermines confidence in human moral intuitions and divine revelation, making moral duty and theological knowledge impossible.",
+                      "stance": "support"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Gratuitous Evil Paradox: If even a single instance of truly uncompensated suffering exists, an all-loving and all-powerful God would be morally obligated to prevent it.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Arbitrary and Unequal Suffering: Suffering is distributed unevenly and indiscriminately across innocent infants and creatures, rather than proportionally tuned for individual moral growth.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Logical Inconsistency with Omnibenevolence: An omnipotent and omniscient entity could accomplish any valid pedagogical goal or soul-building objective without inflicting catastrophic trauma.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Soul-Making Theodicy (Hickian View): The world is intentionally designed not as a paradise, but as a challenging environment ('vale of soul-making') where virtue and character must be earned through struggle.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Ruinous Trauma Failure: Extreme suffering frequently destroys human agency, causes permanent psychological ruin, or kills innocent infants before any moral development can take place.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Plantinga's Free Will Defense: Moral evil is the result of human free choice, and a world with free creatures capable of moral good necessarily entails the risk of moral evil.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Inapplicability to Natural Evils: Free will only accounts for human moral actions; it completely fails to explain non-human natural disasters like earthquakes, tsunamis, and disease.",
+          "stance": "attack",
+          "children": [
+            {
+              "text": "Demonic Agency Hypothesis: Natural evils could theoretically be caused by the free choices of non-human angelic or demonic agents.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Ad Hoc Violation of Ockham's Razor: Positing invisible demons to explain physical laws and natural plate tectonics is an unevidenced, ad hoc hypothesis that degrades explanatory parsimony.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Greater Good Theodicy: God permits evil strictly when it is a logically necessary condition for securing a far greater good or preventing a greater evil.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Limits of Omnipotence: Even an omnipotent being cannot perform logical impossibilities, such as bestowing moral courage without the existence of danger or risk.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Sub-Optimal Universe Design: An all-powerful designer could have established physical laws and neurological pain thresholds that allow moral lessons without horrific gratuitous agony.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Evidential Problem of Evil",
+      "description": "The argument advanced by William L. Rowe that while God's existence is logically possible, the presence of gratuitous suffering renders the existence of an omnipotent, omniscient, all-loving God highly improbable."
+    },
+    {
+      "term": "Gratuitous Suffering",
+      "description": "Suffering that serves no higher moral purpose, yields no outweighing greater good, and prevents no equal or worse evil."
+    },
+    {
+      "term": "Skeptical Theism",
+      "description": "The view that human cognitive limitations prevent us from discerning divine reasons for permitting evil, so our failure to see a reason is not evidence that none exists."
+    },
+    {
+      "term": "Soul-Making Theodicy",
+      "description": "John Hick's philosophical argument that God created the world as an imperfect environment designed for moral development and character growth rather than hedonistic comfort."
+    },
+    {
+      "term": "CORNEA Principle",
+      "description": "Condition of Reasonable Epistemic Access, which states that one is only justified in claiming X does not exist if one could reasonably expect to observe X if it did exist."
+    }
+  ]
+}

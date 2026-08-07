@@ -1,0 +1,121 @@
+{
+  "id": "tree-gun-control",
+  "title": "Gun Control Regulations",
+  "rootClaim": "Strict firearm regulation and restrictions on gun ownership are necessary and morally imperative to reduce violent crime and public mass shootings.",
+  "branches": [
+    {
+      "text": "Public Health & Mass Casualty Prevention: Widespread access to high-capacity semi-automatic firearms directly correlates with higher homicide rates, mass shootings, and suicide lethality.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Red Flag Laws and Universal Background Checks reduce domestic violence fatalities and firearm suicide impulsivity by restricting access during acute crises.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Second Amendment Rights: The individual right to keep and bear arms for self-defense is an essential constitutional and natural right to safeguard against tyranny.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Tyranny Asymmetry: Modern state militaries possess advanced technological capabilities (drones, armor) that render civilian light-infantry firearms ineffective as anti-tyranny deterrents.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Asymmetric Warfare Counter-example: Insurgency history (e.g., Vietnam, Afghanistan) demonstrates that armed civilian populations remain capable of frustrating state military power.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "text": "NYSRPA v. Bruen Historical Test Constraint: Judicial jurisprudence requiring regulations to align strictly with 18th-century 'history and tradition' invalidates modern public safety regulations.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Evolution of Technology Anachronism: Applying 1791 firearm technology standards to modern high-capacity semi-automatic rifles creates anachronistic constitutional protection for unprecedented lethality.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Comparative International Models: Nations that implemented comprehensive firearm bans (e.g., Australia post-1996 Port Arthur, UK post-Dunblane) experienced dramatic permanent decreases in firearm massacres.",
+          "stance": "support"
+        },
+        {
+          "text": "Mandatory Safe Storage & Child Prevention: Mandatory firearm lockbox and safe storage laws significantly reduce unintentional youth shooting deaths and adolescent suicide attempts.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Immediate Defense Delay: Safe storage requirements impede a homeowner's ability to quickly access defensive firearms during home invasion emergencies.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Defensive Gun Use (DGU) & Criminal Deterrence: Law-abiding citizens utilize firearms millions of times annually for self-defense and crime deterrence.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "More Guns, Less Crime Thesis: Concealed carry permit expansion deters criminals who cannot predict whether prospective victims are armed.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Substantive Methodological Flaws: DGU surveys suffer from high false-positive reporting rates, and empirical state-by-state data shows RTC (Right-To-Carry) laws correlate with overall higher violent crime.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Gun Control Disarms Victims: Restrictive gun laws primarily disarm compliant, law-abiding citizens while criminals obtain illicit weapons via underground markets.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Illegal Market Supply Chain Linkage: Underground illicit firearms originate almost entirely as stolen or straw-purchased legal civilian weapons, making legal supply restrictions effective.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Stand Your Ground & Castle Doctrine Defense: Self-defense statutes protecting civilian right to use deadly force against violent intruders preserve individual liberty.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Escalation & Racial Disparity in Lethal Force: Empirical studies indicate Stand Your Ground laws significantly increase overall homicides and exacerbate racial disparities in self-defense rulings.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Defensive Gun Use (DGU)",
+      "description": "The use of a firearm for self-defense, protection of others, or protection of property."
+    },
+    {
+      "term": "Red Flag Law",
+      "description": "A risk protection order that permits police or family members to petition a state court to temporarily remove firearms from a person in crisis."
+    },
+    {
+      "term": "Universal Background Checks",
+      "description": "A policy requiring all firearm sales, including private transactions, to run through a criminal background check database."
+    },
+    {
+      "term": "Asymmetric Warfare",
+      "description": "Armed conflict between belligerents whose relative military power, strategy, or tactics differ significantly."
+    },
+    {
+      "term": "NYSRPA v. Bruen Standard",
+      "description": "The landmark 2022 Supreme Court ruling establishing that gun regulations must be consistent with the historical tradition of firearm regulation in the United States."
+    },
+    {
+      "term": "Stand Your Ground Law",
+      "description": "A statute establishing that individuals have no duty to retreat before using lethal force in self-defense if they are in a place where they have a lawful right to be."
+    }
+  ]
+}

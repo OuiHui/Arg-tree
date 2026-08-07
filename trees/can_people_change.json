@@ -1,0 +1,109 @@
+{
+  "id": "tree-can-people-change",
+  "title": "Can People Truly Change?",
+  "rootClaim": "Human personality, core character traits, and behavioral patterns are capable of fundamental, permanent transformation throughout an individual's lifetime.",
+  "branches": [
+    {
+      "text": "Neuroplasticity demonstrates that the adult brain continuously rewires its neural pathways in response to deliberate practice, environment, and therapy.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Cognitive Behavioral Therapy (CBT) and targeted neuro-feedback structurally alter amygdala reactivity and prefrontal cortex connectivity over time.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Neural Set-Point Theory: Genetic hardwiring establishes baseline affective ranges to which individuals inevitably return following temporary interventions (hedonic adaptation).",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Epigenetics reveals that environmental stimuli and sustained behavioral shifts can modify gene expression without changing underlying DNA sequences.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Epigenetic changes are constrained by canalization, where developmental buffers resist extreme phenotypic departures from baseline genetic profiles.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Post-Traumatic Growth: Extreme narrative identity shocks can trigger sudden, enduring shifts in core values and worldview.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Empirical longitudinal studies show high rank-order stability in Big Five personality traits across decades of adulthood.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Five-Factor Model stability coefficients (e.g., Introversion vs Extraversion, Neuroticism) remain remarkably constant after age 30.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Maturity Principle: While rank-order stability remains high, mean-level personality changes systematically show increased Conscientiousness and Agreeableness across the lifespan.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Mean-level changes reflect social role adaptation (e.g., career, parenting) rather than fundamental shifts in underlying emotional temperament.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "High Recidivism Rates: Chronic behavioral patterns like antisocial traits or addictive compulsions exhibit strong relapse tendencies despite clinical intervention.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Environmental Recurrence Bias: Recidivism stems primarily from returning to un-changed socio-economic environments rather than inherent biological immutability.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Existentialist Epistemology: Human consciousness is characterized by radical freedom (existence precedes essence), making static self-definition a form of 'bad faith'.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Jean-Paul Sartre's radical freedom asserts that individuals continuously re-create their character through current choices rather than past determinants.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Psychological Determinism: Conscious choices are downstream manifestations of unconscious automatic processing and childhood attachment schemas.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Neuroplasticity",
+      "description": "The capacity of the nervous system to modify its structural organization and functional neural pathways in response to experience and learning."
+    },
+    {
+      "term": "Big Five Personality Traits",
+      "description": "The taxonomy of five broad personality dimensions: Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism (OCEAN)."
+    },
+    {
+      "term": "Maturity Principle",
+      "description": "The empirical psychological observation that individuals generally become more socially dominant, agreeable, conscientious, and emotionally stable as they age."
+    },
+    {
+      "term": "Canalization",
+      "description": "A measure of the ability of a population or genome to produce the same phenotype regardless of variability of its environment or underlying genotype."
+    },
+    {
+      "term": "Bad Faith (Mauvaise Foi)",
+      "description": "Sartrean existential concept where an individual adopts false values and disowns their inherent freedom to choose who they are."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "id": "tree-expectations-east-vs-west",
+  "title": "Social Expectations: East vs West",
+  "rootClaim": "Eastern collectivist models of societal expectations foster greater intergenerational stability, social cohesion, and psychological resilience than Western hyper-individualism.",
+  "branches": [
+    {
+      "text": "Filial piety, interdependent self-construal, and family duty provide robust social safety nets and combat systemic loneliness.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Multigenerational households and communal obligation mitigate elderly isolation and insulate individuals during financial crisis.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "High family pressure, rigid academic benchmarks, and filial debt generate extreme psychological burnout and youth mental health crises (e.g., Hikikomori, intense exam pressure).",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Relational Harmony Model: Eastern cultural traditions prioritize emotional regulation, long-term social equilibrium, and duty over fleeting personal gratification.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Low Fertility Paradox: Extreme social and financial expectations associated with marriage and child-rearing in modern East Asian urban centers contribute to historic demographic decline.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Interdependent self-construal fosters high social trust, civic responsibility, and low violent crime rates.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Western independent self-construal promotes personal autonomy, creative self-expression, and meritocratic self-determination.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Authenticity & Individual Agency: Western norms permit individuals to pursue careers, romantic partners, and lifestyles free from ancestral or parental coercion.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Atomization & Alienation: Extreme individualism erodes traditional civic institutions, resulting in an epidemic of loneliness, social fragmentation, and hyper-consumerism.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Elective Communities: Modern Western society allows individuals to construct intentional, interest-based social circles rather than forced obligation to birth families.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Filial Piety",
+      "description": "In Confucian philosophy, a virtue of respect for one's parents, elders, and ancestors."
+    },
+    {
+      "term": "Interdependent Self-Construal",
+      "description": "A perception of the self as connected with others and defined by social roles, duties, and group harmony."
+    },
+    {
+      "term": "Independent Self-Construal",
+      "description": "A perception of the self as an autonomous entity defined by unique internal attributes, rights, and personal choices."
+    },
+    {
+      "term": "Hikikomori",
+      "description": "A phenomenon of severe social withdrawal where individuals isolate themselves from society for extended periods."
+    }
+  ]
+}

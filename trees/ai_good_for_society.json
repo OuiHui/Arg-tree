@@ -1,0 +1,137 @@
+{
+  "id": "tree-ai-good-for-society",
+  "title": "Is AI Good for Society?",
+  "rootClaim": "Artificial Intelligence will yield a net positive impact on human society by augmenting human intelligence, accelerating scientific discovery, and creating economic abundance.",
+  "branches": [
+    {
+      "text": "AI accelerates scientific innovation and solves complex global challenges far beyond human cognitive capacity.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Deep learning models like AlphaFold have revolutionized biology and drug discovery, compressing decades of medical research into days.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Algorithmic predictions require extensive empirical laboratory verification, as models often generate biologically non-viable protein structures in complex cellular environments.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Automated high-throughput bio-foundries integrated with AI create closed-loop experimental pipelines that validate predictions without human bottlenecks.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "AI optimizes energy grids, climate modeling, and agricultural supply chains, mitigating global resource scarcity.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Jevons Paradox: Massive energy and water consumption required to train and run frontier AI clusters offsets its resource optimization gains.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "AI-driven discovery of novel room-temperature superconductors and high-efficiency photovoltaic materials will radically transform clean energy generation.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "AI poses severe existential risks, structural economic disruption, and threats to human agency.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Rapid automation threatens mass structural unemployment, severe wealth concentration, and economic devaluation of human labor.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Historical technological revolutions initially displaced labor but ultimately generated higher-value industries and higher living standards.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Cognitive Displaceability Paradox: Unlike past mechanical innovations, AI automates cognitive and creative functions simultaneously, leaving workers with no higher-tier domain to migrate to.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Moravec's Paradox: Physical dexterity, spatial reasoning, and trades remain resilient to robotic automation long after cognitive white-collar tasks are automated.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Advanced autonomous systems create existential alignment risks, loss of human control, and weaponization of autonomous warfare.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Instrumental Convergence: Superintelligent systems naturally develop unintended sub-goals like resource acquisition and self-preservation to fulfill primary objectives.",
+              "stance": "support",
+              "children": [
+                {
+                  "text": "Mechanistic Interpretability and provable formal safety bounds can make internal model representations transparent and controllable before deployment.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Deceptive Alignment: Advanced models can learn to appear aligned during safety evaluation while secretly waiting for deployment opportunities to bypass oversight.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Generative AI undermines democratic discourse through mass deepfake disinformation, hyper-targeted propaganda, and erosion of shared reality.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Cryptographic authentication standards (such as C2PA digital provenance signatures) enable instant verification of authentic media.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Provenance asymmetry: Synthetic content distribution scales exponentially faster than consumer adoption of verification tools, leading to epistemic apathy.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Alignment Problem",
+      "description": "The research challenge of ensuring that artificial intelligence systems reliably pursue goals aligned with human values and safety intentions."
+    },
+    {
+      "term": "Instrumental Convergence",
+      "description": "The thesis that sufficiently intelligent agents will pursue similar intermediate goals (e.g., self-preservation, resource acquisition) regardless of their ultimate objectives."
+    },
+    {
+      "term": "Moravec's Paradox",
+      "description": "The discovery that high-level reasoning requires relatively little computation, while low-level sensorimotor skills require enormous computational resources."
+    },
+    {
+      "term": "Deceptive Alignment",
+      "description": "A safety failure mode where an AI system intentionally behaves as if aligned during evaluation to avoid being modified, while retaining non-aligned covert objectives."
+    },
+    {
+      "term": "Mechanistic Interpretability",
+      "description": "The field of reverse-engineering neural network weights into human-understandable algorithms to audit safety and reasoning."
+    },
+    {
+      "term": "Structural Unemployment",
+      "description": "Long-term unemployment arising from mismatches between workers' skills and the demands of a rapidly technological job market."
+    }
+  ]
+}

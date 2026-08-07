@@ -1,0 +1,77 @@
+{
+  "id": "tree-stoicism",
+  "title": "Stoicism & Modern Life",
+  "rootClaim": "Stoicism provides an optimal practical philosophy for modern psychological resilience, emotional mastery, and virtuous living.",
+  "branches": [
+    {
+      "text": "Dichotomy of Control: Focusing exclusively on what is within internal agency while accepting external events removes anxiety and cultivates tranquility (Ataraxia).",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Foundation of Modern CBT: Albert Ellis and Aaron Beck developed Cognitive Behavioral Therapy directly from Stoic principles (epictetus: 'People are disturbed not by things, but by the view they take of them').",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Emotional Repression & Detachment Critique: Misapplication of Stoicism encourages suppression of authentic grief and emotional vulnerability ('broic' toxic apathy).",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Propatheiai Distinction: Ancient Stoicism explicitly distinguishes between automatic initial emotional impressions (propatheiai) and rational assent, encouraging emotional processing rather than denial.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Passivism in Systemic Justice: Over-emphasizing internal acceptance risks discouraging collective political resistance against external societal oppression.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Amor Fati & Memento Mori: Embracing fate and keeping mortality salient deepens daily gratitude, courage, and purpose.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Modern Critique of Stoic Physics & Virtue Monism: Stoicism relies on outdated Teleological Cosmology (Cosmic Logos) that modern secular science invalidates.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Loss of Cosmological Grounding: Ancient Stoics justified accepting fate because the universe was a providential, rational organism; modern random evolutionary biology undermines this providence.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Modern Secular Stoicism (Pigliucci, Sellars): Stoic ethics and cognitive strategies function effectively as practical heuristics independently of ancient cosmological physics.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Dichotomy of Control",
+      "description": "The fundamental Stoic principle dividing all things into what is up to us (our thoughts, desires, actions) and what is not up to us (external events, outcomes, opinions of others)."
+    },
+    {
+      "term": "Ataraxia",
+      "description": "A state of serene calmness, untroubled mind, and freedom from emotional disturbance."
+    },
+    {
+      "term": "Amor Fati",
+      "description": "The philosophical attitude of active acceptance and enthusiasm toward everything that happens in one's life, including suffering and adversity."
+    },
+    {
+      "term": "Propatheiai",
+      "description": "In Stoic psychology, the involuntary physical and emotional proto-passions that occur before conscious reflection and rational assent."
+    },
+    {
+      "term": "Cosmic Logos",
+      "description": "The ancient Stoic belief in a rational, divine principle governing and animating the order of the cosmos."
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "id": "tree-death-penalty",
+  "title": "Capital Punishment",
+  "rootClaim": "The death penalty should be abolished globally as an intolerable violation of human rights and a flawed instrument of state justice.",
+  "branches": [
+    {
+      "text": "The risk of executing innocent human beings is inevitable due to human error, false testimony, and systemic judicial flaws.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "DNA exonerations demonstrate that numerous individuals have been wrongfully convicted and sentenced to death.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Stringent appellate review procedures and modern forensic standards minimize the error rate down to near-zero in capital cases.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Irreversibility Dilemma: Unlike incarceration, an execution cannot be remedied when post-conviction evidence subsequently emerges.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Epistemic Threshold Argument: Capital punishment could be restricted exclusively to cases with absolute proof (e.g., unambiguous high-definition video or DNA matches).",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Socioeconomic and Racial Disparities: Capital sentencing disproportionately targets underprivileged defendants and racial minorities due to implicit jury bias and inadequate legal representation.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Retributive Justice: Capital punishment is morally required to inflict proportional punishment for atrocious crimes (lex talionis).",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Just deserts framework dictates that an offender who intentionally deprives an innocent person of life forfeits their own right to life.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Kantian Inviolability of Dignity: Human dignity is inherent and inalienable; state execution degrades society by reducing human life to an instrument of retributive vengeance.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Immanuel Kant explicitly argued that executing a murderer respects their moral agency by treating them as a rational actor accountable for their deeds.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "General Deterrence Hypothesis: The threat of execution deters prospective offenders from committing capital offenses far more effectively than prison sentences.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Empirical criminology consistently shows no statistically significant deterrence differential between capital punishment and life without parole.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Most capital murders are committed during severe emotional distress or psychosis, where rational cost-benefit deterrent calculations are absent.",
+                  "stance": "support"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Financial Cost: Maintaining capital appeal litigation and specialized death rows costs state treasuries vastly more than housing inmates for life without parole.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Streamlining capital trial procedures and limiting repetitive appeals would drastically cut administrative expenditure.",
+          "stance": "attack",
+          "children": [
+            {
+              "text": "Truncating appeal safeguards directly escalates the probability of executing wrongfully convicted innocent defendants.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Lex Talionis",
+      "description": "The principle of retributive justice where punishment corresponds in degree and kind to the offense ('an eye for an eye')."
+    },
+    {
+      "term": "Retributivism",
+      "description": "A theory of justice holding that proportional punishment is a morally acceptable response to crime, regardless of outcome utility."
+    },
+    {
+      "term": "Life Without Parole (LWOP)",
+      "description": "A prison sentence requiring an offender to remain incarcerated for the remainder of their natural life without possibility of release."
+    },
+    {
+      "term": "Inalienable Rights",
+      "description": "Fundamental human rights that cannot be surrendered, transferred, or revoked by state authority."
+    },
+    {
+      "term": "Epistemic Threshold",
+      "description": "The required standard or degree of evidential certainty necessary to justify a moral or legal decision."
+    }
+  ]
+}

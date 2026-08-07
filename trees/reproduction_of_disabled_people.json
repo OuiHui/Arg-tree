@@ -1,0 +1,77 @@
+{
+  "id": "tree-reproduction-of-disabled-people",
+  "title": "Reproduction & Disability Ethics",
+  "rootClaim": "Prospective parents have an absolute reproductive right to conceive children regardless of genetic disability, and state or social coercion restricting disabled reproduction is un-ethical.",
+  "branches": [
+    {
+      "text": "Reproductive Autonomy & Expressivist Objection: Restricting reproduction or selectively aborting for disability sends a devaluing message that living with a disability renders life not worth living.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Social Model of Disability: Disability is primarily created by unaccommodating societal structures and systemic prejudice rather than inherent medical impairment.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Medical Model Realism: Certain severe genetic conditions inflict intrinsic physical pain and organ failure independent of social accommodations or environmental accessibility.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Non-Identity Problem (Parfit): A child born with a disability cannot be said to have been harmed by being brought into existence, provided their life is worth living, because alternative selection would yield a different child.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Procreative Beneficence Principle (Savulescu): Parents hold a moral obligation to select the child, of the children they could have, who is expected to have the best life based on relevant genetic data.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Eugenic Slippery Slope: Institutionalizing genetic screening mandates or social pressure to avoid disability risks reviving dark historical eugenic practices and state coercion.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Harm Prevention & Procreative Responsibility: Intentionally bringing a child into the world with a foreseeable severe suffering condition violates parental duty of care.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Child Welfare Maximization: Parents should minimize predictable chronic suffering and medical burden for prospective offspring whenever reproductive technology (e.g., PGD) is available.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Ableist Quality-of-Life Misconception: Empirical psychological studies show disabled individuals report subjective happiness and life satisfaction comparable to non-disabled peers (disability paradox).",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Non-Identity Problem",
+      "description": "Derek Parfit's philosophical puzzle concerning actions that affect who will exist in the future, making it difficult to claim a person was 'harmed' by being born with a condition if they would otherwise not exist."
+    },
+    {
+      "term": "Principle of Procreative Beneficence",
+      "description": "Julian Savulescu's thesis that moral agents should choose to have the child who will have the best chance of the best life."
+    },
+    {
+      "term": "Social Model of Disability",
+      "description": "The perspective that disability is caused by the way society is organized, rather than by a person's impairment or difference."
+    },
+    {
+      "term": "Disability Paradox",
+      "description": "The observation that patients with severe and persistent disabilities often report a good or excellent quality of life, contrary to public perception."
+    },
+    {
+      "term": "Expressivist Objection",
+      "description": "The argument that selecting against fetuses with disabilities sends a hurtful message that disabled lives are less valuable."
+    }
+  ]
+}

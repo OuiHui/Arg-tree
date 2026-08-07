@@ -1,0 +1,78 @@
+{
+  "id": "tree-electoral-college",
+  "title": "Abolishing the U.S. Electoral College for Direct Popular Vote",
+  "rootClaim": "The United States Electoral College should be abolished via constitutional amendment in favor of a direct national popular vote system.",
+  "branches": [
+    {
+      "text": "Democratic Equality & One-Person-One-Vote Principle: The Electoral College fundamentally violates democratic fairness by weighting individual votes unequally based on geographic state residency.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Anti-Majoritarian Mandate Crisis: Allowing a candidate to win the executive office while losing the national popular vote undermines democratic mandate and public trust in governing institutions.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Constitutional Republic Intent: The United States is structured as a constitutional federal republic of states rather than a pure majoritarian democracy, safeguarding smaller states from domination.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Modern Elector Reality: Electorate voting has evolved into individual citizen participation; state-level winner-take-all rules distort popular intent without fulfilling original framer Intent.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Battleground State Geographic Distortion: Campaigns ignore majority safe states, focusing policy promises, campaign spending, and voter turnout efforts exclusively on a few swing states.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Broad Coalition Incentivization: Electoral College rules force candidates to construct broad geographic coalitions across rural, suburban, and urban interests rather than appealing solely to dense population centers.",
+              "stance": "attack",
+              "targetRebuttalIndex": "0.1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Federalism Defense & Administrative Stability: The Electoral College protects federalism and isolates election recount disputes within specific state borders.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Recount Crisis Isolation: Under the Electoral College, close or disputed elections require localized state recounts rather than triggering a logistically impossible nationwide recount.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "National Popular Vote Interstate Compact (NPVIC): States can coordinate through interstate compacts to ensure winner of national popular vote wins electoral votes, sidestepping constitutional gridlock.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Mitigation of Majoritarian Tyranny: Protecting lower-population states guarantees that regional interests retain constitutional leverage in national policy decisions.",
+          "stance": "support"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Electoral College",
+      "description": "The official constitutional body of electors chosen by individual states to cast votes for the President and Vice President of the United States."
+    },
+    {
+      "term": "National Popular Vote Interstate Compact (NPVIC)",
+      "description": "An agreement among U.S. states and D.C. to award all their electoral votes to whichever presidential candidate wins the overall popular vote nationwide."
+    },
+    {
+      "term": "Tyranny of the Majority",
+      "description": "A political scenario wherein a democratic majority pursues exclusively its own interests at the severe expense of minority groups or regions."
+    },
+    {
+      "term": "Federalism",
+      "description": "A system of government in which power is divided between a central national government and constituent state governments."
+    }
+  ]
+}

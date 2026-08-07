@@ -1,0 +1,91 @@
+{
+  "id": "tree-economic-policy",
+  "title": "Free Market Capitalism vs State Intervention",
+  "rootClaim": "Unregulated free market capitalism produces superior economic growth, human innovation, and resource allocation compared to state-managed economies.",
+  "branches": [
+    {
+      "text": "Hayekian Knowledge Problem: Centralized state planners cannot synthesize decentralized, real-time market price signals required for efficient resource distribution.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Market price mechanisms aggregate consumer preferences and supply scarcity across millions of actors without requiring bureaucratic oversight.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Algorithmic Big Data & AI Planning: High-performance compute and neural supply chain forecasting can theoretically calculate equilibrium prices without free market chaotic volatility.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Tacit Knowledge Incommunicability: Human economic choices rely on qualitative, unquantifiable personal context that cannot be codified into algorithms.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Private ownership and profit incentives drive disruptive innovation, technological breakthrough, and capital efficiency.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Unchecked free markets produce severe market failures, extreme wealth inequality, and catastrophic environmental degradation.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Negative Externalities: Industrial pollution and carbon emissions impose unpriced costs onto society when carbon is not state-regulated or taxed.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Coase Theorem: If property rights are well-defined and transaction costs are low, private actors will bargain to internalize externalities without state intervention.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "High Transaction Cost Reality: Global environmental damage involves billions of affected parties, rendering private bargaining impossible.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Natural Monopoly & Capital Accumulation: Free competition naturally tends toward monopolistic consolidation and dynastic wealth concentration, suppressing free competition.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Schumpeterian Creative Destruction: Market monopolies are inherently temporary because disruptive startup innovation continually undermines dominant legacy firms.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Keynesian Demand Failure: Unregulated markets suffer from systemic liquidity traps and recessionary spirals that necessitate counter-cyclical state fiscal intervention.",
+          "stance": "support"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Knowledge Problem",
+      "description": "F.A. Hayek's observation that essential economic data is dispersed across millions of individuals as tacit knowledge and cannot be centralized."
+    },
+    {
+      "term": "Coase Theorem",
+      "description": "Economic proposition that under zero transaction costs, private bargaining will lead to an efficient outcome regardless of initial property right allocation."
+    },
+    {
+      "term": "Creative Destruction",
+      "description": "Joseph Schumpeter's concept of economic process where radical innovations incessantly revolutionize economic structures by destroying old firms."
+    },
+    {
+      "term": "Negative Externality",
+      "description": "A cost imposed on a third party as a consequence of an economic transaction between others (e.g., industrial pollution)."
+    },
+    {
+      "term": "Liquidity Trap",
+      "description": "A situation where monetary policy becomes ineffective because interest rates are near zero and individuals hoard cash rather than investing."
+    }
+  ]
+}

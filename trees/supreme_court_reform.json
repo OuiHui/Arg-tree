@@ -1,0 +1,78 @@
+{
+  "id": "tree-supreme-court-reform",
+  "title": "Supreme Court Staggered Term Limits & Judicial Reform",
+  "rootClaim": "Imposing 18-year staggered term limits on U.S. Supreme Court Justices is essential to restore democratic legitimacy and depoliticize judicial appointments.",
+  "branches": [
+    {
+      "text": "Depoliticization & Democratic Regularity: Staggered term limits eliminate strategic retirement timing, regularize vacancies, and align court jurisprudence with democratically elected administrations over time.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Elimination of Strategic Resignations: Life tenure incentivizes justices to delay retirement until ideological allies hold the presidency, turning judicial departures into partisan political maneuvers.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Article III Good Behavior Barrier: Article III guarantees justices hold office 'during good Behavior', meaning term limits would require a constitutional amendment rather than standard legislation.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Senior Status Statutory Architecture: Statutes can transition justices to lower circuit duty or senior advisory status after 18 years, preserving Article III judicial commission while rotating main bench dockets.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Regularization of Confirmation Battles: Establishing two guaranteed judicial appointments per four-year presidential term de-escalates the high-stakes, apocalyptic nature of random confirmation fights.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Post-Court Conflict of Interest: Justices concluding 18-year terms in middle age may craft rulings to curry favor with future corporate, academic, or political employers.",
+              "stance": "attack",
+              "targetRebuttalIndex": "0.1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Protection of Judicial Independence & Legal Stability: Life tenure insulates the judiciary from majoritarian political headwinds and ensures constitutional continuity.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Insulation from Democratic Pressure: Life tenure empowers judges to issue essential but unpopular constitutional rulings without fear of electoral retaliation or job loss.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Counter-Majoritarian Drag: Decades-long tenure can entrench an out-of-touch, non-representative judicial supermajority that overrides democratic legislative will indefinitely.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Jurisprudential Stare Decisis: Frequent regular rotation of justices risks hyper-volatile swings in constitutional precedent every presidential election cycle.",
+          "stance": "support"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Staggered Term Limits",
+      "description": "A system where judges serve fixed, offset terms (e.g., 18 years) so that vacancies occur at predictable, regular intervals."
+    },
+    {
+      "term": "Senior Status",
+      "description": "A federal judicial status where semi-retired judges continue performing light judicial duties while making way for new full-time appointees."
+    },
+    {
+      "term": "Article III Good Behavior Clause",
+      "description": "The provision in the U.S. Constitution specifying that federal judges hold their offices during 'good Behavior' (effectively life tenure unless impeached)."
+    },
+    {
+      "term": "Stare Decisis",
+      "description": "The legal principle of determining points in litigation according to precedent set by prior judicial decisions."
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "tree-germline-gene-editing",
+  "title": "Human Germline Gene Editing",
+  "rootClaim": "Parents should be legally permitted to genetically modify human embryos for non-medical inheritable enhancements (intelligence, physical traits, longevity).",
+  "branches": [
+    {
+      "text": "Procreative Liberty & Human Enhancement: Individuals have a fundamental right to improve the biological trajectory of their offspring.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Procreative Beneficence: Parents have a moral obligation to give their children the best genetic start in life, reducing vulnerability to disease and cognitive limitations.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Consent Paradox: Future generations cannot consent to permanent genetic alterations that alter their identity and biology forever.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Unedited Inheritance Argument: Natural biological reproduction also passes on unchosen random genetic mutations without future child consent.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Eradication of Heritable Suffering: Germline modification permanent removes monogenic diseases (like Huntington's, cystic fibrosis) from family lineages forever.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Slippery Slope to Enhancement: The boundary between disease prevention and cognitive/cosmetic enhancement is impossible to regulate cleanly.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Social Inequality, Eugenics, and Biological Stratification: Commercial germline editing risks creating permanent genetic caste systems.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Genetic Class Divide: Wealthy families who can afford enhancements will compound their socio-economic advantages into innate biological advantages, entrenching inequality.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Universal Public Healthcare Provision: State-funded access to genetic technologies can democratize enhancements and eliminate baseline genetic disadvantages.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Erosion of Unconditional Acceptance: Parents may come to view children as customizable consumer products, reducing parental tolerance for non-conforming traits.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Historical Analogy: Environmental interventions like private tutoring, elite schooling, and music lessons already represent heavy parental customization without destroying parental love.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Germline Modification",
+      "description": "Changes to DNA in reproductive cells (sperm, eggs, embryos) that are passed down to future generations."
+    },
+    {
+      "term": "Procreative Beneficence",
+      "description": "The principle that parents are morally obligated to select embryos expected to have the best possible quality of life."
+    },
+    {
+      "term": "Genetic Stratification",
+      "description": "The division of society into distinct socioeconomic classes reinforced by genetic enhancements."
+    },
+    {
+      "term": "Somatic Gene Editing",
+      "description": "Genetic edits made to non-reproductive cells that treat a patient without being inherited by future offspring."
+    }
+  ]
+}

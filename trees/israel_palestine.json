@@ -1,0 +1,77 @@
+{
+  "id": "tree-israel-palestine",
+  "title": "The Israeli-Palestinian Conflict",
+  "rootClaim": "A sustainable peace in the Israeli-Palestinian conflict requires an immediate end to occupation, full recognition of Palestinian self-determination, and a viable two-state framework based on international law.",
+  "branches": [
+    {
+      "text": "Palestinian Right to Self-Determination & International Law: Decades of military occupation, settlement expansion, and blockade violate UN resolutions and human rights conventions.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "West Bank Settlement Expansion: Illegal settlements fracture contiguous territorial sovereignty necessary for a viable independent Palestinian state.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Security Deterrence Defense: Demilitarized territorial buffer zones and intelligence control in the West Bank are vital for preventing existential attacks on Israeli population centers.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Disproportionality & Collective Punishment: Enforcing control through blockades, home demolitions, and arbitrary detention causes widespread civilian suffering violating Fourth Geneva Convention.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Non-State Military Encampment: Asymmetric combat in dense urban areas where militant groups operate near civilian infrastructure creates extreme operational complexity under international humanitarian law.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Right of Return (UN Resolution 194): Palestinian refugees displaced during the 1948 Nakba hold moral and legal claims to return to their ancestral homes.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Israeli National Sovereignty & Existential Security: Israel possesses an inherent right to self-defense as a Jewish democratic state surrounded by hostile non-state proxies committed to its destruction.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Historical Indigenous Claim & Refuge: The Jewish people maintain continuous historical ties to the land and require a sovereign sanctuary against millennia of global antisemitism.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Demographic & Pluralist Challenge: Maintaining a Jewish majority while exercising control over millions of non-voting Palestinians threatens the state's democratic legitimacy.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Refusal of Past Peace Offers: Historic rejections of two-state compromise proposals by leadership in 1947, 2000 (Camp David), and 2008 demonstrate a lack of a partner for peace.",
+          "stance": "support"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Two-State Solution",
+      "description": "A proposed framework for resolving the conflict by establishing an independent Palestinian state alongside the sovereign state of Israel."
+    },
+    {
+      "term": "Fourth Geneva Convention",
+      "description": "An international treaty defining humanitarian protections for civilians in war zones and occupied territories."
+    },
+    {
+      "term": "Right of Return",
+      "description": "The political and moral claim that Palestinian refugees and their descendants have a right to return to homes left during the 1948 and 1967 conflicts."
+    },
+    {
+      "term": "Zionism",
+      "description": "The nationalist movement supporting the establishment and protection of a Jewish state in their ancestral homeland."
+    }
+  ]
+}

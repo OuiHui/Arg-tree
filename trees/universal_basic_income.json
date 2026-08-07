@@ -1,0 +1,89 @@
+{
+  "id": "tree-universal-basic-income",
+  "title": "Universal Basic Income (UBI)",
+  "rootClaim": "Governments should guarantee an unconditional basic income to every adult citizen regardless of income or employment status.",
+  "branches": [
+    {
+      "text": "Poverty Elimination, Human Dignity, and Automation Shield: UBI creates a reliable economic floor and simplifies welfare bureaucracy.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Elimination of Welfare Traps: Unlike means-tested welfare, UBI does not penalize recipients with benefit cliffs when they secure employment.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Fiscal Expense & Taxes: Funding a universal payout requires massive tax hikes that threaten economic productivity and capital investment.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Bureaucratic Consolidation: Eliminating redundant welfare agencies and capturing automated productivity via land-value or VAT taxes fully funds UBI.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Bargaining Power & Autonomy: Guaranteed basic income allows workers to refuse abusive workplace conditions and pursue education or caregiving.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Labor Supply Reduction: Universal payouts remove the imperative to work, leading to systemic labor shortages in essential low-wage jobs.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Empirical Pilot Results: Real-world UBI trials demonstrate minimal reduction in working hours, mostly concentrated in education and child-rearing.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Economic Inefficiency, Inflation, and Recipient Moral Hazard: UBI is inefficient compared to targeted social safety nets.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Deadweight Loss of Universality: Distributing public funds to high-income earners who do not need assistance is an inefficient allocation of limited state revenue.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Stigma Eradication: Universal programs command broader middle-class political support and eliminate the social degradation of means-testing.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Cost-Push Inflation: Universal liquidity increases consumer demand for basic goods without increasing production capacity, triggering price inflation that erodes UBI purchasing power.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Production Elasticity: Increased purchasing power among low-income households stimulates business competition and supply-side capacity expansion.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Universal Basic Income (UBI)",
+      "description": "A periodic cash payment unconditionally delivered to all citizens on an individual basis, without means-testing or work requirement."
+    },
+    {
+      "term": "Welfare Trap",
+      "description": "A situation where welfare benefits are withdrawn so quickly as earned income rises that workers are left no better off."
+    },
+    {
+      "term": "Means-Testing",
+      "description": "The practice of restricting eligibility for government assistance to individuals whose income falls below a specific threshold."
+    },
+    {
+      "term": "Land Value Tax (LVT)",
+      "description": "A levy on the unimproved value of land, often proposed as an efficient, non-distortive source of revenue for UBI."
+    }
+  ]
+}
