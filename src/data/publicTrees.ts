@@ -1,14 +1,19 @@
 import type { DeclarativeTreeSpec } from '../utils/parseDeclarativeTree'
 
-// Use an absolute project-root path so Vite includes the declarative tree JSON files
-// in both dev and GitHub Pages production builds.
-const treeModules = import.meta.glob<DeclarativeTreeSpec>('/data/trees/*.json', {
+const treeModules = import.meta.glob<string>('./trees/*.json', {
+  query: '?raw',
   eager: true,
   import: 'default',
 })
 
 export function getPublicTreeSpecs(): DeclarativeTreeSpec[] {
-  return Object.entries(treeModules)
-    .sort(([pathA], [pathB]) => pathA.localeCompare(pathB))
-    .map(([, spec]) => spec)
+  return Object.values(treeModules)
+    .map((raw) => {
+      try {
+        return typeof raw === 'string' ? (JSON.parse(raw) as DeclarativeTreeSpec) : (raw as unknown as DeclarativeTreeSpec)
+      } catch {
+        return null
+      }
+    })
+    .filter((spec): spec is DeclarativeTreeSpec => Boolean(spec && spec.title))
 }

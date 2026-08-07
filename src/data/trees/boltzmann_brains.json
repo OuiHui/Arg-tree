@@ -1,0 +1,83 @@
+{
+  "id": "tree-boltzmann-brains",
+  "title": "Boltzmann Brains & Epistemic Solipsism",
+  "rootClaim": "Modern thermodynamic cosmological models imply it is vastly more probable that you are a temporary thermal fluctuation floating in space with false memories than a biological human on Earth.",
+  "branches": [
+    {
+      "text": "Thermodynamic Entropic Odds: Spontaneous formation of a single conscious observer requires far less entropic reduction than generating an entire 13.8 billion-year-old universe.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Phase Space Dominance: In an infinite or de Sitter universe in thermal equilibrium, random quantum or thermal fluctuations assemble isolated observer brains infinitely more often than low-entropy big bang cosmoses.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Cognitive Instability: If you are a Boltzmann brain, your scientific observations and memory of thermodynamics are random artifacts, destroying the validity of the physics model used to infer Boltzmann brains.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Reductio Ad Absurdum: The paradox serves as a diagnostic tool showing that any cosmological measure prediction producing Boltzmann brain dominance is defective.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Memory Simulation: The subjective impression of having a personal history, past experiences, and physical surroundings can be instantiated by precise atomic arrangements in a fleeting brain.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Cosmological Measure Solutions: Modern multiverse models (like vacuum decay in string landscape inflation) predict observer measure cutoffs that prevent Boltzmann brain dominance.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Epistemic Realism and Physical Cosmology: Boltzmann brains are self-undermining theoretical artifacts rather than real likelihoods.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Self-Undermining Paradox: Epistemology requires that scientific theories cannot undermine the reliability of the cognitive apparatus used to discover them.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Literal Mathematical Consequence: Subjective comfort or epistemic principles do not invalidate cold probabilistic outcomes of statistical mechanics equations.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Finite Lifetime Inflation: Eternal inflation models with early decay mechanisms ensure that regular biological observers born in young, low-entropy universes dominate the total observer count.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Measure Problem Ambiguity: Calculating probabilities in infinite multiverses depends entirely on arbitrary choices of mathematical measure cutoffs.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Boltzmann Brain",
+      "description": "A hypothetical self-aware entity that arises due to extremely rare random thermodynamic fluctuations out of state of chaos."
+    },
+    {
+      "term": "Cognitive Instability",
+      "description": "A logical flaw where a theory implies that the thoughts and perceptions of the theorist cannot be trusted, rendering the theory unevidenced."
+    },
+    {
+      "term": "Measure Problem",
+      "description": "The mathematical difficulty in cosmology of defining consistent probability distributions across infinite universes or infinite time."
+    },
+    {
+      "term": "De Sitter Space",
+      "description": "A cosmological solution to Einstein's field equations describing a universe dominated by a positive cosmological constant (dark energy)."
+    }
+  ]
+}

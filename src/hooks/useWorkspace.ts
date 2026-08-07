@@ -7,6 +7,7 @@ import {
   interpolatePositions,
   hasLayoutChanged,
   cloneTree,
+  sanitizeTree,
   type Stance,
   type TreeState,
   type WorkspaceState,
@@ -62,25 +63,34 @@ export function useWorkspace() {
     fetchWorkspaceApi()
       .then((fetchedWorkspace) => {
         if (!isMounted) return
-        const updatedTrees = { ...fetchedWorkspace.trees }
-        Object.keys(updatedTrees).forEach((id) => {
-          const tree = updatedTrees[id]
+        const updatedTrees: Record<string, TreeState> = {}
+
+        Object.keys(fetchedWorkspace.trees).forEach((id) => {
+          let tree = sanitizeTree(fetchedWorkspace.trees[id])
           const positions = tree.positions || {}
           const hasCrampedNodes = Object.values(positions).some((p) => p.y > 0 && p.y < 280)
           if (hasCrampedNodes) {
-            updatedTrees[id] = {
+            tree = {
               ...tree,
               positions: autoLayoutTree(tree),
             }
           }
+          updatedTrees[id] = tree
         })
 
         const urlParams = new URLSearchParams(window.location.search)
         const urlTreeId = urlParams.get('treeId') || urlParams.get('tree')
 
         let selectedTreeId = fetchedWorkspace.selectedTreeId
-        if (urlTreeId && updatedTrees[urlTreeId]) {
-          selectedTreeId = urlTreeId
+        if (urlTreeId) {
+          if (updatedTrees[urlTreeId]) {
+            selectedTreeId = urlTreeId
+          } else {
+            const newTree = createEmptyTree('Untitled tree', 'Write the central claim for this argument tree.')
+            newTree.id = urlTreeId
+            updatedTrees[urlTreeId] = newTree
+            selectedTreeId = urlTreeId
+          }
         } else if (!updatedTrees[selectedTreeId]) {
           selectedTreeId = Object.keys(updatedTrees)[0] || selectedTreeId
         }

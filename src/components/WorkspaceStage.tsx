@@ -78,13 +78,18 @@ function buildNodes(
   onDeleteNode: (id: string) => void,
   onAddBranchFromNode: (parentId: string, stance: Stance) => void,
 ): Node[] {
+  const treeNodes = selectedTree?.nodes || {}
+  const treePositions = selectedTree?.positions || {}
+  const treeDefinitions = selectedTree?.definitions || []
+  const rootId = selectedTree?.rootId
+
   const attachedChildIds = new Set(
-    Object.values(selectedTree.nodes).flatMap((n) => n.childIds),
+    Object.values(treeNodes).flatMap((n) => n?.childIds || []),
   )
 
-  return Object.values(selectedTree.nodes).map((node) => {
+  return Object.values(treeNodes).map((node) => {
     const isFocused = focusedNodeIds === null || focusedNodeIds.has(node.id)
-    const linkedDefs = selectedTree.definitions.filter((def) =>
+    const linkedDefs = treeDefinitions.filter((def) =>
       isDefinitionLinkedToNode(def, node.text, node.id, node.definitionIds)
     )
 
@@ -93,16 +98,16 @@ function buildNodes(
     return {
       id: node.id,
       type: 'argumentNode',
-      position: selectedTree.positions[node.id] || { x: 0, y: 0 },
+      position: treePositions[node.id] || { x: 0, y: 0 },
       initialWidth: 280,
       initialHeight: 160,
       data: {
         node,
-        isRoot: node.id === selectedTree.rootId,
-        isChildOfRoot: selectedTree.nodes[selectedTree.rootId]?.childIds.includes(node.id) || false,
+        isRoot: node.id === rootId,
+        isChildOfRoot: (rootId && treeNodes[rootId]?.childIds.includes(node.id)) || false,
         claimPolarity,
-        isOrphan: node.id !== selectedTree.rootId && !attachedChildIds.has(node.id),
-        isSelected: node.id === selectedTree.selectedNodeId,
+        isOrphan: node.id !== rootId && !attachedChildIds.has(node.id),
+        isSelected: node.id === selectedTree?.selectedNodeId,
         isDimmed: !isFocused,
         isEditing: editingNodeId === node.id,
         linkedDefinitions: linkedDefs,

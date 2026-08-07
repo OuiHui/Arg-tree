@@ -1,0 +1,89 @@
+{
+  "id": "tree-wild-animal-suffering",
+  "title": "Wild Animal Suffering & Nature Intervention",
+  "rootClaim": "Humans have a moral obligation to intervene in natural ecosystems to reduce the immense suffering of wild animals caused by predation, disease, and starvation.",
+  "branches": [
+    {
+      "text": "Utilitarian Harm Reduction: Sentient suffering is intrinsically bad regardless of whether its origin is anthropogenic or natural.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "r-Selection Reality: The vast majority of wild animals (insects, fish, amphibians) reproduce via massive clutches where over 99% of offspring die painfully shortly after birth.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Ecological Hubris: Human interventions in complex chaotic biological webs routinely cause unpredicted secondary collapses and far worse suffering.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Targeted Technological Solutions: Genetic gene drives (e.g. eliminating parasites or immunizing populations) offer precise harm reduction without habitat collapse.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Speciesism Critique: Limiting our ethical duty of assistance solely to victims of human violence while ignoring natural animal agony is morally arbitrary.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Laissez-Faire Environmental Ethics: Wild nature possesses intrinsic value in its wildness and natural evolutionary processes, independent of animal welfare.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Appeal to Nature Fallacy: Conflating what occurs in natural ecosystems with what is ethically good or desirable.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Preservationism and Practical Realism: Intervening in wild ecosystems is catastrophic, unfeasible, and violates wild autonomy.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Trophic Cascade Collapses: Eradicating predators or starvation would cause uncontrolled herbivore population explosions, desertification, and mass starvation.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Fertility Control Alternatives: Immunocontraception programs can manage herbivore populations humanely without needing predator violence.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Resource Prioritization: Human society currently fails to address massive human poverty and factory farming; diverting resources to wild nature intervention is wildly impractical.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Long-term Scalability: Researching welfare biology today lays theoretical groundwork for advanced future biotechnologies and space colonization ethics.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Welfare Biology",
+      "description": "The proposed study of wild animals with respect to their positive and negative subjective wellbeing."
+    },
+    {
+      "term": "r-Selection Strategy",
+      "description": "An evolutionary strategy producing high numbers of offspring with low individual investment, resulting in mass early-life mortality."
+    },
+    {
+      "term": "Trophic Cascade",
+      "description": "Ecological disruptions triggered by the addition or removal of top predators, cascading through food webs."
+    },
+    {
+      "term": "Speciesism",
+      "description": "The practice of assigning different values, rights, or special consideration to individuals solely on the basis of their species membership."
+    }
+  ]
+}

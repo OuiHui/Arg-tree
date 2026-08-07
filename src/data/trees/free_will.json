@@ -1,0 +1,145 @@
+{
+  "id": "tree-free-will",
+  "title": "Free Will & Determinism",
+  "rootClaim": "Human beings possess genuine free will, exerting conscious agency and moral responsibility over their choices.",
+  "branches": [
+    {
+      "text": "First-person subjective experience provides direct, intuitive evidence of conscious deliberation and choice.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Agent-Causation: Conscious minds act as uncaused initiators of events, distinct from deterministic event-event physical chains.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Violates Physical Closure: Agent-causation relies on non-physical mind-matter interactions that violate energy conservation without explaining how non-physical minds intervene.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Quantum Indeterminacy: Subatomic indeterminacy breaks strict Laplacian determinism, leaving room for non-deterministic physical state transitions.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Randomness Fallacy: Quantum randomness is not agency; choices driven by stochastic particle collapses are random events, not controlled actions.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Introspective Illusion: Introspection is unobservable and unreliable; psychological research demonstrates humans routinely construct post-hoc rationalizations for choices determined by unconscious drivers.",
+          "stance": "attack"
+        },
+        {
+          "text": "Moral & Legal Systems: Society logically requires personal agency, praise, and blame for intentional actions.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Consequentialist Pragmatism: Legal systems function as social tools for deterrence and incentive structuring, requiring predictable causal responsibility rather than metaphysical agency.",
+              "stance": "attack"
+            },
+            {
+              "text": "Retributive Justice: Legal institutions presuppose genuine moral responsibility rather than puppet causation.",
+              "stance": "support",
+              "children": [
+                {
+                  "text": "Quarantine Model of Justice: Society can justify detaining dangerous individuals to protect public safety (like medical quarantine) without invoking retributive moral blame.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Neuroscience indicates that decisions are formulated by pre-conscious neural processes prior to subjective awareness.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Deliberative Complexity Gap: Laboratory experiments measure arbitrary rapid motor movements, which fail to generalize to reflective, long-term decisions involving moral reasoning.",
+          "stance": "attack"
+        },
+        {
+          "text": "Libet Experiments: Motor readiness potentials in the brain build up hundreds of milliseconds before an agent reports conscious intent.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Stochastic Accumulation Model: Modern neuroimaging suggests readiness potentials reflect random background neural noise crossing an activation threshold rather than a committed decision.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Epiphenomenal Consciousness: Conscious awareness is a passive observer of neural activity rather than the executive controller.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Evolutionary Expense Paradox: High metabolic costs of conscious brain processing would be evolutionary impossibilities if awareness conferred zero survival or behavioral advantage.",
+              "stance": "attack"
+            },
+            {
+              "text": "Veto Power ('Free Won't'): Conscious awareness retains executive power to consciously veto pre-conscious impulses before physical execution.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Pre-conscious Veto Initiation: The decision to veto an impulse is itself preceded by unconscious neural processing, shifting determinism back one step.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Compatibilism: Free will is compatible with physical determinism when defined as acting on internal desires without external coercion.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Manipulation Argument: If an agent is covertly engineered by neuroscientists to desire X, they satisfy compatibilist freedom while remaining completely controlled.",
+          "stance": "attack"
+        },
+        {
+          "text": "Second-Order Volition: Freedom consists of reflective alignment between higher-order desires and immediate motivations.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Infinite Regress of Desires: Higher-order desires are themselves subject to prior physical or psychological causes; adding layers of reflection does not escape deterministic causation.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Hard Determinism",
+      "description": "The view that all events, including human actions, are strictly determined by preceding causes, making free will impossible."
+    },
+    {
+      "term": "Compatibilism",
+      "description": "The thesis that free will and physical determinism are logically compatible concepts."
+    },
+    {
+      "term": "Libet Experiments",
+      "description": "Neuroscience studies led by Benjamin Libet showing motor readiness potentials preceding conscious reports of the intention to move."
+    },
+    {
+      "term": "Epiphenomenalism",
+      "description": "The position in philosophy of mind that mental events are caused by physical events in the brain, but have no causal effects on the physical world."
+    },
+    {
+      "term": "Agent-Causation",
+      "description": "The idea that a mind or self can initiate new causal chains without its own decision being determined by prior physical events."
+    },
+    {
+      "term": "Quarantine Model",
+      "description": "Derk Pereboom's penal philosophy arguing that offenders can be ethically detained for public safety like carriers of contagious diseases, without retributive moral blame."
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "id": "tree-objective-morality",
+  "title": "Objective Morality",
+  "rootClaim": "Objective moral facts exist independently of human beliefs, cultural conventions, or evolutionary history.",
+  "branches": [
+    {
+      "text": "Moral Realism: Core moral duties (e.g., prohibition of wanton torture of innocents) possess mind-independent truth conditions.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Convergence of Human Intuitions: Across disparate cultures and historical eras, core prohibitions against murder, betrayal, and unprovoked cruelty remain universally recognized.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Evolutionary Debunking Argument: Sharon Street demonstrates that human moral intuitions were selected for biological fitness and reproductive survival, not tracking mind-independent metaphysical truths.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Third-Factor Defense: Evolutionary pressures favored cognitive mechanisms that tracking objective environmental and social truths, aligning biological fitness with moral reality.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Darwinian Coincidence Problem: Claiming evolutionary survival selection coincidentally tracks abstract stance-independent moral facts requires an unprovable cosmic miracle.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Phenomenology of Moral Progress: Historical societal changes (e.g., abolition of slavery, civil rights) reflect genuine discovery of objective moral truths rather than mere preference shifts.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Moral Anti-Realism & Constructivism: Moral statements are either subjective emotional expressions, social conventions, or systematic errors.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Mackie's Argument from Queerness: Objective moral properties would have to be metaphysically 'queer' entities unlike anything else in the natural universe, requiring a bizarre faculty of moral intuition.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Moral Naturalism: Moral facts supervene on physical and psychological well-being states (e.g., conscious suffering vs flourishing), requiring no supernatural entities.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Is-Ought Problem: David Hume's insight that no purely descriptive factual premises ('is') can logically entail a normative imperative ('ought').",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Expressivism & Emotivism: Ayer and Blackburn argue that moral claims ('stealing is wrong') express affective emotional attitudes ('boo to stealing!') rather than propositions capable of being true or false.",
+          "stance": "support"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Moral Realism",
+      "description": "The meta-ethical view that there are objective moral facts that are true independently of anyone's beliefs or attitudes."
+    },
+    {
+      "term": "Evolutionary Debunking Argument",
+      "description": "An argument claiming that because evolutionary forces shaped our moral faculties for survival, our moral beliefs cannot track objective truth."
+    },
+    {
+      "term": "Argument from Queerness",
+      "description": "J.L. Mackie's argument that objective moral values would be metaphysically non-natural entities requiring an implausible mysterious perceptual faculty."
+    },
+    {
+      "term": "Supervenience",
+      "description": "A relation where high-level properties (moral facts) depend completely on lower-level properties (physical states), such that moral facts cannot change without physical facts changing."
+    },
+    {
+      "term": "Is-Ought Problem",
+      "description": "David Hume's claim that one cannot logically infer a normative statement about what 'ought' to be from a purely factual statement about what 'is'."
+    }
+  ]
+}

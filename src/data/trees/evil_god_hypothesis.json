@@ -1,0 +1,77 @@
+{
+  "id": "tree-evil-god-hypothesis",
+  "title": "The Evil God Hypothesis",
+  "rootClaim": "The hypothesis that the universe was created by an all-powerful, all-knowing, and supreme evil deity is as philosophically plausible as classical monotheism.",
+  "branches": [
+    {
+      "text": "Stephen Law's Symmetry Argument: Any theological defense used to explain away evil in a good God's world can be mirrored to explain away good in an evil God's world.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Reverse Free Will Defense: An Evil God granted humans free will so that they could freely choose to commit horrific evil and cause genuine suffering.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Asymmetry of Natural World: Natural beauty, love, joy, and selfless altruism exist in vast quantities, which an all-powerful Evil God would have no reason to tolerate.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Reverse Soul-Making Theodicy: An Evil God permits instances of genuine love and virtue solely as contrast mechanisms to make ultimate suffering and betrayal more excruciating.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Gratuitous Goodness Paradox: Infinite innocent happiness (e.g., newborn animals playing in uninhabited regions) exists without any sentient observers to experience contrast suffering.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Problem of Good: The existence of profound natural and moral virtue is just as problematic for an Evil God as the Problem of Evil is for a Good God.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Classical Meta-ethics: Good is ontological reality while Evil is merely a privation of Good (Privatio Boni), destroying theoretical symmetry.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Augustinian Privation Theory: Evil cannot exist independently as a substance; it is merely the corruption or absence of good, so a supreme entity must be fundamentally Good.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Privation Asymmetry Fallacy: Good can be symmetrically redefined as the privation of pure malice, proving Privatio Boni is a linguistic convention rather than an objective metaphysical truth.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Ontological Argument Asymmetry: Maximal greatness inherently includes moral perfection (goodness); a maximally evil entity is self-contradictory and metaphysically limited.",
+          "stance": "support"
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Evil God Hypothesis",
+      "description": "A philosophical thought experiment asserting that an omnipotent, omniscient, and malevolent deity created the universe."
+    },
+    {
+      "term": "Privatio Boni",
+      "description": "The philosophical doctrine defining evil not as an active force, but as the privation or absence of good."
+    },
+    {
+      "term": "Reverse Theodicy",
+      "description": "An attempt to reconcile the existence of good (love, beauty, joy) with the existence of a malevolent God."
+    },
+    {
+      "term": "Symmetry Argument",
+      "description": "Stephen Law's argument that the theoretical moves to defend traditional monotheism against the Problem of Evil can be mirrored identically to defend an Evil God against the Problem of Good."
+    }
+  ]
+}

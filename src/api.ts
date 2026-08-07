@@ -1,6 +1,7 @@
 import type { TreeState, WorkspaceState } from './argtree'
 import { getPublicTreeSpecs } from './data/publicTrees'
 import { parseDeclarativeTree } from './utils/parseDeclarativeTree'
+import { sanitizeTree } from './utils/sanitizeTree'
 
 const STORAGE_KEY = 'argtree_workspace'
 
@@ -40,7 +41,18 @@ function loadFromLocalStorage(): WorkspaceState | null {
     if (raw) {
       const parsed = JSON.parse(raw)
       if (parsed && parsed.trees && Object.keys(parsed.trees).length > 0) {
-        return parsed
+        const sanitizedTrees: Record<string, TreeState> = {}
+        for (const [id, tree] of Object.entries(parsed.trees)) {
+          if (tree && typeof tree === 'object') {
+            sanitizedTrees[id] = sanitizeTree(tree as TreeState)
+          }
+        }
+        if (Object.keys(sanitizedTrees).length > 0) {
+          return {
+            selectedTreeId: parsed.selectedTreeId || Object.keys(sanitizedTrees)[0] || '',
+            trees: sanitizedTrees,
+          }
+        }
       }
     }
   } catch (err) {
@@ -115,34 +127,35 @@ export function deduplicateWorkspaceTrees(workspace: WorkspaceState): WorkspaceS
 }
 
 async function fetchStaticWorkspace(): Promise<WorkspaceState> {
-  const local = loadFromLocalStorage()
-  if (local) return deduplicateWorkspaceTrees(local)
-
   const treeSpecs = getPublicTreeSpecs()
-
-  const trees: Record<string, TreeState> = {}
+  const publicTrees: Record<string, TreeState> = {}
 
   for (const spec of treeSpecs) {
     try {
       const parsedTree = parseDeclarativeTree(spec)
-      trees[parsedTree.id] = parsedTree
+      publicTrees[parsedTree.id] = sanitizeTree(parsedTree)
     } catch (err) {
       console.warn(`Failed to parse static tree ${spec.title}:`, err)
     }
   }
 
-  const treeIds = Object.keys(trees)
-  const selectedTreeId = treeIds[0] || ''
+  const local = loadFromLocalStorage()
+  const mergedTrees: Record<string, TreeState> = {
+    ...publicTrees,
+    ...(local?.trees || {}),
+  }
+
+  let selectedTreeId = local?.selectedTreeId || ''
+  if (!selectedTreeId || !mergedTrees[selectedTreeId]) {
+    selectedTreeId = Object.keys(mergedTrees)[0] || ''
+  }
 
   const staticWorkspace: WorkspaceState = {
     selectedTreeId,
-    trees,
+    trees: mergedTrees,
   }
 
-  if (treeIds.length > 0) {
-    saveToLocalStorage(staticWorkspace)
-  }
-
+  saveToLocalStorage(staticWorkspace)
   return deduplicateWorkspaceTrees(staticWorkspace)
 }
 

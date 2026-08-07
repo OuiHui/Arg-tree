@@ -1,0 +1,79 @@
+{
+  "id": "tree-experience-machine",
+  "title": "Nozick's Experience Machine",
+  "rootClaim": "Human beings should refuse to plug into Robert Nozick's Experience Machine because subjective pleasure is not the sole intrinsic good of human existence.",
+  "branches": [
+    {
+      "text": "Value of Real Contact: We care about actually doing certain things and being a certain way in objective reality, not merely experiencing the subjective sensation of having done them.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Plugging into the machine is a form of suicide of agency; it transforms the subject into a passive vessel float in a tank dependent on machine simulation.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Epistemic Indistinguishability: If the simulation is perfectly indistinguishable from reality, the subjective quality of experience and moral emotional depth are functionally identical.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Status Quo Bias Explanation: Felipe De Brigard's empirical experiments reveal that people reject plugging in primarily due to status quo bias rather than a intrinsic desire for reality.",
+                  "stance": "attack",
+                  "children": [
+                    {
+                      "text": "Reverse Thought Experiment: If told they are already plugged into an Experience Machine, a majority of subjects choose to stay plugged in, validating status quo bias.",
+                      "stance": "attack"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Character & Moral Growth: Authentic character development requires overcoming genuine risk, adversity, and potential failure in a shared physical world.",
+          "stance": "support"
+        }
+      ]
+    },
+    {
+      "text": "Hedonist Defense: Qualitative subjective well-being is the only intrinsically valuable state; rejecting simulated bliss for 'real suffering' is irrational essentialism.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Quantitative Utilitarianism: Eliminating illness, heartbreak, and trauma via optimal simulated experience maximizes global utility far beyond natural biological limits.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Delusional Solipsism: Life in the machine removes genuine connection with other autonomous minds, reducing relationships to empty algorithmic projections.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Multi-User Network Machine: If billions of real human consciousnesses plug into a shared networked simulation, social interactions remain genuinely authentic and interactive.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Experience Machine",
+      "description": "A thought experiment proposed by Robert Nozick in 1974 to refute psychological and ethical hedonism."
+    },
+    {
+      "term": "Status Quo Bias",
+      "description": "An emotional preference for the current state of affairs, where any change from the baseline is perceived as a potential loss."
+    },
+    {
+      "term": "Hedonism",
+      "description": "The philosophical theory that pleasure is the highest good and proper aim of human life."
+    },
+    {
+      "term": "Epistemic Indistinguishability",
+      "description": "A state where two conditions or environments cannot be differentiated by an observer using internal subjective perception alone."
+    }
+  ]
+}

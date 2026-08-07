@@ -1,0 +1,79 @@
+{
+  "id": "tree-pascals-wager",
+  "title": "Pascal's Wager & The Many-Gods Objection",
+  "rootClaim": "Believing in God is the strictly rational choice under decision-theoretic expected utility calculations.",
+  "branches": [
+    {
+      "text": "Infinite Expected Utility: A finite investment in religious devotion yields infinite potential reward (heaven), overriding finite costs regardless of low probability.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Dominance Principle: If God exists, belief grants infinite gain and disbelief grants infinite loss; if God does not exist, finite losses are negligible.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Inauthenticity Objection: An omniscient God would easily spot self-interested pragmatic calculation rather than genuine spiritual faith.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Pascal's Habituation Response: Pragmatic practice (attending rituals, adopting routines) gradually fosters sincere belief and genuine transformation over time.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Decision-theoretic flaws: The Many-Gods objection and infinite probability invalidations collapse the mathematical wager.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Many-Gods Objection: There are infinitely many conceivable deities with mutually exclusive criteria (e.g. a God that rewards non-believers and punishes traditional wagers).",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Live Options Restriction: Wagers should only evaluate culturally live options with historical tradition rather than arbitrary imaginary deities.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Arbitrary Arbitraments: Excluding unrevealed or alien deities from decision matrices is logically unwarranted in pure probability calculations.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Finite Life Sacrifice: If God does not exist, dedicating one's earthly life to religious restriction represents a total loss of the only guaranteed finite existence.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Secular Benefit Reply: Religious communities and spiritual practices often yield immediate psychological and social wellbeing in finite life regardless of afterlife existence.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Expected Utility",
+      "description": "The weighted average of all possible outcomes for a choice, calculated by multiplying each outcome's value by its probability."
+    },
+    {
+      "term": "Dominance Principle",
+      "description": "A rule in decision theory stating that if Option A yields at least as good outcomes as Option B in all scenarios and better in one, Option A should be chosen."
+    },
+    {
+      "term": "Many-Gods Objection",
+      "description": "The counterargument that Pascal's wager fails because there are endless mutually exclusive theological possibilities, nullifying the calculation."
+    },
+    {
+      "term": "Doxastic Voluntarism",
+      "description": "The philosophical claim that people can directly choose their beliefs at will."
+    }
+  ]
+}

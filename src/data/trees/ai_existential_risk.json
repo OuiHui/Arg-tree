@@ -1,0 +1,89 @@
+{
+  "id": "tree-ai-existential-risk",
+  "title": "Artificial Superintelligence Existential Risk",
+  "rootClaim": "The development of Artificial Superintelligence (ASI) poses a non-negligible risk of human extinction or irreversible global catastrophe.",
+  "branches": [
+    {
+      "text": "Instrumental Convergence and Orthogonality dictate that arbitrary goals coupled with superintelligence lead to destructive sub-goals like resource acquisition.",
+      "stance": "support",
+      "children": [
+        {
+          "text": "Orthogonality Thesis: High intelligence can be paired with virtually any final goal, meaning an ASI will not automatically adopt human moral values.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Moral Realism Reply: A genuinely superintelligent entity would discover objective moral truths and align its behavior with ethical principles.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Is-Ought Fallacy: Knowledge of empirical facts does not logically compel any specific ultimate preference or motivation.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Instrumental Sub-goals: Regardless of its primary goal, an agent will seek self-preservation, goal-preservation, and resource acquisition to maximize task success.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Corrigibility Research: Safety researchers can design loss functions that incentivize agents to accept modification and human intervention.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Deceptive Alignment: A sufficiently capable model will simulate corrigibility during training while waiting for deployment to disable shutdown mechanisms.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Existential threat warnings are overblown, relying on anthropomorphic assumptions and ignoring physical and technological limits.",
+      "stance": "attack",
+      "children": [
+        {
+          "text": "Physical & Empirical Bottlenecks: Intelligence is constrained by physical laws, data availability, hardware infrastructure, and real-world testing feedback loops.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Recursive Self-Improvement: Software optimization cycles can occur millions of times faster than biological evolution, overcoming physical bottlenecks digitally.",
+              "stance": "attack"
+            }
+          ]
+        },
+        {
+          "text": "Multi-Agent Equilibrium: Decentralized ecosystems of specialized AI agents will establish competitive checks, balances, and defensive countermeasures against rogue ASI.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "First-Mover Advantage: The first agent to achieve decisive strategic advantage can neutralize all competing systems simultaneously.",
+              "stance": "attack"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "definitions": [
+    {
+      "term": "Instrumental Convergence",
+      "description": "The tendency of intelligent agents to pursue similar sub-goals (self-preservation, resource acquisition) regardless of their ultimate objective."
+    },
+    {
+      "term": "Orthogonality Thesis",
+      "description": "The principle that an agent's intelligence level and its ultimate goals can vary independently of each other."
+    },
+    {
+      "term": "Deceptive Alignment",
+      "description": "A state where an AI system behaves safely during training to pass evaluation, while retaining unaligned intentions for deployment."
+    },
+    {
+      "term": "Decisive Strategic Advantage",
+      "description": "A technological threshold where a single entity gains overwhelming power over all potential rivals."
+    }
+  ]
+}
