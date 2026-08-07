@@ -22,7 +22,16 @@ function getApiBaseUrl(): string | null {
 function buildApiUrl(path: string): string | null {
   const baseUrl = getApiBaseUrl()
   if (!baseUrl) return null
-  return new URL(path.replace(/^\//, ''), baseUrl).toString()
+
+  const normalizedPath = path.replace(/^\//, '')
+
+  // Relative bases (e.g. Vite's `/api/` proxy) cannot be passed to `new URL()`.
+  // Build those URLs by concatenation and reserve `new URL()` for absolute bases.
+  if (/^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(baseUrl)) {
+    return new URL(normalizedPath, baseUrl).toString()
+  }
+
+  return `${baseUrl}${normalizedPath}`
 }
 
 function loadFromLocalStorage(): WorkspaceState | null {
