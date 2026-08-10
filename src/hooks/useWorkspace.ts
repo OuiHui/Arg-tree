@@ -19,6 +19,7 @@ import {
   deleteTreeApi,
   updateSelectedTreeIdApi,
   deduplicateWorkspaceTrees,
+  loadFromLocalStorage,
 } from '../api'
 import { useUrlTreeSync } from './useUrlTreeSync'
 import { useUndoRedo } from './useUndoRedo'
@@ -37,8 +38,8 @@ import {
 
 
 export function useWorkspace() {
-  const [workspace, setWorkspace] = useState<WorkspaceState>(seedWorkspace)
-  const [isLoading, setIsLoading] = useState(true)
+  const [workspace, setWorkspace] = useState<WorkspaceState>(() => loadFromLocalStorage() || seedWorkspace())
+  const [isLoading, setIsLoading] = useState<boolean>(() => !loadFromLocalStorage())
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null)
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null)
   const [definitionsCollapsed, setDefinitionsCollapsed] = useState(false)
@@ -66,16 +67,7 @@ export function useWorkspace() {
         const updatedTrees: Record<string, TreeState> = {}
 
         Object.keys(fetchedWorkspace.trees).forEach((id) => {
-          let tree = sanitizeTree(fetchedWorkspace.trees[id])
-          const positions = tree.positions || {}
-          const hasCrampedNodes = Object.values(positions).some((p) => p.y > 0 && p.y < 280)
-          if (hasCrampedNodes) {
-            tree = {
-              ...tree,
-              positions: autoLayoutTree(tree),
-            }
-          }
-          updatedTrees[id] = tree
+          updatedTrees[id] = sanitizeTree(fetchedWorkspace.trees[id])
         })
 
         const urlParams = new URLSearchParams(window.location.search)
@@ -93,6 +85,19 @@ export function useWorkspace() {
           }
         } else if (!updatedTrees[selectedTreeId]) {
           selectedTreeId = Object.keys(updatedTrees)[0] || selectedTreeId
+        }
+
+        // Lazy auto-layout for selected tree only if cramped
+        if (selectedTreeId && updatedTrees[selectedTreeId]) {
+          let selectedTree = updatedTrees[selectedTreeId]
+          const positions = selectedTree.positions || {}
+          const hasCrampedNodes = Object.values(positions).some((p) => p.y > 0 && p.y < 280)
+          if (hasCrampedNodes) {
+            updatedTrees[selectedTreeId] = {
+              ...selectedTree,
+              positions: autoLayoutTree(selectedTree),
+            }
+          }
         }
 
         if (selectedTreeId) {

@@ -39,9 +39,11 @@ connectDB().then((connected) => {
 app.get('/api/workspace', async (req, res) => {
   try {
     if (isMongoConnected) {
-      await ensureInitialSeed()
-
-      const treesDoc = await TreeModel.find().lean()
+      let treesDoc = await TreeModel.find().lean()
+      if (treesDoc.length === 0) {
+        await ensureInitialSeed()
+        treesDoc = await TreeModel.find().lean()
+      }
       let configDoc = await WorkspaceConfigModel.findOne({ key: 'main' }).lean()
 
       const trees = {}

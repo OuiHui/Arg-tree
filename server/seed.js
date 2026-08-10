@@ -149,6 +149,11 @@ import path from 'path'
 import { importTreeFromFile } from './scripts/importTree.js'
 
 export async function ensureInitialSeed() {
+  const existingCount = await TreeModel.countDocuments()
+  if (existingCount > 0) {
+    return
+  }
+
   const treesDir = path.resolve('data/trees')
   let targetTreeId = null
 

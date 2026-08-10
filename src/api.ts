@@ -35,7 +35,7 @@ function buildApiUrl(path: string): string | null {
   return `${baseUrl}${normalizedPath}`
 }
 
-function loadFromLocalStorage(): WorkspaceState | null {
+export function loadFromLocalStorage(): WorkspaceState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
