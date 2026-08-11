@@ -1,11 +1,33 @@
 {
   "id": "tree-red-button-blue-button",
-  "title": "Red Button vs Blue Button Dilemma",
-  "rootClaim": "In the global Red/Blue button dilemma, choosing the Red Button is the optimal choice to maximize net human survival and eliminate individual mortality risk under epistemic uncertainty.",
+  "title": "Blue Button vs Red Button Dilemma",
+  "rootClaim": "In the global Red/Blue button dilemma, choosing the Blue Button is the optimal choice to protect global social solidarity, eliminate catastrophic miscoordination, and achieve universal human survival under epistemic uncertainty.",
   "branches": [
     {
-      "text": "Dominant Survival Strategy: Choosing Red guarantees individual survival regardless of whether the global majority chooses Blue (>50%) or Red (≤50%).",
+      "text": "Moral Duty of Trust & Coordination (Pro-Blue): Choosing Blue is an indispensable act of civic coordination required to guarantee the >50% threshold and protect global social solidarity.",
       "stance": "support",
+      "children": [
+        {
+          "text": "Categorical Imperative of Cooperation: If everyone chooses Blue, 100% of humanity survives with full mutual trust and zero deaths.",
+          "stance": "support",
+          "children": [
+            {
+              "text": "Catastrophic Miscoordination Vulnerability: If Blue turnout falls between 1% and 50%, millions or billions of well-meaning Blue pressers perish unnecessarily, producing massive net utility loss.",
+              "stance": "attack",
+              "children": [
+                {
+                  "text": "Pre-Choice Communication & Focal Points: Public coordination signals or binding global consensus could establish Blue as a Schelling point, eliminating coordination failure.",
+                  "stance": "attack"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "Dominant Survival Strategy (Pro-Red Counterargument): Choosing Red guarantees individual survival regardless of whether the global majority chooses Blue (>50%) or Red (≤50%).",
+      "stance": "attack",
       "children": [
         {
           "text": "Asymmetric Payoff Structure: If Blue succeeds (>50%), everyone survives including Red pressers; if Blue fails (≤50%), Red pressers survive while Blue pressers die.",
@@ -32,28 +54,6 @@
         {
           "text": "Risk-Dominant Game Theory: Under uncertainty about others' choices, Red eliminates the catastrophic downside outcome of death caused by miscoordination.",
           "stance": "support"
-        }
-      ]
-    },
-    {
-      "text": "Moral Duty of Trust (Pro-Blue): Choosing Blue is an indispensable act of civic coordination required to guarantee the >50% threshold and protect global social solidarity.",
-      "stance": "attack",
-      "children": [
-        {
-          "text": "Categorical Imperative of Cooperation: If everyone chooses Blue, 100% of humanity survives with full mutual trust and zero deaths.",
-          "stance": "support",
-          "children": [
-            {
-              "text": "Catastrophic Miscoordination Vulnerability: If Blue turnout falls between 1% and 50%, millions or billions of well-meaning Blue pressers perish unnecessarily, producing massive net utility loss.",
-              "stance": "attack",
-              "children": [
-                {
-                  "text": "Pre-Choice Communication & Focal Points: Public coordination signals or binding global consensus could establish Blue as a Schelling point, eliminating coordination failure.",
-                  "stance": "attack"
-                }
-              ]
-            }
-          ]
         }
       ]
     }
